@@ -1,0 +1,4 @@
+- source: field_work_report.qmd
+  quarto-pub:
+    - id: 4dc7f396-b4b4-4369-afab-54278f9d4e49
+      url: https://nicolastobarj.quarto.pub/field_work_report

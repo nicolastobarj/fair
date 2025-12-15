@@ -1,0 +1,26 @@
+{
+    "id": "B55DFB9E",
+    "path": "~/GitHub/milenio_nudos/fair/script/proc_data.R",
+    "project_path": "script/proc_data.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": true,
+    "created": 1765804877009.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "112,26",
+        "scrollLine": "105"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1765568448,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1765805277585,
+    "read_only": false,
+    "read_only_alternatives": []
+}

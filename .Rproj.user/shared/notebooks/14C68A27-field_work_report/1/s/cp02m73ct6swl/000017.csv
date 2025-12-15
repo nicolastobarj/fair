@@ -1,0 +1,6 @@
+"0","data%>%"
+"0","  group_by(get_variable_saec)%>%"
+"0","  summarise("
+"0","    mean_time = mean(time_in_seconds)"
+"0","  ) %>%"
+"0","  kable()"
