@@ -142,4 +142,17 @@ data <- data %>%
       # caso 3: más de un 1 o todos 0 → asignar 0
       TRUE ~ 0),
     total_strike = strike_double_atencion + strike_time + strike_variance + strike_one_atencion
-      )
+      ) %>%
+  mutate(
+    # Criterio final de eliminación:
+    # 1) Eliminados automáticamente por strike_double_atencion = 1
+    # 2) Eliminados si tienen 2 o más strikes (pero excluyendo strike_double_atencion para este conteo)
+    strike_count_no_double = strike_time + strike_variance + 
+      if_else(strike_one_atencion %in% c(1,2), 1, 0),
+    
+    eliminado = case_when(
+      strike_double_atencion == 1 ~ 1,
+      strike_count_no_double >= 2 ~ 1,
+      TRUE ~ 0
+    )
+  )
