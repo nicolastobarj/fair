@@ -146,7 +146,10 @@ make_anova2_plot <- function(
   sum1 <- summarize_with_ci(row_means1) |> mutate(Variable = label1)
   sum2 <- summarize_with_ci(row_means2) |> mutate(Variable = label2)
   summary_df <- bind_rows(sum1, sum2) |>
-    mutate(Variable = factor(Variable, levels = c(label1, label2)))
+    mutate(
+      Variable = factor(Variable, levels = c(label1, label2)),
+      label = sprintf("Mean=%.2f\nSD=%.2f", mean, sd)
+    )
 
   # Statistical test (with 2 groups this is equivalent to 1-way ANOVA)
   # If you truly need a 2-way ANOVA (2 factors), we can extend this signature.
@@ -168,15 +171,23 @@ make_anova2_plot <- function(
     stats::t.test(rm1, rm2, paired = FALSE)
   }
 
+  # Nudge labels slightly above the error bar tops
+  label_nudge_y <- if (!is.null(y_limits) && length(y_limits) == 2) {
+    0.03 * diff(y_limits)
+  } else {
+    0.03 * (max(summary_df$ymax, na.rm = TRUE) - min(summary_df$ymin, na.rm = TRUE))
+  }
+
   p <- ggplot(summary_df, aes(x = Variable, y = mean, group = 1)) +
     geom_line(linewidth = 0.8) +
     geom_point(size = 2.8) +
     geom_errorbar(aes(ymin = ymin, ymax = ymax), width = 0.15, linewidth = 0.8) +
+    geom_text(aes(y = ymax, label = label), vjust = 0, nudge_y = label_nudge_y, size = 3.3) +
     labs(x = NULL, y = "Mean (row-wise)") +
     theme_classic(base_size = 12)
 
   if (!is.null(y_limits)) {
-    p <- p + coord_cartesian(ylim = y_limits)
+    p <- p + coord_cartesian(ylim = y_limits, clip = "off")
   }
   if (!is.null(y_breaks)) {
     p <- p + scale_y_continuous(breaks = y_breaks)
