@@ -3,6 +3,7 @@ title: "Presentaciones SAE"
 author: "Yelena"
 date: "2025-12-22"
 output: html_document
+
 ---
 
 ```{r setup, include=FALSE}
@@ -160,33 +161,30 @@ stats_table <- list(
   )
 
 stats_table %>%
-  mutate(across(where(is.numeric), ~ round(as.numeric(.), 3))) %>%
-  kableExtra::kbl(caption = "Estadísticas descriptivas de las variables (Pre vs Post)", booktabs = TRUE) %>%
-  kableExtra::kable_styling(
-    bootstrap_options = c("hover", "condensed"),
-    full_width = F,
-    position = "left"
-    ) %>%
-  kableExtra::column_spec(1, width = "100px", bold = TRUE) %>% #ancho primera columna
-  # Color para filas PRE (impares)
-  kableExtra::row_spec(seq(1, nrow(stats_table), 2), background = "#f9f9f9") %>%
-  # Color para filas POS (pares) y línea divisoria
-  kableExtra::row_spec(seq(2, nrow(stats_table), 2), 
-                       background = "#ffffff", 
-                       extra_css = "border-bottom: 2px solid #666;")
-
-  #dplyr::select(Variable, dplyr::everything()) |>
-  #dplyr::arrange(Variable) |>
-  #dplyr::rename(
-  #  "Cronbach alpha" = cronbach_alpha,
-  #  "Mean" = mean,
-  #  "Median" = median,
-  #  "Std" = std,
-  #  "Min" = min,
-  #  "Max" = max
-  #)
-
-knitr::kable(stats_table, caption = "Estadísticas descriptivas de las variables")
+  kbl(caption = "<b style='color:black; font-size:1.2em;'>Estadísticas descriptivas: dimensiones de comprensión y confianza</b>", 
+      booktabs = TRUE, 
+      centering = FALSE) %>%
+  kable_styling(bootstrap_options = c("hover", "condensed"),
+                full_width = F, 
+                position = "left") %>%
+  column_spec(1, width = "350px", bold = FALSE) %>%
+  
+  # Esto elimina esas líneas grises tenues que aún ves entre pre/post
+  row_spec(0:nrow(stats_table), 
+           extra_css = "border-top: none !important; border-bottom: none !important;padding-top: 2px !important; padding-bottom: 2px !important; line-height: 1 !important;") %>%
+  
+  # SEPARACIONES DE GRUPOS (Líneas gruesas)
+  # Después de Comprensión (fila 2) y McKnight (fila 8)
+  row_spec(c(2, 8), extra_css = "border-bottom: 2px solid black !important;") %>%
+  
+  # SALTOS DE LÍNEA (Separación funcional vs moral)
+  # McKnight: Funcional termina en fila 6. MDMT: Funcional termina en fila 12.
+  row_spec(c(6, 12), extra_css = "border-bottom: 1px solid #eee !important; padding-bottom: 10px !important;") %>%
+  
+  # ETIQUETAS DE GRUPO
+  pack_rows("Dimensiones de comprensión", 1, 2) %>%
+  pack_rows("Confianza (McKnight)", 3, 8) %>%
+  pack_rows("Confianza (MDMT)", 9, 16)
 ```
 
 
