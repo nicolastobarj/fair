@@ -1,0 +1,437 @@
+---
+title: "Presentacion-graphs-fonasa"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+#| warning: false
+
+library(psych)
+library(dplyr)
+library(purrr)
+library(ggplot2)
+
+proc_env <- new.env(parent = globalenv())
+source(here::here("script/proc_data.R"), local = proc_env)
+data <- proc_env$data
+stopifnot(exists("data", envir = proc_env), !is.null(data))
+```
+
+## Variables of interest
+
+```{r}
+#| label: variables-of-interest
+#| echo: false
+#| message: false
+#| warning: false
+
+pre_obj_fonasa <- select(data, starts_with("fonasa_pre_comp_obj"))
+pos_obj_fonasa <- select(data, starts_with("fonasa_pos_comp_obj"))
+pre_subj_fonasa <- select(data, starts_with("fonasa_pre_comp_subj"))
+pos_subj_fonasa <- select(data, starts_with("fonasa_pos_comp_subj"))
+pre_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_reliab")) # Moral Ethic - McKnight
+pos_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_reliab")) # Moral Ethic - McKnight
+pre_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_func")) # Moral Ethic - McKnight
+pos_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_func")) # Moral Ethic - McKnight
+pre_trust_func_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_func_reliab"))
+pos_trust_func_reliab_fonasa <- select(data, starts_with("fonasa_pos_trust_func_reliab"))
+pre_trust_func_capab_fonasa <- select(data, starts_with("fonasa_pre_trust_func_capab"))
+pos_trust_func_capab_fonasa <- select(data, starts_with("fonasa_pos_trust_func_capab"))
+pre_trust_moral_ethi_fonasa <- select(data, starts_with("fonasa_pre_trust_moral_ethi"))
+pos_trust_moral_ethi_fonasa <- select(data, starts_with("fonasa_pos_trust_moral_ethi"))
+pre_trust_moral_sinc_fonasa <- select(data, starts_with("fonasa_pre_trust_moral_sinc"))
+pos_trust_moral_sinc_fonasa <- select(data, starts_with("fonasa_pos_trust_moral_sinc"))
+pos_trust_belief_help_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_help")) # Functional Ethic - McKnight
+```
+
+## Descriptive statistics
+
+```{r}
+#| label: stats-table
+#| echo: false
+#| message: false
+#| warning: false
+
+describe_stats <- function(data) {
+  row_means <- rowMeans(data, na.rm = TRUE)
+
+  overall_mean <- mean(row_means, na.rm = TRUE)
+  overall_median <- median(row_means, na.rm = TRUE)
+  overall_sd <- sd(row_means, na.rm = TRUE)
+  overall_min <- min(row_means, na.rm = TRUE)
+  overall_max <- max(row_means, na.rm = TRUE)
+
+  alpha_val <- psych::alpha(data)$total$raw_alpha
+
+  tibble(
+    cronbach_alpha = alpha_val,
+    mean = overall_mean,
+    median = overall_median,
+    std = overall_sd,
+    min = overall_min,
+    max = overall_max
+  )
+}
+
+pre_stats_obj_fonasa <- describe_stats(pre_obj_fonasa)
+pos_stats_obj_fonasa <- describe_stats(pos_obj_fonasa)
+pre_stats_subj_fonasa <- describe_stats(pre_subj_fonasa)
+pos_stats_subj_fonasa <- describe_stats(pos_subj_fonasa)
+pre_stats_trust_belief_reliab_fonasa <- describe_stats(pre_trust_belief_reliab_fonasa)
+pos_stats_trust_belief_reliab_fonasa <- describe_stats(pos_trust_belief_reliab_fonasa)
+pre_stats_trust_belief_func_fonasa <- describe_stats(pre_trust_belief_func_fonasa)
+pos_stats_trust_belief_func_fonasa <- describe_stats(pos_trust_belief_func_fonasa)
+pre_stats_trust_func_reliab_fonasa <- describe_stats(pre_trust_func_reliab_fonasa)
+pos_stats_trust_func_reliab_fonasa <- describe_stats(pos_trust_func_reliab_fonasa)
+pre_stats_trust_func_capab_fonasa <- describe_stats(pre_trust_func_capab_fonasa)
+pos_stats_trust_func_capab_fonasa <- describe_stats(pos_trust_func_capab_fonasa)
+pre_stats_trust_moral_ethi_fonasa <- describe_stats(pre_trust_moral_ethi_fonasa)
+pos_stats_trust_moral_ethi_fonasa <- describe_stats(pos_trust_moral_ethi_fonasa)
+pre_stats_trust_moral_sinc_fonasa <- describe_stats(pre_trust_moral_sinc_fonasa)
+pos_stats_trust_moral_sinc_fonasa <- describe_stats(pos_trust_moral_sinc_fonasa)
+pos_stats_trust_belief_help_fonasa <- describe_stats(pos_trust_belief_help_fonasa)
+
+stats_table <- list(
+  pre_obj_fonasa = pre_stats_obj_fonasa,
+  pos_obj_fonasa = pos_stats_obj_fonasa,
+  pre_subj_fonasa = pre_stats_subj_fonasa,
+  pos_subj_fonasa = pos_stats_subj_fonasa,
+  pre_trust_belief_reliab_fonasa = pre_stats_trust_belief_reliab_fonasa,
+  pos_trust_belief_reliab_fonasa = pos_stats_trust_belief_reliab_fonasa,
+  pre_trust_belief_func_fonasa = pre_stats_trust_belief_func_fonasa,
+  pos_trust_belief_func_fonasa = pos_stats_trust_belief_func_fonasa,
+  pre_trust_func_reliab_fonasa = pre_stats_trust_func_reliab_fonasa,
+  pos_trust_func_reliab_fonasa = pos_stats_trust_func_reliab_fonasa,
+  pre_trust_func_capab_fonasa = pre_stats_trust_func_capab_fonasa,
+  pos_trust_func_capab_fonasa = pos_stats_trust_func_capab_fonasa,
+  pre_trust_moral_ethi_fonasa = pre_stats_trust_moral_ethi_fonasa,
+  pos_trust_moral_ethi_fonasa = pos_stats_trust_moral_ethi_fonasa,
+  pre_trust_moral_sinc_fonasa = pre_stats_trust_moral_sinc_fonasa,
+  pos_trust_moral_sinc_fonasa = pos_stats_trust_moral_sinc_fonasa,
+  pos_trust_belief_help_fonasa = pos_stats_trust_belief_help_fonasa
+) |>
+  imap_dfr(\(stats, var_name) dplyr::mutate(stats, Variable = var_name)) |>
+  dplyr::select(Variable, dplyr::everything()) |>
+  dplyr::arrange(Variable) |>
+  dplyr::rename(
+    "Cronbach alpha" = cronbach_alpha,
+    "Mean" = mean,
+    "Median" = median,
+    "Std" = std,
+    "Min" = min,
+    "Max" = max
+  )
+
+knitr::kable(stats_table, digits = 3)
+```
+
+## Hypothesis plots
+
+```{r}
+#| label: hypothesis-factors
+#| echo: false
+#| message: false
+#| warning: false
+
+data$ai_disclosure_fonasa <- as.factor(data$ai_disclosure_fonasa)
+data$performance_fonasa <- as.factor(data$performance_fonasa)
+data$control_humano_fonasa <- as.factor(data$control_humano_fonasa)
+```
+
+### H1 - AI Disclosure (Subjective competence)
+
+```{r}
+#| label: h1-ai-disclosure-subjective
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H1_AID_subj <- t.test(fonasa_comp_subjetiva_pos ~ ai_disclosure_fonasa, data = data)
+plot(fonasa_comp_subjetiva_pos ~ ai_disclosure_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H1_AID_subj$statistic)),
+    sprintf("df = %.2f", unname(ttest_H1_AID_subj$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H1_AID_subj$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H1 - AI Disclosure (Objective competence)
+
+```{r}
+#| label: h1-ai-disclosure-objective
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H1_AID_obj <- t.test(fonasa_comp_objetiva_pos ~ ai_disclosure_fonasa, data = data)
+plot(fonasa_comp_objetiva_pos ~ ai_disclosure_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H1_AID_obj$statistic)),
+    sprintf("df = %.2f", unname(ttest_H1_AID_obj$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H1_AID_obj$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H1 - AI Disclosure (Moral trust - McKnight)
+
+```{r}
+#| label: h1-ai-disclosure-moral-trust-mcknight
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H1_ME_trust_McKnight <- t.test(fonasa_conf_belief_moral_pos ~ ai_disclosure_fonasa, data = data)
+plot(fonasa_conf_belief_moral_pos ~ ai_disclosure_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H1_ME_trust_McKnight$statistic)),
+    sprintf("df = %.2f", unname(ttest_H1_ME_trust_McKnight$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H1_ME_trust_McKnight$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H1 - AI Disclosure (Moral trust - MDMT)
+
+```{r}
+#| label: h1-ai-disclosure-moral-trust-mdmt
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H1_ME_trust_MDMT <- t.test(fonasa_conf_word_moral_pos ~ ai_disclosure_fonasa, data = data)
+plot(fonasa_conf_word_moral_pos ~ ai_disclosure_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H1_ME_trust_MDMT$statistic)),
+    sprintf("df = %.2f", unname(ttest_H1_ME_trust_MDMT$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H1_ME_trust_MDMT$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H3 - Performance (Subjective competence)
+
+```{r}
+#| label: h3-performance-subjective
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H3_P_subj <- t.test(fonasa_comp_subjetiva_pos ~ performance_fonasa, data = data)
+plot(fonasa_comp_subjetiva_pos ~ performance_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H3_P_subj$statistic)),
+    sprintf("df = %.2f", unname(ttest_H3_P_subj$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H3_P_subj$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H3 - Performance (Objective competence)
+
+```{r}
+#| label: h3-performance-objective
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H3_P_obj <- t.test(fonasa_comp_objetiva_pos ~ performance_fonasa, data = data)
+plot(fonasa_comp_objetiva_pos ~ performance_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H3_P_obj$statistic)),
+    sprintf("df = %.2f", unname(ttest_H3_P_obj$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H3_P_obj$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H3 - Performance (Moral trust - McKnight)
+
+```{r}
+#| label: h3-performance-moral-trust-mcknight
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H3_ME_trust_McKnight <- t.test(fonasa_conf_belief_moral_pos ~ performance_fonasa, data = data)
+plot(fonasa_conf_belief_moral_pos ~ performance_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H3_ME_trust_McKnight$statistic)),
+    sprintf("df = %.2f", unname(ttest_H3_ME_trust_McKnight$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H3_ME_trust_McKnight$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H3 - Performance (Moral trust - MDMT)
+
+```{r}
+#| label: h3-performance-moral-trust-mdmt
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H3_ME_trust_MDMT <- t.test(fonasa_conf_word_moral_pos ~ performance_fonasa, data = data)
+plot(fonasa_conf_word_moral_pos ~ performance_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H3_ME_trust_MDMT$statistic)),
+    sprintf("df = %.2f", unname(ttest_H3_ME_trust_MDMT$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H3_ME_trust_MDMT$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H5 - Human control (Subjective competence)
+
+```{r}
+#| label: h5-human-control-subjective
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H5_HC_subj <- t.test(fonasa_comp_subjetiva_pos ~ control_humano_fonasa, data = data)
+plot(fonasa_comp_subjetiva_pos ~ control_humano_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H5_HC_subj$statistic)),
+    sprintf("df = %.2f", unname(ttest_H5_HC_subj$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H5_HC_subj$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H5 - Human control (Objective competence)
+
+```{r}
+#| label: h5-human-control-objective
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H5_HC_obj <- t.test(fonasa_comp_objetiva_pos ~ control_humano_fonasa, data = data)
+plot(fonasa_comp_objetiva_pos ~ control_humano_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H5_HC_obj$statistic)),
+    sprintf("df = %.2f", unname(ttest_H5_HC_obj$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H5_HC_obj$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H5 - Human control (Moral trust - McKnight)
+
+```{r}
+#| label: h5-human-control-moral-trust-mcknight
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H5_HC_trust_McKnight <- t.test(fonasa_conf_belief_moral_pos ~ control_humano_fonasa, data = data)
+plot(fonasa_conf_belief_moral_pos ~ control_humano_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H5_HC_trust_McKnight$statistic)),
+    sprintf("df = %.2f", unname(ttest_H5_HC_trust_McKnight$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_McKnight$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H5 - Human control (Moral trust - MDMT)
+
+```{r}
+#| label: h5-human-control-moral-trust-mdmt
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H5_HC_trust_MDMT <- t.test(fonasa_conf_word_moral_pos ~ control_humano_fonasa, data = data)
+plot(fonasa_conf_word_moral_pos ~ control_humano_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H5_HC_trust_MDMT$statistic)),
+    sprintf("df = %.2f", unname(ttest_H5_HC_trust_MDMT$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_MDMT$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H5 - Human control (Functional trust)
+
+```{r}
+#| label: h5-human-control-functional-trust
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H5_HC_trust_func <- t.test(fonasa_conf_belief_funcional_pos ~ control_humano_fonasa, data = data)
+plot(fonasa_conf_belief_funcional_pos ~ control_humano_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H5_HC_trust_func$statistic)),
+    sprintf("df = %.2f", unname(ttest_H5_HC_trust_func$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_func$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```
+
+### H5 - Human control (Functional trust - MDMT)
+
+```{r}
+#| label: h5-human-control-functional-trust-mdmt
+#| echo: false
+#| message: false
+#| warning: false
+
+ttest_H5_HC_trust_func_MDMT <- t.test(fonasa_conf_word_funcional_pos ~ control_humano_fonasa, data = data)
+plot(fonasa_conf_word_funcional_pos ~ control_humano_fonasa, data = data)
+legend(
+  "topright",
+  legend = c(
+    sprintf("t = %.3f", unname(ttest_H5_HC_trust_func_MDMT$statistic)),
+    sprintf("df = %.2f", unname(ttest_H5_HC_trust_func_MDMT$parameter)),
+    sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_func_MDMT$p.value, digits = 3, eps = 0.001))
+  ),
+  bty = "n"
+)
+```

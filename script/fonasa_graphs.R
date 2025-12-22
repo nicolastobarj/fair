@@ -9,17 +9,18 @@ proc_env <- new.env(parent = globalenv())
 source(here::here("script/proc_data.R"), local = proc_env)
 data <- proc_env$data
 stopifnot(exists("data", envir = proc_env), !is.null(data))
+# De la columna eliminado, los 1, quitarlos.
 
 # Variables de interes
 pre_obj_fonasa <- select(data, starts_with("fonasa_pre_comp_obj"))
 pos_obj_fonasa <- select(data, starts_with("fonasa_pos_comp_obj"))
 pre_subj_fonasa <- select(data, starts_with("fonasa_pre_comp_subj"))
 pos_subj_fonasa <- select(data, starts_with("fonasa_pos_comp_subj"))
-pre_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_reliab"))
-pos_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_reliab"))
-pre_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_func"))
-pos_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_func"))
-pre_trust_func_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_func_reliab"))
+pre_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_reliab")) # Moral Ethic - McKnight
+pos_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_reliab")) # Moral Ethic - McKnight
+pre_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_func")) # Moral Ethic - McKnight
+pos_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_func")) # Moral Ethic - McKnight
+pre_trust_func_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_func_reliab")) 
 pos_trust_func_reliab_fonasa <- select(data, starts_with("fonasa_pos_trust_func_reliab"))
 pre_trust_func_capab_fonasa <- select(data, starts_with("fonasa_pre_trust_func_capab"))
 pos_trust_func_capab_fonasa <- select(data, starts_with("fonasa_pos_trust_func_capab"))
@@ -27,7 +28,7 @@ pre_trust_moral_ethi_fonasa <- select(data, starts_with("fonasa_pre_trust_moral_
 pos_trust_moral_ethi_fonasa <- select(data, starts_with("fonasa_pos_trust_moral_ethi"))
 pre_trust_moral_sinc_fonasa <- select(data, starts_with("fonasa_pre_trust_moral_sinc"))
 pos_trust_moral_sinc_fonasa <- select(data, starts_with("fonasa_pos_trust_moral_sinc"))
-pos_trust_belief_help_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_help"))
+pos_trust_belief_help_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_help")) # Functional Ethic - McKnight
 
 # Function to calculate descriptive statistics - returns a tibble with the statistics
 describe_stats <- function(data) {
@@ -200,70 +201,233 @@ make_anova2_plot <- function(
   )
 }
 
+data$ai_disclosure_fonasa<-as.factor(data$ai_disclosure_fonasa)
+data$performance_fonasa<-as.factor(data$performance_fonasa)
+data$control_humano_fonasa<-as.factor(data$control_humano_fonasa)
 
 # Create plots for each Hypothesis
 # H1 - AI Disclosure
 # Subjective 
-pos_subj_fonasa_AID_0 <- data %>%
-  filter(ai_disclosure_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-pos_subj_fonasa_AID_1 <- data %>%
-  filter(ai_disclosure_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-
-anova2_plot <- make_anova2_plot(pos_subj_fonasa_AID_0, pos_subj_fonasa_AID_1)$plot
-
+ttest_H1_AID_subj <- t.test(fonasa_comp_subjetiva_pos ~ ai_disclosure_fonasa, data = data)
+anova2_H1_AID_plot_subj <- local({
+  plot(fonasa_comp_subjetiva_pos ~ ai_disclosure_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H1_AID_subj$statistic)),
+      sprintf("df = %.2f", unname(ttest_H1_AID_subj$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H1_AID_subj$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
 # Objective
-pos_obj_fonasa_AID_0 <- data %>%
-  filter(ai_disclosure_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
-pos_obj_fonasa_AID_1 <- data %>%
-  filter(ai_disclosure_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
+ttest_H1_AID_obj <- t.test(fonasa_comp_objetiva_pos ~ ai_disclosure_fonasa, data = data)
+anova2_H1_AID_plot_obj <- local({
+  plot(fonasa_comp_objetiva_pos ~ ai_disclosure_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H1_AID_obj$statistic)),
+      sprintf("df = %.2f", unname(ttest_H1_AID_obj$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H1_AID_obj$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
-# Moral Ethics
+# Moral Trust
+ttest_H1_ME_trust_McKnight <- t.test(fonasa_conf_belief_moral_pos ~ ai_disclosure_fonasa, data = data)
+anova2_H1_ME_plot_trust_McKnight <- local({
+  plot(fonasa_conf_belief_moral_pos ~ ai_disclosure_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H1_ME_trust_McKnight$statistic)),
+      sprintf("df = %.2f", unname(ttest_H1_ME_trust_McKnight$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H1_ME_trust_McKnight$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
+
+ttest_H1_ME_trust_MDMT <- t.test(fonasa_conf_word_moral_pos ~ ai_disclosure_fonasa, data = data)
+anova2_H1_ME_plot_trust_MDMT <- local({
+  plot(fonasa_conf_word_moral_pos ~ ai_disclosure_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H1_ME_trust_MDMT$statistic)),
+      sprintf("df = %.2f", unname(ttest_H1_ME_trust_MDMT$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H1_ME_trust_MDMT$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
 
 # H3 - Performance
 # Subjective 
-pos_subj_fonasa_P_0 <- data %>%
-  filter(performance_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-pos_subj_fonasa_P_1 <- data %>%
-  filter(performance_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-
-anova2_plot <- make_anova2_plot(pos_subj_fonasa_P_0, pos_subj_fonasa_P_1)$plot
-
+ttest_H3_P_subj <- t.test(fonasa_comp_subjetiva_pos ~ performance_fonasa, data = data)
+anova2_H3_P_plot_subj <- local({
+  plot(fonasa_comp_subjetiva_pos ~ performance_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H3_P_subj$statistic)),
+      sprintf("df = %.2f", unname(ttest_H3_P_subj$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H3_P_subj$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
 # Objective
-pos_obj_fonasa_P_0 <- data %>%
-  filter(performance_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
-pos_obj_fonasa_P_1 <- data %>%
-  filter(performance_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
+ttest_H3_P_obj <- t.test(fonasa_comp_objetiva_pos ~ performance_fonasa, data = data)
+anova2_H3_P_plot_obj <- local({
+  plot(fonasa_comp_objetiva_pos ~ performance_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H3_P_obj$statistic)),
+      sprintf("df = %.2f", unname(ttest_H3_P_obj$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H3_P_obj$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
+
+# Moral Trust
+ttest_H3_ME_trust_McKnight <- t.test(fonasa_conf_belief_moral_pos ~ performance_fonasa, data = data)
+anova2_H3_ME_plot_trust_McKnight <- local({
+  plot(fonasa_conf_belief_moral_pos ~ performance_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H3_ME_trust_McKnight$statistic)),
+      sprintf("df = %.2f", unname(ttest_H3_ME_trust_McKnight$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H3_ME_trust_McKnight$p.value, digits = 3, eps = 0.001))
+    ),  
+    bty = "n"
+  )
+  recordPlot()
+})
+
+ttest_H3_ME_trust_MDMT <- t.test(fonasa_conf_word_moral_pos ~ performance_fonasa, data = data)
+anova2_H3_ME_plot_trust_MDMT <- local({
+  plot(fonasa_conf_word_moral_pos ~ performance_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H3_ME_trust_MDMT$statistic)),
+      sprintf("df = %.2f", unname(ttest_H3_ME_trust_MDMT$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H3_ME_trust_MDMT$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
 # H5 - Human control
 # Subjective 
-pos_subj_fonasa_HC_0 <- data %>%
-  filter(control_humano_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-pos_subj_fonasa_HC_1 <- data %>%
-  filter(control_humano_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
+ttest_H5_HC_subj <- t.test(fonasa_comp_subjetiva_pos ~ control_humano_fonasa, data = data)
+anova2_H5_HC_plot_subj <- local({
+  plot(fonasa_comp_subjetiva_pos ~ control_humano_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H5_HC_subj$statistic)),
+      sprintf("df = %.2f", unname(ttest_H5_HC_subj$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H5_HC_subj$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
 # Objective
-pos_obj_fonasa_HC_0 <- data %>%
-  filter(control_humano_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
-pos_obj_fonasa_HC_1 <- data %>%
-  filter(control_humano_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
+ttest_H5_HC_obj <- t.test(fonasa_comp_objetiva_pos ~ control_humano_fonasa, data = data)
+anova2_H5_HC_plot_obj <- local({
+  plot(fonasa_comp_objetiva_pos ~ control_humano_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H5_HC_obj$statistic)),
+      sprintf("df = %.2f", unname(ttest_H5_HC_obj$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H5_HC_obj$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
-anova2_plot <- make_anova2_plot(pos_subj_fonasa_HC_0, pos_subj_fonasa_HC_1)$plot
+# Moral Trust
+ttest_H5_HC_trust_McKnight <- t.test(fonasa_conf_belief_moral_pos ~ control_humano_fonasa, data = data)
+anova2_H5_HC_plot_trust_McKnight <- local({
+  plot(fonasa_conf_belief_moral_pos ~ control_humano_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H5_HC_trust_McKnight$statistic)),
+      sprintf("df = %.2f", unname(ttest_H5_HC_trust_McKnight$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_McKnight$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
+ttest_H5_HC_trust_MDMT <- t.test(fonasa_conf_word_moral_pos ~ control_humano_fonasa, data = data)
+anova2_H5_HC_plot_trust_MDMT <- local({
+  plot(fonasa_conf_word_moral_pos ~ control_humano_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H5_HC_trust_MDMT$statistic)),
+      sprintf("df = %.2f", unname(ttest_H5_HC_trust_MDMT$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_MDMT$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
+# Functional Trust
+ttest_H5_HC_trust_func <- t.test(fonasa_conf_belief_funcional_pos ~ control_humano_fonasa, data = data)
+anova2_H5_HC_plot_trust_func <- local({
+  plot(fonasa_conf_belief_funcional_pos ~ control_humano_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H5_HC_trust_func$statistic)),
+      sprintf("df = %.2f", unname(ttest_H5_HC_trust_func$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_func$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
+
+ttest_H5_HC_trust_func_MDMT <- t.test(fonasa_conf_word_funcional_pos ~ control_humano_fonasa, data = data)
+anova2_H5_HC_plot_trust_func_McKnight <- local({
+  plot(fonasa_conf_word_funcional_pos ~ control_humano_fonasa, data = data)
+  legend(
+    "topright",
+    legend = c(
+      sprintf("t = %.3f", unname(ttest_H5_HC_trust_func_MDMT$statistic)),
+      sprintf("df = %.2f", unname(ttest_H5_HC_trust_func_MDMT$parameter)),
+      sprintf("p-value = %s", format.pval(ttest_H5_HC_trust_func_MDMT$p.value, digits = 3, eps = 0.001))
+    ),
+    bty = "n"
+  )
+  recordPlot()
+})
 
