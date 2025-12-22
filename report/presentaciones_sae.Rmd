@@ -6,21 +6,44 @@ output: html_document
 
 ---
 
-```{r setup, include=FALSE}
+```{r filtrado, echo=FALSE}
 library(psych)
 library(dplyr)
 library(purrr)
 library(ggplot2)
 library(knitr)
 library(kableExtra)
+library(stats)
 
-## Load the processed dataset created in `script/proc_data.R`
-## This runs the preprocessing script and then extracts the `data` object it creates.
 proc_env <- new.env(parent = globalenv())
 source(here::here("script/proc_data.R"), local = proc_env)
-data <- proc_env$data
-stopifnot(exists("data", envir = proc_env), !is.null(data))
 
+if (exists("data", envir = proc_env)) {
+  
+  # Guardamos el total antes de filtrar
+  total_inicial <- nrow(proc_env$data)
+  
+  # Filtramos: Nos quedamos con los que NO están marcados para eliminar (eliminado != 1)
+  data <- proc_env$data %>% 
+    dplyr::filter(eliminado != 1 | is.na(eliminado))
+  
+  # Calculamos finales
+  final_analizar <- nrow(data)
+  total_eliminados <- total_inicial - final_analizar
+  
+  # 4. Imprimir reporte de limpieza
+  cat("\n--- REPORTE DE LIMPIEZA DE MUESTRA ---\n")
+  cat("Total inicial de casos:       ", total_inicial, "\n")
+  cat("Casos eliminados:             ", total_eliminados, "\n")
+  cat("Total final para analizar:    ", final_analizar, "\n")
+  cat("--------------------------------------\n")
+  
+} else {
+  stop("Error: No se encontró el objeto 'data' dentro de proc_env. Revisa el script proc_data.R")
+}
+```
+
+```{r setup, include=FALSE}
 # Variables de interes
 sae_pre_comp_obj <- select(data, starts_with("sae_pre_comp_obj"))
 sae_pos_comp_obj <- select(data, starts_with("sae_pos_comp_obj"))
@@ -285,10 +308,74 @@ make_anova2_plot <- function(
 }
 ```
 
+```{r prueba t-test disclosure_subjective, echo=FALSE}
+pos_subj_sae_AlgD_0 <- data %>%
+  filter(disclosure == 0) %>%
+  select(starts_with("sae_pos_comp_subj"))
+
+pos_subj_sae_AlgD_1 <- data %>%
+  filter(disclosure == 1) %>%
+  select(starts_with("sae_pos_comp_subj"))
+
+anova2_plot <- make_anova2_plot(pos_subj_sae_AlgD_0, pos_subj_sae_AlgD_1)$plot
+
+# 3. Cálculos estadísticos para el recuadro (N, t, p y d de Cohen)
+val_0 <- rowMeans(pos_subj_sae_AlgD_0, na.rm = TRUE)
+val_1 <- rowMeans(pos_subj_sae_AlgD_1, na.rm = TRUE)
+
+test <- t.test(val_0, val_1, var.equal = TRUE)
+n0 <- length(val_0)
+n1 <- length(val_1)
+sd_pooled <- sqrt(((n0 - 1) * sd(val_0)^2 + (n1 - 1) * sd(val_1)^2) / (n0 + n1 - 2))
+cohen_d <- abs(mean(val_0) - mean(val_1)) / sd_pooled
+
+# Crear el texto informativo
+stats_text <- paste0(
+  "Estadísticas del test:\n",
+  "n = ", n0 + n1, "\n",
+  "t(", round(test$parameter, 1), ") = ", round(test$statistic, 2), "\n",
+  "p ", ifelse(test$p.value < 0.001, "< .001", paste0("= ", round(test$p.value, 3))), "\n",
+  "d de Cohen = ", round(cohen_d, 2)
+)
+
+# 4. Personalización final del gráfico (Mezcla de ambos códigos)
+anova2_plot <- anova2_plot +
+  # Cambiar nombres de las categorías en el eje X
+  scale_x_discrete(labels = c("pos_subj_sae_AlgD_0" = "Sin revelación", 
+                              "pos_subj_sae_AlgD_1" = "Con revelación")) +
+  # Anotación estadística en la esquina superior derecha
+  annotate(
+    "label", 
+    x = Inf, y = Inf, 
+    label = stats_text, 
+    hjust = 1.05, vjust = 1.05, 
+    size = 3.2, 
+    fontface = "italic",
+    fill = "white", 
+    label.size = 0.5
+  ) +
+  # Etiquetas académicas
+  labs(
+    title = "Comprensión subjetiva según condición de revelación algorítmica",
+    subtitle = "Análisis por condición de revelación",
+    x = "Condición de revelación",
+    y = "Promedio"
+  ) +
+  # Estilo visual
+  theme(
+    plot.title = element_text(hjust = 0, size = 12, face = "bold"),
+    plot.subtitle = element_text(hjust = 0, size = 10)
+  )
+
+# Traducir "Mean" por "Promedio" dentro del gráfico si es necesario
+anova2_plot$data$label <- gsub("Mean", "Promedio", anova2_plot$data$label)
+
+# Mostrar resultado
+anova2_plot
+```
+
 ANOVA H2: Explanations that include algorithm disclosure generate greater a) subjective and objective understanding, as well as b) functional and moral trust, than explanations that do not include it.
 ```{r disclosure_subjective, echo=FALSE}
-#names_to_plot <- c("Sin revelación", "Con revelación")
-
 pos_subj_sae_AlgD_0 <- data %>%
   filter(disclosure == 0) %>%
   select(starts_with("sae_pos_comp_subj"))
@@ -305,12 +392,12 @@ anova2_plot <- anova2_plot +
                               "pos_subj_sae_AlgD_1" = "Con revelación")) +
   # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de comprensión subjetiva con manipulación disclosure de algoritmo",
+    title = "Análisis de comprensión subjetiva bajo manipulación de disclosure del algoritmo",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -332,12 +419,12 @@ anova2_plot <- anova2_plot +
                               "pos_obj_sae_AlgD_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de comprensión objetiva con manipulación disclosure de algoritmo",
+    title = "Análisis de comprensión objetiva bajo manipulación de disclosure del algoritmo",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -358,12 +445,12 @@ anova2_plot <- anova2_plot +
                               "pos_trustFunc_sae_AlgD_1" = "Con revelación")) +
   # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de confianza funcional con manipulación disclosure de algoritmo",
+    title = "Análisis de confianza funcional bajo manipulación de disclosure del algoritmo",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -384,12 +471,12 @@ anova2_plot <- anova2_plot +
                               "pos_trustMoral_sae_AlgD_1" = "Con revelación")) +
   # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de confianza moral con manipulación disclosure de algoritmo",
+    title = "Análisis de confianza moral bajo manipulación de disclosure del algoritmo",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -412,12 +499,12 @@ anova2_plot <- anova2_plot +
                               "pos_subj_sae_SI_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de comprensión subjetiva con manipulación info situacional",
+    title = "Análisis de comprensión subjetiva bajo manipulación de info situacional",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -438,12 +525,12 @@ anova2_plot <- anova2_plot +
                               "pos_obj_sae_SI_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de comprensión objetiva con manipulación info situacional",
+    title = "Análisis de comprensión objetiva bajo manipulación de info situacional",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -464,12 +551,12 @@ anova2_plot <- anova2_plot +
                               "pos_trustFunc_sae_SI_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de confianza funcional con manipulación info situacional",
+    title = "Análisis de confianza funcional bajo manipulación de info situacional",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -491,12 +578,12 @@ anova2_plot <- anova2_plot +
                               "pos_trustMoral_sae_SI_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de confianza moral con manipulación info situacional",
+    title = "Análisis de confianza moral bajo manipulación de info situacional",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -519,12 +606,12 @@ anova2_plot <- anova2_plot +
                               "pos_subj_sae_CH_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de comprensión subjetiva con manipulación control humano",
+    title = "Análisis de comprensión subjetiva bajo manipulación de control humano",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -546,12 +633,12 @@ anova2_plot <- anova2_plot +
                               "pos_obj_sae_CH_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de comprensión objetiva con manipulación control humano",
+    title = "Análisis de comprensión objetiva bajo manipulación de control humano",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -573,12 +660,12 @@ anova2_plot <- anova2_plot +
                               "pos_trustFunc_sae_CH_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de confianza funcional con manipulación control humano",
+    title = "Análisis de confianza funcional bajo manipulación de control humano",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
   )+
-  theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+  theme(plot.title = element_text(hjust = 0.1, size=12, face = "bold"))
 
 anova2_plot
 ```
@@ -600,7 +687,7 @@ anova2_plot <- anova2_plot +
                               "pos_trustMoral_sae_CH_1" = "Con revelación")) +
    # Cambiar el título de la leyenda y los nombres de los grupos
   labs(
-    title = "Comparación de confianza moral con manipulación control humano",
+    title = "Análisis de confianza moral bajo manipulación de control humano",
     subtitle = "Análisis por condición de revelación",
     #x = "Condición de revelación",
     y = "Promedio"
@@ -608,6 +695,263 @@ anova2_plot <- anova2_plot +
   theme(plot.title = element_text(hjust = 0.1, face = "bold"))
 
 anova2_plot
+```
+
+preguntas de manipulaciones al final del experimento
+
+algoritmo
+```{r manipulaciones algoritmo, echo=FALSE}
+# --- 1. DEFINICIONES Y PALETA ---
+man_check_cols_alg <- c("sae_man_check_alg1", "sae_man_check_alg2", "sae_man_check_alg3")
+
+facet_labels_alg <- c(
+    "sae_man_check_alg1" = "Entiende las decisiones",
+    "sae_man_check_alg2" = "Conoce reglas menos cupos",
+    "sae_man_check_alg3" = "Sabe qué hace si hay menos cupos"
+)
+
+niveles_likert <- 1:5
+etiquetas_likert <- c("M. desacuerdo", "Desacuerdo", "Neutral", "Acuerdo", "M. acuerdo")
+color_palette <- c("#D73027", "#FC8D59", "#D0D0D0", "#A6D96A", "#1A9850") 
+
+# --- 2. PROCESAMIENTO DE DATOS ---
+datos_proporciones_alg <- data %>%
+    # Transformamos la variable 'disclosure' de 0/1 a etiquetas claras
+    mutate(disclosure = factor(disclosure, 
+                               levels = c(0, 1), 
+                               labels = c("No vio", "Vio"))) %>%
+    
+    # Selección de columnas y paso a formato largo
+    select(disclosure, all_of(man_check_cols_alg)) %>%
+    pivot_longer(
+        cols = all_of(man_check_cols_alg), 
+        names_to = "pregunta_likert",  
+        values_to = "puntaje"         
+    ) %>%
+    filter(!is.na(puntaje)) %>%
+    
+    # Convertir puntaje numérico a factor con etiquetas
+    mutate(puntaje_factor = factor(puntaje, levels = niveles_likert, labels = etiquetas_likert)) %>%
+    
+    # Cálculo de frecuencias y porcentajes por grupo
+    group_by(pregunta_likert, disclosure, puntaje_factor) %>%
+    summarise(Count = n(), .groups = 'drop_last') %>%
+    mutate(Percentage = Count / sum(Count) * 100) %>%
+    ungroup()
+
+# --- 3. CREACIÓN DEL GRÁFICO (100% Stacked Bar Chart) ---
+ggplot(datos_proporciones_alg, 
+       aes(x = disclosure, y = Percentage, fill = puntaje_factor)) +
+    
+    # Capa de barras apiladas
+    geom_bar(stat = "identity", 
+             position = "stack", 
+             width = 0.65,
+             color = "black", 
+             linewidth = 0.2) +
+    
+    # Texto de porcentaje (solo se muestra si es mayor al 3% para limpieza visual)
+    geom_text(
+        aes(label = ifelse(Percentage > 3, paste0(round(Percentage, 0), "%"), "")),
+        position = position_stack(vjust = 0.5),
+        color = "black", 
+        size = 3.2
+    ) +
+    
+    scale_fill_manual(values = color_palette) +
+    facet_wrap(~ pregunta_likert, labeller = as_labeller(facet_labels_alg), nrow = 1) +
+    
+    scale_y_continuous(name = "Porcentaje de participantes", 
+                       limits = c(0, 100.1), 
+                       breaks = seq(0, 100, 25)) +
+    
+    labs(
+        title = "Distribución de respuestas (condición algoritmo)",
+        subtitle = "Verificación de manipulación para el conocimiento del proceso algorítmico",
+        x = "Condición de visualización",
+        fill = "Nivel de Acuerdo"
+    ) +
+    
+    theme_minimal(base_size = 13) +
+    theme(
+        legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.subtitle = element_text(hjust = 0.5, size = 11, color = "gray30"),
+        strip.text = element_text(size = 9, face = "bold"),
+        axis.text.x = element_text(size = 10, color = "black"),
+        panel.grid.major.x = element_blank()
+    )
+```
+
+info situacional
+```{r manipulaciones info situacional, echo=FALSE}
+# --- 1. DEFINICIONES Y PALETA ---
+# Definimos las columnas y sus etiquetas académicas
+man_check_cols <- c("sae_man_check_is1", "sae_man_check_is2", "sae_man_check_is3")
+
+facet_labels <- c(
+    "sae_man_check_is1" = "No se pierde en las etapas", 
+    "sae_man_check_is2" = "Conoce proceso muy bien",
+    "sae_man_check_is3" = "Sabe qué viene después de post"
+)
+
+# Configuración de la escala Likert
+niveles_likert <- 1:5
+etiquetas_likert <- c("M. desacuerdo", "Desacuerdo", "Neutral", "Acuerdo", "M. acuerdo")
+
+# Paleta divergente (Rojo a Verde con gris central)
+color_palette <- c("#D73027", "#FC8D59", "#D0D0D0", "#A6D96A", "#1A9850") 
+
+# --- 2. PROCESAMIENTO DE DATOS ---
+datos_proporciones <- data %>%
+    # 1. Transformamos la variable de condición de 0/1 a texto claro
+    mutate(inf_situacional = factor(inf_situacional, 
+                                    levels = c(0, 1), 
+                                    labels = c("No vio", "Vio"))) %>%
+    
+    # 2. Seleccionamos y pivotamos a formato largo para el gráfico
+    select(inf_situacional, all_of(man_check_cols)) %>%
+    pivot_longer(
+        cols = all_of(man_check_cols), 
+        names_to = "pregunta_likert",  
+        values_to = "puntaje"         
+    ) %>%
+    filter(!is.na(puntaje)) %>%
+    
+    # 3. Convertimos el puntaje numérico a factor con etiquetas de texto
+    mutate(puntaje_factor = factor(puntaje, levels = niveles_likert, labels = etiquetas_likert)) %>%
+    
+    # 4. Calculamos porcentajes por grupo y pregunta
+    group_by(pregunta_likert, inf_situacional, puntaje_factor) %>%
+    summarise(Count = n(), .groups = 'drop_last') %>%
+    mutate(Percentage = Count / sum(Count) * 100) %>%
+    ungroup()
+
+# --- 3. CREACIÓN DEL GRÁFICO (100% Stacked Bar Chart) ---
+ggplot(datos_proporciones, 
+       aes(x = inf_situacional, y = Percentage, fill = puntaje_factor)) +
+    
+    # Barras apiladas
+    geom_bar(stat = "identity", 
+             position = "stack", 
+             width = 0.65,
+             color = "black", 
+             linewidth = 0.2) +
+    
+    # Texto de porcentaje dentro de las barras (solo si es > 3% para legibilidad)
+    geom_text(
+        aes(label = ifelse(Percentage > 3, paste0(round(Percentage, 0), "%"), "")),
+        position = position_stack(vjust = 0.5),
+        color = "black", 
+        size = 3.2
+    ) +
+    
+    # Personalización estética
+    scale_fill_manual(values = color_palette) +
+    facet_wrap(~ pregunta_likert, labeller = as_labeller(facet_labels), nrow = 1) +
+    
+    scale_y_continuous(name = "Porcentaje de participantes", 
+                       limits = c(0, 100.1), 
+                       breaks = seq(0, 100, 25)) +
+    
+    labs(
+        title = "Distribución de respuestas (condición info situacional)",
+        subtitle = "Análisis de manipulación basado en escala Likert",
+        x = "Condición de visualización",
+        fill = "Nivel de Acuerdo"
+    ) +
+    
+    theme_minimal(base_size = 13) +
+    theme(
+        legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.subtitle = element_text(hjust = 0.5, size = 11, color = "gray30"),
+        strip.text = element_text(size = 9, face = "bold"),
+        axis.text.x = element_text(size = 10, color = "black"),
+        panel.grid.major.x = element_blank()
+    )
+```
+manipulación control humano
+```{r manipulaciones control humano, echo=FALSE}
+# --- 1. DEFINICIONES Y PALETA ---
+man_check_cols_ch <- c("sae_man_check_ch1", "sae_man_check_ch2", "sae_man_check_ch3")
+
+facet_labels_ch <- c(
+    "sae_man_check_ch1" = "La decisión se basa en mi lista", 
+    "sae_man_check_ch2" = "Más escuelas, más posibilidades",
+    "sae_man_check_ch3" = "Sé cómo tener más control"
+)
+
+niveles_likert <- 1:5
+etiquetas_likert <- c("M. desacuerdo", "Desacuerdo", "Neutral", "Acuerdo", "M. acuerdo")
+color_palette <- c("#D73027", "#FC8D59", "#D0D0D0", "#A6D96A", "#1A9850") 
+
+# --- 2. PROCESAMIENTO DE DATOS ---
+datos_proporciones_ch <- data %>%
+    # Transformamos la variable de condición de 0/1 a texto claro
+    mutate(control_humano = factor(control_humano, 
+                                   levels = c(0, 1), 
+                                   labels = c("No vio", "Vio"))) %>%
+    
+    # Selección y cambio a formato largo
+    select(control_humano, all_of(man_check_cols_ch)) %>%
+    pivot_longer(
+        cols = all_of(man_check_cols_ch), 
+        names_to = "pregunta_likert",  
+        values_to = "puntaje"         
+    ) %>%
+    filter(!is.na(puntaje)) %>%
+    
+    # Convertir puntaje a factor etiquetado
+    mutate(puntaje_factor = factor(puntaje, levels = niveles_likert, labels = etiquetas_likert)) %>%
+    
+    # Cálculo de porcentajes
+    group_by(pregunta_likert, control_humano, puntaje_factor) %>%
+    summarise(Count = n(), .groups = 'drop_last') %>%
+    mutate(Percentage = Count / sum(Count) * 100) %>%
+    ungroup()
+
+# --- 3. CREACIÓN DEL GRÁFICO ---
+ggplot(datos_proporciones_ch, 
+       aes(x = control_humano, y = Percentage, fill = puntaje_factor)) +
+    
+    geom_bar(stat = "identity", 
+             position = "stack", 
+             width = 0.65,
+             color = "black", 
+             linewidth = 0.2) +
+    
+    # Texto de porcentaje (solo si > 3% para evitar amontonamiento)
+    geom_text(
+        aes(label = ifelse(Percentage > 3, paste0(round(Percentage, 0), "%"), "")),
+        position = position_stack(vjust = 0.5),
+        color = "black", 
+        size = 3.2
+    ) +
+    
+    scale_fill_manual(values = color_palette) +
+    facet_wrap(~ pregunta_likert, labeller = as_labeller(facet_labels_ch), nrow = 1) +
+    
+    scale_y_continuous(name = "Porcentaje de participantes", 
+                       limits = c(0, 100.1), 
+                       breaks = seq(0, 100, 25)) +
+    
+    labs(
+        title = "Distribución de respuestas (condición control humano)",
+        subtitle = "Verificación de manipulación para la percepción de control",
+        x = "Condición de visualización",
+        fill = "Nivel de Acuerdo"
+    ) +
+    
+    theme_minimal(base_size = 13) +
+    theme(
+        legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.subtitle = element_text(hjust = 0.5, size = 11, color = "gray30"),
+        strip.text = element_text(size = 9, face = "bold"),
+        axis.text.x = element_text(size = 10, color = "black"),
+        panel.grid.major.x = element_blank()
+    )
 ```
 
 
