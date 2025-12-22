@@ -1,0 +1,187 @@
+---
+title: "descriptive_analysis"
+format: html
+---
+
+```{r}
+source(here::here("script/proc_data.R"))
+```
+
+
+# Pruebas de ANOVA
+
+
+
+# Correlaciones
+
+SAE muestra correlaciones fuertes y positivas entre sus medidas principales. Algunas superan el >.85 que da cuenta de un riesgo de colinealidad al que tener ojo. En FONASA no todas las correlaciones son significativas, llamando la atención las débiles relaciones de comprensión objetiva.
+
+### SAE
+
+```{r}
+library(ggcorrplot)
+# 1. Preparación de datos y limpieza de nombres
+sae_data <- data %>%
+  select(
+    sae_conf_belief_funcional_pre, sae_conf_belief_funcional_pos,
+    sae_conf_belief_moral_pre, sae_conf_belief_moral_pos,
+    sae_conf_word_funcional_pre, sae_conf_word_funcional_pos,
+    sae_conf_word_moral_pre, sae_conf_word_moral_pos,
+    sae_comp_subjetiva_pre, sae_comp_subjetiva_pos,
+    sae_comp_subjetiva_otros_pos,
+    sae_comp_objetiva_pre, sae_comp_objetiva_pos
+  ) %>%
+  rename_with(~ gsub("sae_", "", .x))
+
+# 2. Calcular matriz de correlación Y matriz de valores p
+# La función cor_pmat calcula automáticamente los valores p
+p_mat_sae <- cor_pmat(sae_data)
+corr_sae <- cor(sae_data, use = "complete.obs")
+
+# 3. Graficar filtrando por significancia (p < 0.05)
+ggcorrplot(corr_sae, 
+           hc.order = FALSE,
+           type = "upper",
+           lab = TRUE,
+           lab_size = 2.5,
+           p.mat = p_mat_sae,      # Matriz de valores p
+           sig.level = 0.05,       # Nivel de significancia (0.05 para 95% confianza)
+           insig = "blank",        # "blank" deja vacío lo que NO es significativo
+           colors = c("#E46726", "white", "#6D9EC1"),
+           title = "Correlaciones Significativas SAE")
+```
+
+```{r}
+library(ggcorrplot)
+
+# Seleccionamos las columnas en el orden exacto deseado
+fonasa_data <- data %>%
+  select(
+    fonasa_conf_belief_funcional_pre, fonasa_conf_belief_funcional_pos,
+    fonasa_conf_word_funcional_pre, fonasa_conf_word_funcional_pos,
+    fonasa_conf_word_moral_pre, fonasa_conf_word_moral_pos,
+    fonasa_comp_subjetiva_pre, fonasa_comp_subjetiva_pos,
+    fonasa_comp_subjetiva_otros_pos,
+    fonasa_comp_objetiva_pre, fonasa_comp_objetiva_pos
+  ) %>%
+  rename_with(~ gsub("fonasa_", "", .x)) # Esto quita "sae_" de todos los nombres
+
+# Calculamos correlación
+p_mat_fonasa <- cor_pmat(fonasa_data)
+corr_fonasa <- cor(fonasa_data, use = "complete.obs")
+
+# 3. Graficar filtrando por significancia (p < 0.05)
+ggcorrplot(corr_fonasa, 
+           hc.order = FALSE,
+           type = "upper",
+           lab = TRUE,
+           lab_size = 2.5,
+           p.mat = p_mat_fonasa,      # Matriz de valores p
+           sig.level = 0.05,       # Nivel de significancia (0.05 para 95% confianza)
+           insig = "blank",        # "blank" deja vacío lo que NO es significativo
+           colors = c("#E46726", "white", "#6D9EC1"),
+           title = "Correlaciones Significativas FONASA")
+```
+
+# Revisión de colinealidad
+
+Los valores VIF son muy bajos (>2.0), por lo que no existe una colinealidad problemática entre las variables.
+
+```{r}
+library(car)
+library(knitr)
+library(kableExtra) # Necesaria para agrupar filas
+library(dplyr)
+library(tidyr)
+
+modelos_sae <- list(
+  "Belief Funcional Pre" = lm(sae_conf_belief_funcional_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Belief Funcional Pos" = lm(sae_conf_belief_funcional_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Belief Moral Pre"     = lm(sae_conf_belief_moral_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Belief Moral Pos"     = lm(sae_conf_belief_moral_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Word Funcional Pre"   = lm(sae_conf_word_funcional_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Word Funcional Pos"   = lm(sae_conf_word_funcional_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Word Moral Pre"       = lm(sae_conf_word_moral_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Word Moral Pos"       = lm(sae_conf_word_moral_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Comp Subjetiva Pre"   = lm(sae_comp_subjetiva_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Comp Subjetiva Pos"   = lm(sae_comp_subjetiva_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Comp Subjetiva Otros" = lm(sae_comp_subjetiva_otros_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Comp Objetiva Pre"    = lm(sae_comp_objetiva_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
+  "Comp Objetiva Pos"    = lm(sae_comp_objetiva_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data)
+)
+
+# 1. EJECUCIÓN DE MODELOS FONASA (Agregándolos a los de SAE)
+modelos_fonasa <- list(
+  "Belief Funcional Pre" = lm(fonasa_conf_belief_funcional_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Belief Funcional Pos" = lm(fonasa_conf_belief_funcional_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Belief Moral Pos"     = lm(fonasa_conf_belief_moral_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Word Funcional Pre"   = lm(fonasa_conf_word_funcional_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Word Funcional Pos"   = lm(fonasa_conf_word_funcional_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Word Moral Pre"       = lm(fonasa_conf_word_moral_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Word Moral Pos"       = lm(fonasa_conf_word_moral_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Comp Subjetiva Pre"   = lm(fonasa_comp_subjetiva_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Comp Subjetiva Pos"   = lm(fonasa_comp_subjetiva_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Comp Subjetiva Otros" = lm(fonasa_comp_subjetiva_otros_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Comp Objetiva Pre"    = lm(fonasa_comp_objetiva_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
+  "Comp Objetiva Pos"    = lm(fonasa_comp_objetiva_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data)
+)
+
+# 2. EXTRACCIÓN Y CONSOLIDACIÓN
+# Función adaptada para limpiar prefijos dinámicamente
+extraer_vif_general <- function(nombre, modelo) {
+  v <- vif(modelo)
+  data.frame(Modelo = nombre, Variable = names(v), VIF = as.numeric(v))
+}
+
+# Procesar SAE
+tabla_sae <- lapply(names(modelos_sae), function(n) extraer_vif_general(n, modelos_sae[[n]])) %>%
+  bind_rows() %>%
+  mutate(Variable = gsub("sae_man_check_", "Control: ", Variable)) %>%
+  pivot_wider(names_from = Variable, values_from = VIF)
+
+# Procesar FONASA
+tabla_fonasa <- lapply(names(modelos_fonasa), function(n) extraer_vif_general(n, modelos_fonasa[[n]])) %>%
+  bind_rows() %>%
+  mutate(Variable = gsub("fonasa_man_check_", "Control: ", Variable)) %>%
+  pivot_wider(names_from = Variable, values_from = VIF)
+
+# Unir ambas tablas
+# Nota: Las columnas de control variarán sus nombres, por lo que quedarán NAs donde no apliquen
+tabla_final <- bind_rows(tabla_sae, tabla_fonasa)
+
+# 3. PRESENTACIÓN AGRUPADA
+kable(tabla_final, 
+      digits = 3, 
+      caption = "Inspección de Multicolinealidad (VIF) Comparada: SAE vs FONASA",
+      booktabs = TRUE,
+      align = "l") %>%
+  kable_styling(latex_options = c("striped", "hold_position")) %>%
+  pack_rows("Sistema de Admisión Escolar (SAE)", 1, length(modelos_sae)) %>%
+  pack_rows("FONASA", (length(modelos_sae) + 1), (length(modelos_sae) + length(modelos_fonasa)))
+```
+
+
+# Modelos multivariados
+
+```{r}
+library(sjPlot)
+
+tab_model(
+modelos_sae,
+         collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars")
+
+tab_model(
+modelos_fonasa,
+         collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars")
+```
+
