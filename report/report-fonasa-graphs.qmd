@@ -118,12 +118,12 @@ stats_table <- list(
   dplyr::select(Variable, dplyr::everything()) |>
   dplyr::arrange(Variable) |>
   dplyr::rename(
-    "Cronbach alpha" = cronbach_alpha,
     "Mean" = mean,
     "Median" = median,
     "Std" = std,
     "Min" = min,
-    "Max" = max
+    "Max" = max,
+    "Cronbach alpha" = cronbach_alpha,
   )
 
 knitr::kable(stats_table, digits = 3)

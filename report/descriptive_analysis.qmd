@@ -1,14 +1,119 @@
 ---
-title: "descriptive_analysis"
+title: "Reporte descriptivo inicial SAE FONASA"
 format: html
+execute: 
+  echo: false
+  warning: false
 ---
 
 ```{r}
 source(here::here("script/proc_data.R"))
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    disclosure, inf_situacional, control_humano,
+    # Variables FONASA
+    ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
+  ), as.factor))
+```
+
+# Descripción de los datos
+
+```{r}
+
 ```
 
 
-# Pruebas de ANOVA
+
+# Pruebas de t-test
+
+```{r}
+library(ggplot2)
+library(patchwork) # Para unir los gráficos
+library(dplyr)
+
+plot_clean_hypothesis <- function(df, x_var, y_var, title_text) {
+  # Ejecutar t-test para obtener el p-valor
+  formula_obj <- as.formula(paste(y_var, "~", x_var))
+  t_test <- t.test(formula_obj, data = df)
+  p_val <- format.pval(t_test$p.value, digits = 3, eps = 0.01)
+  
+  ggplot(df, aes_string(x = x_var, y = y_var)) +
+    # Media e Intervalo de Confianza
+    stat_summary(fun.data = function(x) mean_cl_normal(x, conf.int = 0.90), 
+             geom = "errorbar", width = 0.1, size = 0.8) +
+    stat_summary(fun = "mean", geom = "point", size = 3) +
+    # Línea horizontal que conecta las medias (opcional, como en tu ejemplo)
+    stat_summary(fun = "mean", geom = "line", aes(group = 1), linetype = "solid", alpha = 0.5) +
+    labs(subtitle = paste(title_text, "\n(p =", p_val, ")"),
+         x = NULL, y = NULL) +
+    theme_minimal() +
+    theme(plot.subtitle = element_text(size = 9, face = "italic"),
+          panel.grid.minor = element_blank())
+}
+```
+
+```{r}
+f1 <- plot_clean_hypothesis(data, "disclosure", "sae_comp_subjetiva_pos", "Disclosure: Subjetiva")
+f2 <- plot_clean_hypothesis(data, "disclosure", "sae_comp_objetiva_pos", "Disclosure: Objetiva")
+f3 <- plot_clean_hypothesis(data, "inf_situacional", "sae_comp_subjetiva_pos", "Situational info: Subjetiva")
+f4 <- plot_clean_hypothesis(data, "inf_situacional", "sae_comp_objetiva_pos", "Situational info: Objetiva")
+f5 <- plot_clean_hypothesis(data, "control_humano", "sae_comp_subjetiva_pos", "Control humano: Subjetiva")
+f6 <- plot_clean_hypothesis(data, "control_humano", "sae_comp_objetiva_pos", "Control humano: Objetiva")
+
+panel_sae_comp <- (f1 | f2) / (f3 | f4) / (f5 | f6) + 
+  plot_annotation(title = "SAE: Análisis de Comprensión (Medias e IC 95%)")
+
+panel_sae_comp
+```
+
+```{r}
+# --- SAE CONFIANZA ---
+sc1 <- plot_clean_hypothesis(data, "disclosure", "sae_conf_belief_moral_pos", "Disclosure: Moral (McK)")
+sc2 <- plot_clean_hypothesis(data, "disclosure", "sae_conf_word_moral_pos", "Disclosure: Moral (MDMT)")
+sc3 <- plot_clean_hypothesis(data, "inf_situacional", "sae_conf_belief_moral_pos", "Situational Info: Moral (McK)")
+sc4 <- plot_clean_hypothesis(data, "inf_situacional", "sae_conf_word_moral_pos", "Situational Info: Moral (MDMT)")
+sc5 <- plot_clean_hypothesis(data, "control_humano", "sae_conf_belief_funcional_pos", "Human Control: Funcional (Belief)")
+sc6 <- plot_clean_hypothesis(data, "control_humano", "sae_conf_word_funcional_pos", "Human Control: Funcional (MDMT)")
+
+panel_sae_conf <- (sc1 | sc2) / (sc3 | sc4) / (sc5 | sc6) + 
+  plot_annotation(title = "SAE: Análisis de Confianza (Medias e IC 95%)")
+
+panel_sae_conf
+```
+
+```{r}
+# --- FONASA COMPRENSIÓN ---
+fc1 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_comp_subjetiva_pos", "Disclosure: Subjetiva")
+fc2 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_comp_objetiva_pos", "Disclosure: Objetiva")
+fc3 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_comp_subjetiva_pos", "Performance: Subjetiva")
+fc4 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_comp_objetiva_pos", "Performance: Objetiva")
+fc5 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_comp_subjetiva_pos", "Human Control: Subjetiva")
+fc6 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_comp_objetiva_pos", "Human Control: Objetiva")
+
+panel_fonasa_comp <- (fc1 | fc2) / (fc3 | fc4) / (fc5 | fc6) + 
+  plot_annotation(title = "FONASA: Análisis de Comprensión (Medias e IC 95%)")
+
+panel_fonasa_comp
+```
+
+
+```{r}
+# --- FONASA CONFIANZA ---
+fcf1 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_conf_belief_moral_pos", "Disclosure: Moral (McK)")
+fcf2 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_conf_word_moral_pos", "Disclosure: Moral (MDMT)")
+fcf3 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_conf_belief_moral_pos", "Performance: Moral (McK)")
+fcf4 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_conf_word_moral_pos", "Performance: Moral (MDMT)")
+fcf5 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_conf_belief_funcional_pos", "Human Control: Funcional (Belief)")
+fcf6 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_conf_word_funcional_pos", "Human Control: Funcional (MDMT)")
+
+panel_fonasa_conf <- (fcf1 | fcf2) / (fcf3 | fcf4) / (fcf5 | fcf6) + 
+  plot_annotation(title = "FONASA: Análisis de Confianza (Medias e IC 95%)")
+
+panel_fonasa_conf
+```
 
 
 
@@ -94,36 +199,46 @@ library(kableExtra) # Necesaria para agrupar filas
 library(dplyr)
 library(tidyr)
 
+library(dplyr)
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    sae_man_check_algoritmo, sae_man_check_infosit, sae_man_check_controlh,
+    # Variables FONASA
+    fonasa_man_check_aidisclosure, fonasa_man_check_ch, fonasa_man_check_perf
+  ), as.factor))
+
 modelos_sae <- list(
-  "Belief Funcional Pre" = lm(sae_conf_belief_funcional_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Belief Funcional Pos" = lm(sae_conf_belief_funcional_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Belief Moral Pre"     = lm(sae_conf_belief_moral_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Belief Moral Pos"     = lm(sae_conf_belief_moral_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Word Funcional Pre"   = lm(sae_conf_word_funcional_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Word Funcional Pos"   = lm(sae_conf_word_funcional_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Word Moral Pre"       = lm(sae_conf_word_moral_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Word Moral Pos"       = lm(sae_conf_word_moral_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Comp Subjetiva Pre"   = lm(sae_comp_subjetiva_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Comp Subjetiva Pos"   = lm(sae_comp_subjetiva_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Comp Subjetiva Otros" = lm(sae_comp_subjetiva_otros_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Comp Objetiva Pre"    = lm(sae_comp_objetiva_pre ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data),
-  "Comp Objetiva Pos"    = lm(sae_comp_objetiva_pos ~ sae_man_check_algoritmo + sae_man_check_infosit + sae_man_check_controlh, data = data)
+  "Belief Funcional Pre" = lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Belief Funcional Pos" = lm(sae_conf_belief_funcional_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Belief Moral Pre"     = lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Belief Moral Pos"     = lm(sae_conf_belief_moral_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Funcional Pre"   = lm(sae_conf_word_funcional_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Funcional Pos"   = lm(sae_conf_word_funcional_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Moral Pre"       = lm(sae_conf_word_moral_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Moral Pos"       = lm(sae_conf_word_moral_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Subjetiva Pre"   = lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Subjetiva Pos"   = lm(sae_comp_subjetiva_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Subjetiva Otros" = lm(sae_comp_subjetiva_otros_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Objetiva Pre"    = lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Objetiva Pos"    = lm(sae_comp_objetiva_pos ~ disclosure + inf_situacional + control_humano, data = data)
 )
 
-# 1. EJECUCIÓN DE MODELOS FONASA (Agregándolos a los de SAE)
 modelos_fonasa <- list(
-  "Belief Funcional Pre" = lm(fonasa_conf_belief_funcional_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Belief Funcional Pos" = lm(fonasa_conf_belief_funcional_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Belief Moral Pos"     = lm(fonasa_conf_belief_moral_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Word Funcional Pre"   = lm(fonasa_conf_word_funcional_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Word Funcional Pos"   = lm(fonasa_conf_word_funcional_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Word Moral Pre"       = lm(fonasa_conf_word_moral_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Word Moral Pos"       = lm(fonasa_conf_word_moral_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Comp Subjetiva Pre"   = lm(fonasa_comp_subjetiva_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Comp Subjetiva Pos"   = lm(fonasa_comp_subjetiva_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Comp Subjetiva Otros" = lm(fonasa_comp_subjetiva_otros_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Comp Objetiva Pre"    = lm(fonasa_comp_objetiva_pre ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data),
-  "Comp Objetiva Pos"    = lm(fonasa_comp_objetiva_pos ~ fonasa_man_check_aidisclosure + fonasa_man_check_ch + fonasa_man_check_perf, data = data)
+  "Belief Funcional Pre" = lm(fonasa_conf_belief_funcional_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Belief Funcional Pos" = lm(fonasa_conf_belief_funcional_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Belief Moral Pos"     = lm(fonasa_conf_belief_moral_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Funcional Pre"   = lm(fonasa_conf_word_funcional_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Funcional Pos"   = lm(fonasa_conf_word_funcional_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Moral Pre"       = lm(fonasa_conf_word_moral_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Moral Pos"       = lm(fonasa_conf_word_moral_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Subjetiva Pre"   = lm(fonasa_comp_subjetiva_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Subjetiva Pos"   = lm(fonasa_comp_subjetiva_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Subjetiva Otros" = lm(fonasa_comp_subjetiva_otros_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Objetiva Pre"    = lm(fonasa_comp_objetiva_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Objetiva Pos"    = lm(fonasa_comp_objetiva_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data)
 )
 
 # 2. EXTRACCIÓN Y CONSOLIDACIÓN
