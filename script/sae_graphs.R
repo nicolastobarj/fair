@@ -11,23 +11,25 @@ data <- proc_env$data
 stopifnot(exists("data", envir = proc_env), !is.null(data))
 
 # Variables de interes
-pre_obj_fonasa <- select(data, starts_with("fonasa_pre_comp_obj"))
-pos_obj_fonasa <- select(data, starts_with("fonasa_pos_comp_obj"))
-pre_subj_fonasa <- select(data, starts_with("fonasa_pre_comp_subj"))
-pos_subj_fonasa <- select(data, starts_with("fonasa_pos_comp_subj"))
-pre_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_reliab"))
-pos_trust_belief_reliab_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_reliab"))
-pre_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pre_trust_belief_func"))
-pos_trust_belief_func_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_func"))
-pre_trust_func_reliab_fonasa <- select(data, starts_with("fonasa_pre_trust_func_reliab"))
-pos_trust_func_reliab_fonasa <- select(data, starts_with("fonasa_pos_trust_func_reliab"))
-pre_trust_func_capab_fonasa <- select(data, starts_with("fonasa_pre_trust_func_capab"))
-pos_trust_func_capab_fonasa <- select(data, starts_with("fonasa_pos_trust_func_capab"))
-pre_trust_moral_ethi_fonasa <- select(data, starts_with("fonasa_pre_trust_moral_ethi"))
-pos_trust_moral_ethi_fonasa <- select(data, starts_with("fonasa_pos_trust_moral_ethi"))
-pre_trust_moral_sinc_fonasa <- select(data, starts_with("fonasa_pre_trust_moral_sinc"))
-pos_trust_moral_sinc_fonasa <- select(data, starts_with("fonasa_pos_trust_moral_sinc"))
-pos_trust_belief_help_fonasa <- select(data, starts_with("fonasa_pos_trust_belief_help"))
+sae_pre_comp_obj <- select(data, starts_with("sae_pre_comp_obj"))
+sae_pos_comp_obj <- select(data, starts_with("sae_pos_comp_obj"))
+sae_pre_comp_subj <- select(data, starts_with("sae_pre_comp_subj"))
+sae_pos_comp_subj <- select(data, starts_with("sae_pos_comp_subj"))
+sae_pre_trust_belief_reliab <- select(data, starts_with("sae_pre_trust_belief_reliab"))
+sae_pos_trust_belief_reliab <- select(data, starts_with("sae_pos_trust_belief_reliab"))
+sae_pre_trust_belief_func <- select(data, starts_with("sae_pre_trust_belief_func"))
+sae_pos_trust_belief_func <- select(data, starts_with("sae_pos_trust_belief_func"))
+sae_pre_trust_belief_help <- select(data, starts_with("sae_pre_trust_belief_help"))
+sae_pos_trust_belief_help <- select(data, starts_with("sae_pos_trust_belief_help"))
+sae_pre_trust_func_reliab <- select(data, starts_with("sae_pre_trust_func_reliab"))
+sae_pos_trust_func_reliab <- select(data, starts_with("sae_pos_trust_func_reliab"))
+sae_pre_trust_func_capab <- select(data, starts_with("sae_pre_trust_func_capab"))
+sae_pos_trust_func_capab <- select(data, starts_with("sae_pos_trust_func_capab"))
+sae_pre_trust_moral_ethi <- select(data, starts_with("sae_pre_trust_moral_ethi"))
+sae_pos_trust_moral_ethi <- select(data, starts_with("sae_pos_trust_moral_ethi"))
+sae_pre_trust_moral_sinc <- select(data, starts_with("sae_pre_trust_moral_sinc"))
+sae_pos_trust_moral_sinc <- select(data, starts_with("sae_pos_trust_moral_sinc"))
+
 
 # Function to calculate descriptive statistics - returns a tibble with the statistics
 describe_stats <- function(data) {
@@ -55,43 +57,46 @@ describe_stats <- function(data) {
 }
 
 # For each of the variables, calculate cronbach's alpha, mean, median, std, min, max
-pre_stats_obj_fonasa <- describe_stats(pre_obj_fonasa)
-pos_stats_obj_fonasa <- describe_stats(pos_obj_fonasa)
-pre_stats_subj_fonasa <- describe_stats(pre_subj_fonasa)
-pos_stats_subj_fonasa <- describe_stats(pos_subj_fonasa)
-pre_stats_trust_belief_reliab_fonasa <- describe_stats(pre_trust_belief_reliab_fonasa)
-pos_stats_trust_belief_reliab_fonasa <- describe_stats(pos_trust_belief_reliab_fonasa)
-pre_stats_trust_belief_func_fonasa <- describe_stats(pre_trust_belief_func_fonasa)
-pos_stats_trust_belief_func_fonasa <- describe_stats(pos_trust_belief_func_fonasa)
-pre_stats_trust_func_reliab_fonasa <- describe_stats(pre_trust_func_reliab_fonasa)
-pos_stats_trust_func_reliab_fonasa <- describe_stats(pos_trust_func_reliab_fonasa)
-pre_stats_trust_func_capab_fonasa <- describe_stats(pre_trust_func_capab_fonasa)
-pos_stats_trust_func_capab_fonasa <- describe_stats(pos_trust_func_capab_fonasa)
-pre_stats_trust_moral_ethi_fonasa <- describe_stats(pre_trust_moral_ethi_fonasa)
-pos_stats_trust_moral_ethi_fonasa <- describe_stats(pos_trust_moral_ethi_fonasa)
-pre_stats_trust_moral_sinc_fonasa <- describe_stats(pre_trust_moral_sinc_fonasa)
-pos_stats_trust_moral_sinc_fonasa <- describe_stats(pos_trust_moral_sinc_fonasa)
-pos_stats_trust_belief_help_fonasa <- describe_stats(pos_trust_belief_help_fonasa)
+pre_stats_obj_sae <- describe_stats(sae_pre_comp_obj)
+pos_stats_obj_sae <- describe_stats(sae_pos_comp_obj)
+pre_stats_subj_sae <- describe_stats(sae_pre_comp_subj)
+pos_stats_subj_sae <- describe_stats(sae_pos_comp_subj)
+pre_stats_trust_belief_reliab_sae <- describe_stats(sae_pre_trust_belief_reliab)
+pos_stats_trust_belief_reliab_sae <- describe_stats(sae_pos_trust_belief_reliab)
+pre_stats_trust_belief_func_sae <- describe_stats(sae_pre_trust_belief_func)
+pos_stats_trust_belief_func_sae <- describe_stats(sae_pos_trust_belief_func)
+pre_stats_trust_belief_help_sae <- describe_stats(sae_pre_trust_belief_help)
+pos_stats_trust_belief_help_sae <- describe_stats(sae_pos_trust_belief_help)
+pre_stats_trust_func_reliab_sae <- describe_stats(sae_pre_trust_func_reliab)
+pos_stats_trust_func_reliab_sae <- describe_stats(sae_pos_trust_func_reliab)
+pre_stats_trust_func_capab_sae <- describe_stats(sae_pre_trust_func_capab)
+pos_stats_trust_func_capab_sae <- describe_stats(sae_pos_trust_func_capab)
+pre_stats_trust_moral_ethi_sae <- describe_stats(sae_pre_trust_moral_ethi)
+pos_stats_trust_moral_ethi_sae <- describe_stats(sae_pos_trust_moral_ethi)
+pre_stats_trust_moral_sinc_sae <- describe_stats(sae_pre_trust_moral_sinc)
+pos_stats_trust_moral_sinc_sae <- describe_stats(sae_pos_trust_moral_sinc)
+
 
 # Create a table with the statistics for each variable
 stats_table <- list(
-  pre_obj_fonasa = pre_stats_obj_fonasa,
-  pos_obj_fonasa = pos_stats_obj_fonasa,
-  pre_subj_fonasa = pre_stats_subj_fonasa,
-  pos_subj_fonasa = pos_stats_subj_fonasa,
-  pre_trust_belief_reliab_fonasa = pre_stats_trust_belief_reliab_fonasa,
-  pos_trust_belief_reliab_fonasa = pos_stats_trust_belief_reliab_fonasa,
-  pre_trust_belief_func_fonasa = pre_stats_trust_belief_func_fonasa,
-  pos_trust_belief_func_fonasa = pos_stats_trust_belief_func_fonasa,
-  pre_trust_func_reliab_fonasa = pre_stats_trust_func_reliab_fonasa,
-  pos_trust_func_reliab_fonasa = pos_stats_trust_func_reliab_fonasa,
-  pre_trust_func_capab_fonasa = pre_stats_trust_func_capab_fonasa,
-  pos_trust_func_capab_fonasa = pos_stats_trust_func_capab_fonasa,
-  pre_trust_moral_ethi_fonasa = pre_stats_trust_moral_ethi_fonasa,
-  pos_trust_moral_ethi_fonasa = pos_stats_trust_moral_ethi_fonasa,
-  pre_trust_moral_sinc_fonasa = pre_stats_trust_moral_sinc_fonasa,
-  pos_trust_moral_sinc_fonasa = pos_stats_trust_moral_sinc_fonasa,
-  pos_trust_belief_help_fonasa = pos_stats_trust_belief_help_fonasa
+  sae_pre_comp_obj = pre_stats_obj_sae,
+  sae_pos_comp_obj = pos_stats_obj_sae,
+  sae_pre_comp_subj = pre_stats_subj_sae,
+  sae_pos_comp_subj = pos_stats_subj_sae,
+  sae_pre_trust_belief_reliab = pre_stats_trust_belief_reliab_sae,
+  sae_pos_trust_belief_reliab = pos_stats_trust_belief_reliab_sae,
+  sae_pre_trust_belief_func = pre_stats_trust_belief_func_sae,
+  sae_pos_trust_belief_func = pos_stats_trust_belief_func_sae,
+  sae_pre_trust_belief_help = pre_stats_trust_belief_help_sae,
+  sae_pos_trust_belief_help = pos_stats_trust_belief_help_sae,
+  sae_pre_trust_func_reliab = pre_stats_trust_func_reliab_sae,
+  sae_pos_trust_func_reliab = pos_stats_trust_func_reliab_sae,
+  sae_pre_trust_func_capab = pre_stats_trust_func_capab_sae,
+  sae_pos_trust_func_capab = pos_stats_trust_func_capab_sae,
+  sae_pre_trust_moral_ethi = pre_stats_trust_moral_ethi_sae,
+  sae_pos_trust_moral_ethi = pos_stats_trust_moral_ethi_sae,
+  sae_pre_trust_moral_sinc = pre_stats_trust_moral_sinc_sae,
+  sae_pos_trust_moral_sinc = pos_stats_trust_moral_sinc_sae
 ) |>
   imap_dfr(\(stats, var_name) dplyr::mutate(stats, Variable = var_name)) |>
   dplyr::select(Variable, dplyr::everything()) |>
@@ -202,68 +207,134 @@ make_anova2_plot <- function(
 
 
 # Create plots for each Hypothesis
-# H1 - AI Disclosure
+# H2 - algorithm disclosure
 # Subjective 
-pos_subj_fonasa_AID_0 <- data %>%
-  filter(ai_disclosure_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-pos_subj_fonasa_AID_1 <- data %>%
-  filter(ai_disclosure_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
+pos_subj_sae_AlgD_0 <- data %>%
+  filter(disclosure == 0) %>%
+  select(starts_with("sae_pos_comp_subj"))
+pos_subj_sae_AlgD_1 <- data %>%
+  filter(disclosure == 1) %>%
+  select(starts_with("sae_pos_comp_subj"))
 
-anova2_plot <- make_anova2_plot(pos_subj_fonasa_AID_0, pos_subj_fonasa_AID_1)$plot
+anova2_plot <- make_anova2_plot(pos_subj_sae_AlgD_0, pos_subj_sae_AlgD_1)$plot
 
 
 # Objective
-pos_obj_fonasa_AID_0 <- data %>%
-  filter(ai_disclosure_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
-pos_obj_fonasa_AID_1 <- data %>%
-  filter(ai_disclosure_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
+pos_obj_sae_AlgD_0 <- data %>%
+  filter(disclosure == 0) %>%
+  select(starts_with("sae_pos_comp_obj"))
+pos_obj_sae_AlgD_1 <- data %>%
+  filter(disclosure == 1) %>%
+  select(starts_with("sae_pos_comp_obj"))
+
+anova2_plot <- make_anova2_plot(pos_obj_sae_AlgD_0, pos_obj_sae_AlgD_1)$plot
+
+# Functional
+pos_trustFunc_sae_AlgD_0 <- data %>%
+  filter(disclosure == 0) %>%
+  select(starts_with("sae_pos_trust_belief_reliab", "sae_pos_trust_belief_func"))
+pos_trustFunc_sae_AlgD_1 <- data %>%
+  filter(disclosure == 1) %>%
+  select(starts_with("sae_pos_trust_belief_reliab", "sae_pos_trust_belief_func"))
+
+anova2_plot <- make_anova2_plot(pos_trustFunc_sae_AlgD_0, pos_trustFunc_sae_AlgD_1)$plot
 
 # Moral Ethics
+pos_trustMoral_sae_AlgD_0 <- data %>%
+  filter(disclosure == 0) %>%
+  select(starts_with("sae_pos_trust_belief_help"))
+pos_trustMoral_sae_AlgD_1 <- data %>%
+  filter(disclosure == 1) %>%
+  select(starts_with("sae_pos_trust_belief_help"))
+
+anova2_plot <- make_anova2_plot(pos_trustMoral_sae_AlgD_0, pos_trustMoral_sae_AlgD_1)$plot
 
 
-# H3 - Performance
+# H4 - situational information
 # Subjective 
-pos_subj_fonasa_P_0 <- data %>%
-  filter(performance_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-pos_subj_fonasa_P_1 <- data %>%
-  filter(performance_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
+pos_subj_sae_SI_0 <- data %>%
+  filter(inf_situacional == 0) %>%
+  select(starts_with("sae_pos_comp_subj"))
+pos_subj_sae_SI_1 <- data %>%
+  filter(inf_situacional == 1) %>%
+  select(starts_with("sae_pos_comp_subj"))
 
-anova2_plot <- make_anova2_plot(pos_subj_fonasa_P_0, pos_subj_fonasa_P_1)$plot
+anova2_plot <- make_anova2_plot(pos_subj_sae_SI_0, pos_subj_sae_SI_1)$plot
 
 
 # Objective
-pos_obj_fonasa_P_0 <- data %>%
-  filter(performance_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
-pos_obj_fonasa_P_1 <- data %>%
-  filter(performance_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
+pos_obj_sae_SI_0 <- data %>%
+  filter(inf_situacional == 0) %>%
+  select(starts_with("sae_pos_comp_obj"))
+pos_obj_sae_SI_1 <- data %>%
+  filter(inf_situacional == 1) %>%
+  select(starts_with("sae_pos_comp_obj"))
+
+anova2_plot <- make_anova2_plot(pos_obj_sae_SI_0, pos_obj_sae_SI_1)$plot
+
+# Functional
+pos_trustFunc_sae_SI_0 <- data %>%
+  filter(inf_situacional == 0) %>%
+  select(starts_with("sae_pos_trust_belief_reliab", "sae_pos_trust_belief_func"))
+pos_trustFunc_sae_SI_1 <- data %>%
+  filter(inf_situacional == 1) %>%
+  select(starts_with("sae_pos_trust_belief_reliab", "sae_pos_trust_belief_func"))
+
+anova2_plot <- make_anova2_plot(pos_trustFunc_sae_SI_0, pos_trustFunc_sae_SI_1)$plot
+
+# Moral Ethics
+pos_trustMoral_sae_SI_0 <- data %>%
+  filter(inf_situacional == 0) %>%
+  select(starts_with("sae_pos_trust_belief_help"))
+pos_trustMoral_sae_SI_1 <- data %>%
+  filter(inf_situacional == 1) %>%
+  select(starts_with("sae_pos_trust_belief_help"))
+
+anova2_plot <- make_anova2_plot(pos_trustMoral_sae_SI_0, pos_trustMoral_sae_SI_1)$plot
 
 
-# H5 - Human control
+# H5 - control humano
 # Subjective 
-pos_subj_fonasa_HC_0 <- data %>%
-  filter(control_humano_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
-pos_subj_fonasa_HC_1 <- data %>%
-  filter(control_humano_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_subj"))
+pos_subj_sae_CH_0 <- data %>%
+  filter(control_humano == 0) %>%
+  select(starts_with("sae_pos_comp_subj"))
+pos_subj_sae_CH_1 <- data %>%
+  filter(control_humano == 1) %>%
+  select(starts_with("sae_pos_comp_subj"))
+
+anova2_plot <- make_anova2_plot(pos_subj_sae_CH_0, pos_subj_sae_CH_1)$plot
+
 
 # Objective
-pos_obj_fonasa_HC_0 <- data %>%
-  filter(control_humano_fonasa == 0) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
-pos_obj_fonasa_HC_1 <- data %>%
-  filter(control_humano_fonasa == 1) %>%
-  select(starts_with("fonasa_pos_comp_obj"))
+pos_obj_sae_CH_0 <- data %>%
+  filter(control_humano == 0) %>%
+  select(starts_with("sae_pos_comp_obj"))
+pos_obj_sae_CH_1 <- data %>%
+  filter(control_humano == 1) %>%
+  select(starts_with("sae_pos_comp_obj"))
 
-anova2_plot <- make_anova2_plot(pos_subj_fonasa_HC_0, pos_subj_fonasa_HC_1)$plot
+anova2_plot <- make_anova2_plot(pos_obj_sae_CH_0, pos_obj_sae_CH_1)$plot
+
+# Functional
+pos_trustFunc_sae_CH_0 <- data %>%
+  filter(control_humano == 0) %>%
+  select(starts_with("sae_pos_trust_belief_reliab", "sae_pos_trust_belief_func"))
+pos_trustFunc_sae_CH_1 <- data %>%
+  filter(control_humano == 1) %>%
+  select(starts_with("sae_pos_trust_belief_reliab", "sae_pos_trust_belief_func"))
+
+anova2_plot <- make_anova2_plot(pos_trustFunc_sae_CH_0, pos_trustFunc_sae_CH_1)$plot
+
+# Moral Ethics
+pos_trustMoral_sae_CH_0 <- data %>%
+  filter(control_humano == 0) %>%
+  select(starts_with("sae_pos_trust_belief_help"))
+pos_trustMoral_sae_CH_1 <- data %>%
+  filter(control_humano == 1) %>%
+  select(starts_with("sae_pos_trust_belief_help"))
+
+anova2_plot <- make_anova2_plot(pos_trustMoral_sae_CH_0, pos_trustMoral_sae_CH_1)$plot
+
 
 
 
