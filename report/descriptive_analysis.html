@@ -139,249 +139,36 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell">
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Inspección de Multicolinealidad (VIF) Comparada: SAE vs FONASA</caption>
+<caption>Resumen de Multicolinealidad (VIF) por Sistema</caption>
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Modelo</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">disclosure</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">inf_situacional</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">control_humano</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">ai_disclosure_fonasa</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">performance_fonasa</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">control_humano_fonasa</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sistema</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable A</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VIF</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable B</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VIF</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable C</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VIF</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd" data-grouplength="13">
-<td colspan="7" style="border-bottom: 1px solid"><strong>Sistema de Admisión Escolar (SAE)</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Belief Funcional Pre</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
 <tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Belief Funcional Pos</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
+<td style="text-align: left;">SAE</td>
+<td style="text-align: left;">disclosure</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">inf_situacional</td>
+<td style="text-align: right;">1.001</td>
+<td style="text-align: left;">control_humano</td>
+<td style="text-align: right;">1.001</td>
 </tr>
 <tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Belief Moral Pre</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Belief Moral Pos</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Funcional Pre</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Funcional Pos</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Moral Pre</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Moral Pos</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Subjetiva Pre</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Subjetiva Pos</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Subjetiva Otros</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Objetiva Pre</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Objetiva Pos</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd" data-grouplength="12">
-<td colspan="7" style="border-bottom: 1px solid"><strong>FONASA</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Belief Funcional Pre</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Belief Funcional Pos</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Belief Moral Pos</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Funcional Pre</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Funcional Pos</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Moral Pre</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Word Moral Pos</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Subjetiva Pre</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Subjetiva Pos</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Subjetiva Otros</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Objetiva Pre</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Comp Objetiva Pos</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1.003</td>
-<td style="text-align: left;">1</td>
+<td style="text-align: left;">FONASA</td>
+<td style="text-align: left;">ai_disclosure_fonasa</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">performance_fonasa</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: left;">control_humano_fonasa</td>
+<td style="text-align: right;">1.000</td>
 </tr>
 </tbody>
 </table>
@@ -451,167 +238,167 @@ pos</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.08 <sup>***</sup><br>
-(0.08)</td>
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.13 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.22 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.21 <sup>***</sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.16 <sup>***</sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.18 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.27 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.27 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.20 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: center;">3.19 <sup>***</sup><br>
 (0.08)</td>
-<td style="text-align: center;">3.15 <sup>***</sup><br>
-(0.08)</td>
+<td style="text-align: center;">3.24 <sup>***</sup><br>
+(0.09)</td>
 <td style="text-align: center;">3.21 <sup>***</sup><br>
 (0.08)</td>
-<td style="text-align: center;">3.16 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: center;">3.02 <sup>***</sup><br>
-(0.08)</td>
+<td style="text-align: center;">3.09 <sup>***</sup><br>
+(0.09)</td>
 <td style="text-align: center;">3.04 <sup>***</sup><br>
 (0.09)</td>
-<td style="text-align: center;">2.99 <sup>***</sup><br>
+<td style="text-align: center;">3.01 <sup>***</sup><br>
 (0.08)</td>
-<td style="text-align: center;">3.57 <sup>***</sup><br>
-(0.14)</td>
-<td style="text-align: center;">3.79 <sup>***</sup><br>
+<td style="text-align: center;">3.84 <sup>***</sup><br>
 (0.15)</td>
+<td style="text-align: center;">3.99 <sup>***</sup><br>
+(0.16)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">disclosure [1]</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.01 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.02 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.01 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.05 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.00 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.05 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.01 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.03 <sup></sup><br>
-(0.08)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.04 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.06 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.05 <sup></sup><br>
+(0.09)</td>
 <td style="text-align: center;">-0.04 <sup></sup><br>
-(0.08)</td>
+(0.09)</td>
+<td style="text-align: center;">-0.11 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">-0.05 <sup></sup><br>
+(0.09)</td>
 <td style="text-align: center;">0.02 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.06 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">-0.01 <sup></sup><br>
+<td style="text-align: center;">0.01 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">-0.02 <sup></sup><br>
+<td style="text-align: center;">-0.00 <sup></sup><br>
 (0.08)</td>
-<td style="text-align: center;">0.17 <sup></sup><br>
+<td style="text-align: center;">-0.00 <sup></sup><br>
 (0.15)</td>
-<td style="text-align: center;">0.10 <sup></sup><br>
+<td style="text-align: center;">0.02 <sup></sup><br>
 (0.16)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">inf situacional [1]</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.11 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.09 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.20 <sup>*</sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.08 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.16 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.05 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.12 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.06 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.05 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.01 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.13 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.18 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.13 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.14 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.21 <sup>**</sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.07 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.03 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.02 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">-0.01 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.12 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.16 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.20 <sup>*</sup><br>
 (0.08)</td>
-<td style="text-align: center;">0.54 <sup>***</sup><br>
+<td style="text-align: center;">0.51 <sup>***</sup><br>
 (0.15)</td>
-<td style="text-align: center;">0.38 <sup>*</sup><br>
+<td style="text-align: center;">0.43 <sup>**</sup><br>
 (0.16)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">control humano [1]</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.02 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.06 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.07 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.03 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.09 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.04 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.08 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.07 <sup></sup><br>
 (0.09)</td>
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.05 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.07 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">-0.05 <sup></sup><br>
-(0.08)</td>
+(0.09)</td>
+<td style="text-align: center;">0.06 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">-0.03 <sup></sup><br>
+(0.09)</td>
 <td style="text-align: center;">0.08 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.05 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.10 <sup></sup><br>
+<td style="text-align: center;">0.04 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.12 <sup></sup><br>
+<td style="text-align: center;">0.11 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.14 <sup></sup><br>
 (0.08)</td>
-<td style="text-align: center;">-0.07 <sup></sup><br>
+<td style="text-align: center;">-0.12 <sup></sup><br>
 (0.15)</td>
-<td style="text-align: center;">0.12 <sup></sup><br>
+<td style="text-align: center;">0.10 <sup></sup><br>
 (0.16)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.004 / -0.003</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.004 / -0.003</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.015 / 0.008</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.010 / 0.003</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.005 / -0.001</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.003</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.002 / -0.005</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.004</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.007 / 0.000</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.009 / 0.002</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.021 / 0.014</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.035 / 0.028</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.016 / 0.009</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.005</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.002 / -0.006</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.013 / 0.005</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.008 / -0.000</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.005</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.002 / -0.006</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.005 / -0.003</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.005</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.005 / -0.003</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.012 / 0.004</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.023 / 0.015</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.032 / 0.024</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.021 / 0.013</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">AIC</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1131.981</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1108.121</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1144.189</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1160.378</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1098.453</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1079.530</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1107.064</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1087.082</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1148.277</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1158.649</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1072.905</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1612.102</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1669.558</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">959.074</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">926.291</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">979.955</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">979.621</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">917.190</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">906.391</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">928.913</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">912.279</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">960.950</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">967.508</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">894.046</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1323.909</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1363.006</td>
 </tr>
 <tr class="even">
 <td colspan="14" style="text-align: right; font-style: italic; border-top: double black;">* p&lt;0.05&nbsp;&nbsp;&nbsp;** p&lt;0.01&nbsp;&nbsp;&nbsp;*** p&lt;0.001</td>
@@ -679,156 +466,156 @@ otros pos</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.08 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.63 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.74 <sup>***</sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.07 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.54 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.67 <sup>***</sup><br>
 (0.09)</td>
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.15 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.75 <sup>***</sup><br>
-(0.08)</td>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.69 <sup>***</sup><br>
+(0.09)</td>
 <td style="text-align: center;">3.15 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: center;">2.72 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: center;">2.90 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: center;">2.85 <sup>***</sup><br>
+(0.09)</td>
+<td style="text-align: center;">2.74 <sup>***</sup><br>
 (0.08)</td>
-<td style="text-align: center;">2.77 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: center;">2.93 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: center;">2.89 <sup>***</sup><br>
-(0.08)</td>
-<td style="text-align: center;">2.82 <sup>***</sup><br>
-(0.07)</td>
-<td style="text-align: center;">3.29 <sup>***</sup><br>
-(0.11)</td>
-<td style="text-align: center;">5.74 <sup>***</sup><br>
-(0.20)</td>
+<td style="text-align: center;">3.33 <sup>***</sup><br>
+(0.12)</td>
+<td style="text-align: center;">5.70 <sup>***</sup><br>
+(0.21)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai disclosure fonasa [1]</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.11 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.10 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.09 <sup></sup><br>
-(0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.04 <sup></sup><br>
-(0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.09 <sup></sup><br>
-(0.08)</td>
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.07 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">-0.16 <sup></sup><br>
-(0.08)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.07 <sup></sup><br>
+(0.10)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.09 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.08 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">-0.17 <sup></sup><br>
+(0.09)</td>
 <td style="text-align: center;">-0.11 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.12 <sup></sup><br>
+<td style="text-align: center;">0.13 <sup></sup><br>
+(0.10)</td>
+<td style="text-align: center;">0.04 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.03 <sup></sup><br>
+<td style="text-align: center;">0.02 <sup></sup><br>
 (0.08)</td>
-<td style="text-align: center;">0.00 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.35 <sup>**</sup><br>
-(0.11)</td>
-<td style="text-align: center;">0.60 <sup>**</sup><br>
-(0.20)</td>
+<td style="text-align: center;">0.38 <sup>**</sup><br>
+(0.12)</td>
+<td style="text-align: center;">0.72 <sup>***</sup><br>
+(0.21)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">performance fonasa [1]</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.02 <sup></sup><br>
-(0.09)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.04 <sup></sup><br>
+(0.10)</td>
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.11 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.10 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.11 <sup></sup><br>
+(0.10)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.01 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.01 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.14 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.13 <sup></sup><br>
 (0.09)</td>
+<td style="text-align: center;">-0.03 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.12 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">-0.10 <sup></sup><br>
+(0.10)</td>
 <td style="text-align: center;">-0.00 <sup></sup><br>
+(0.09)</td>
+<td style="text-align: center;">0.04 <sup></sup><br>
 (0.08)</td>
-<td style="text-align: center;">0.14 <sup></sup><br>
-(0.09)</td>
-<td style="text-align: center;">-0.13 <sup></sup><br>
-(0.09)</td>
-<td style="text-align: center;">-0.02 <sup></sup><br>
-(0.09)</td>
-<td style="text-align: center;">-0.01 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">0.08 <sup></sup><br>
-(0.11)</td>
-<td style="text-align: center;">0.48 <sup>*</sup><br>
-(0.20)</td>
+<td style="text-align: center;">0.17 <sup></sup><br>
+(0.12)</td>
+<td style="text-align: center;">0.70 <sup>***</sup><br>
+(0.21)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">control humano fonasa [1]</td>
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.06 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.09 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.11 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.06 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.08 <sup></sup><br>
+(0.10)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.00 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.00 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.04 <sup></sup><br>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.05 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.00 <sup></sup><br>
-(0.08)</td>
+<td style="text-align: center;">-0.01 <sup></sup><br>
+(0.09)</td>
 <td style="text-align: center;">0.04 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">-0.05 <sup></sup><br>
+<td style="text-align: center;">-0.04 <sup></sup><br>
+(0.10)</td>
+<td style="text-align: center;">0.04 <sup></sup><br>
 (0.09)</td>
-<td style="text-align: center;">0.00 <sup></sup><br>
+<td style="text-align: center;">0.07 <sup></sup><br>
 (0.08)</td>
-<td style="text-align: center;">0.02 <sup></sup><br>
-(0.08)</td>
-<td style="text-align: center;">-0.09 <sup></sup><br>
-(0.11)</td>
-<td style="text-align: center;">0.77 <sup>***</sup><br>
-(0.20)</td>
+<td style="text-align: center;">-0.12 <sup></sup><br>
+(0.12)</td>
+<td style="text-align: center;">0.87 <sup>***</sup><br>
+(0.21)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">436</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">369</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.005 / -0.002</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.008 / 0.001</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.004 / -0.002</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.004</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.008 / 0.001</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.009 / 0.002</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.010 / 0.003</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.010 / 0.003</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.000 / -0.007</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.000 / -0.007</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.024 / 0.018</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.064 / 0.058</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.004 / -0.004</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.009 / 0.001</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.006 / -0.002</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.005</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.008 / -0.000</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.010 / 0.002</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.009 / 0.001</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.009 / 0.000</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.001 / -0.007</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.003 / -0.005</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.034 / 0.026</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.097 / 0.089</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">AIC</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1147.619</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1169.839</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1178.913</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1094.947</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1158.029</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1127.821</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1161.633</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1161.496</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1137.673</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1053.663</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1394.337</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1896.681</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">984.734</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">979.140</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">995.995</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">943.983</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">974.731</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">967.250</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">978.505</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">993.700</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">964.684</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">884.913</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1166.573</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">1576.983</td>
 </tr>
 <tr class="even">
 <td colspan="13" style="text-align: right; font-style: italic; border-top: double black;">* p&lt;0.05&nbsp;&nbsp;&nbsp;** p&lt;0.01&nbsp;&nbsp;&nbsp;*** p&lt;0.001</td>

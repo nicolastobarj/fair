@@ -17,6 +17,9 @@ data <- data %>%
     # Variables FONASA
     ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
   ), as.factor))
+
+data <- data%>%
+  filter(eliminado == 0)
 ```
 
 # Descripción de los datos
@@ -192,7 +195,129 @@ ggcorrplot(corr_fonasa,
 
 Los valores VIF son muy bajos (>2.0), por lo que no existe una colinealidad problemática entre las variables.
 
+```{r include=FALSE}
+library(car)
+library(knitr)
+library(kableExtra) # Necesaria para agrupar filas
+library(dplyr)
+library(tidyr)
+
+library(dplyr)
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    sae_man_check_algoritmo, sae_man_check_infosit, sae_man_check_controlh,
+    # Variables FONASA
+    fonasa_man_check_aidisclosure, fonasa_man_check_ch, fonasa_man_check_perf
+  ), as.factor))
+
+modelos_sae <- list(
+  "Belief Funcional Pre" = lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Belief Funcional Pos" = lm(sae_conf_belief_funcional_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Belief Moral Pre"     = lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Belief Moral Pos"     = lm(sae_conf_belief_moral_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Funcional Pre"   = lm(sae_conf_word_funcional_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Funcional Pos"   = lm(sae_conf_word_funcional_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Moral Pre"       = lm(sae_conf_word_moral_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Word Moral Pos"       = lm(sae_conf_word_moral_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Subjetiva Pre"   = lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Subjetiva Pos"   = lm(sae_comp_subjetiva_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Subjetiva Otros" = lm(sae_comp_subjetiva_otros_pos ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Objetiva Pre"    = lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + control_humano, data = data),
+  "Comp Objetiva Pos"    = lm(sae_comp_objetiva_pos ~ disclosure + inf_situacional + control_humano, data = data)
+)
+
+modelos_fonasa <- list(
+  "Belief Funcional Pre" = lm(fonasa_conf_belief_funcional_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Belief Funcional Pos" = lm(fonasa_conf_belief_funcional_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Belief Moral Pos"     = lm(fonasa_conf_belief_moral_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Funcional Pre"   = lm(fonasa_conf_word_funcional_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Funcional Pos"   = lm(fonasa_conf_word_funcional_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Moral Pre"       = lm(fonasa_conf_word_moral_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Word Moral Pos"       = lm(fonasa_conf_word_moral_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Subjetiva Pre"   = lm(fonasa_comp_subjetiva_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Subjetiva Pos"   = lm(fonasa_comp_subjetiva_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Subjetiva Otros" = lm(fonasa_comp_subjetiva_otros_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Objetiva Pre"    = lm(fonasa_comp_objetiva_pre ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data),
+  "Comp Objetiva Pos"    = lm(fonasa_comp_objetiva_pos ~ ai_disclosure_fonasa + performance_fonasa + control_humano_fonasa, data = data)
+)
+
+# 2. EXTRACCIÓN Y CONSOLIDACIÓN
+# Función adaptada para limpiar prefijos dinámicamente
+extraer_vif_general <- function(nombre, modelo) {
+  v <- vif(modelo)
+  data.frame(Modelo = nombre, Variable = names(v), VIF = as.numeric(v))
+}
+
+# Procesar SAE
+tabla_sae <- lapply(names(modelos_sae), function(n) extraer_vif_general(n, modelos_sae[[n]])) %>%
+  bind_rows() %>%
+  mutate(Variable = gsub("sae_man_check_", "Control: ", Variable)) %>%
+  pivot_wider(names_from = Variable, values_from = VIF)
+
+# Procesar FONASA
+tabla_fonasa <- lapply(names(modelos_fonasa), function(n) extraer_vif_general(n, modelos_fonasa[[n]])) %>%
+  bind_rows() %>%
+  mutate(Variable = gsub("fonasa_man_check_", "Control: ", Variable)) %>%
+  pivot_wider(names_from = Variable, values_from = VIF)
+
+# Unir ambas tablas
+# Nota: Las columnas de control variarán sus nombres, por lo que quedarán NAs donde no apliquen
+tabla_final <- bind_rows(tabla_sae, tabla_fonasa)
+
+# 3. PRESENTACIÓN AGRUPADA
+kable(tabla_final, 
+      digits = 3, 
+      caption = "Inspección de Multicolinealidad (VIF) Comparada: SAE vs FONASA",
+      booktabs = TRUE,
+      align = "l") %>%
+  kable_styling(latex_options = c("striped", "hold_position")) %>%
+  pack_rows("Sistema de Admisión Escolar (SAE)", 1, length(modelos_sae)) %>%
+  pack_rows("FONASA", (length(modelos_sae) + 1), (length(modelos_sae) + length(modelos_fonasa)))
+```
+
 ```{r}
+# 1. Función para obtener VIF de un solo modelo (ya que son iguales)
+obtener_vif_unico <- function(lista_modelos, prefijo_limpiar = "") {
+  # Tomamos el primer modelo de la lista
+  v <- vif(lista_modelos[[1]])
+  
+  data.frame(
+    Variable = gsub(prefijo_limpiar, "", names(v)),
+    VIF = as.numeric(v)
+  ) %>%
+    # Creamos un identificador de columna (Predictor 1, 2, 3) para que encajen
+    mutate(ID = paste0("Factor_", row_number())) %>%
+    pivot_wider(names_from = ID, values_from = c(Variable, VIF))
+}
+
+# 2. Procesar ambos sistemas
+resumen_sae <- obtener_vif_unico(modelos_sae) %>% 
+  mutate(Sistema = "SAE")
+
+resumen_fonasa <- obtener_vif_unico(modelos_fonasa) %>% 
+  mutate(Sistema = "FONASA")
+
+# 3. Combinar y organizar columnas para que no haya NAs
+# Reordenamos para que aparezca: Sistema, Var1, VIF1, Var2, VIF2...
+tabla_vif_limpia <- bind_rows(resumen_sae, resumen_fonasa) %>%
+  select(Sistema, 
+         starts_with("Variable_Factor_1"), starts_with("VIF_Factor_1"),
+         starts_with("Variable_Factor_2"), starts_with("VIF_Factor_2"),
+         starts_with("Variable_Factor_3"), starts_with("VIF_Factor_3"))
+
+# 4. Presentación final
+kable(tabla_vif_limpia, 
+      digits = 3, 
+      col.names = c("Sistema", "Variable A", "VIF", "Variable B", "VIF", "Variable C", "VIF"),
+      caption = "Resumen de Multicolinealidad (VIF) por Sistema",
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
+```
+
+```{r include=FALSE}
 library(car)
 library(knitr)
 library(kableExtra) # Necesaria para agrupar filas
