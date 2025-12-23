@@ -2,3 +2,7 @@
   quarto-pub:
     - id: 4dc7f396-b4b4-4369-afab-54278f9d4e49
       url: https://nicolastobarj.quarto.pub/field_work_report
+- source: descriptive_analysis.qmd
+  quarto-pub:
+    - id: fdc81cef-9977-4db5-8007-af93f16d9e8a
+      url: https://nicolastobarj.quarto.pub/reporte-descriptivo-inicial-sae-fonasa
