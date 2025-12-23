@@ -22,12 +22,165 @@ data <- data%>%
   filter(eliminado == 0)
 ```
 
-# Descripción de los datos
+# Descripción y validez de los datos
 
 ```{r}
 
 ```
 
+
+# Validez de prueba objetiva 
+
+### Split-Half
+
+Son resultados aceptables para investigación. FONASA y SAE Pos superan el umbral de 0.70 (buena consistencia). SAE Pre es débil (0.60), probablemente por tener pocos ítems.
+
+```{r}
+# Definición de ítems por sistema y tiempo
+items_fonasa_pre <- paste0("fonasa_pre_comp_obj_", 1:8)
+items_fonasa_pos <- paste0("fonasa_pos_comp_obj_", 1:11)
+items_sae_pre    <- paste0("sae_pre_comp_obj_", 1:6)
+items_sae_pos    <- paste0("sae_pos_comp_obj_", 1:6)
+
+# Lista maestra para procesar
+listas_items <- list(
+  "FONASA Pre" = items_fonasa_pre,
+  "FONASA Pos" = items_fonasa_pos,
+  "SAE Pre"    = items_sae_pre,
+  "SAE Pos"    = items_sae_pos
+)
+```
+
+
+```{r}
+library(psych)
+library(dplyr)
+library(knitr)
+
+library(psych)
+library(dplyr)
+
+calcular_split_half_robusto <- function(df, cols, nombre_test) {
+  # Seleccionar columnas y ver cuántos casos completos hay
+  dat <- df[, cols]
+  n_completos <- sum(complete.cases(dat))
+  
+  # Si no hay suficientes sujetos, no intentar el cálculo
+  if(n_completos < 5) {
+    return(data.frame(
+      Bateria = nombre_test, 
+      Items = length(cols), 
+      n_sujetos = n_completos, 
+      Spearman_Brown = NA, 
+      Nota = "Insuficientes datos"
+    ))
+  }
+  
+  # Calculamos splitHalf. Usamos check.keys = TRUE por si hay ítems invertidos
+  # y omitimos el cálculo si hay varianza cero.
+  res <- tryCatch({
+    splitHalf(dat, raw = FALSE, check.keys = TRUE)
+  }, error = function(e) return(NULL))
+  
+  if(is.null(res)) {
+    return(data.frame(Bateria = nombre_test, Items = length(cols), n_sujetos = n_completos, 
+                      Spearman_Brown = NA, Nota = "Error en cálculo"))
+  }
+  
+  data.frame(
+    Bateria = nombre_test,
+    Items = length(cols),
+    n_sujetos = n_completos,
+    Spearman_Brown = res$maxrb
+  )
+}
+
+# Ejecutamos de nuevo
+sh_fonasa_pre <- calcular_split_half_robusto(data, items_fonasa_pre, "FONASA Pre")
+sh_fonasa_pos <- calcular_split_half_robusto(data, items_fonasa_pos, "FONASA Pos")
+sh_sae_pre    <- calcular_split_half_robusto(data, items_sae_pre, "SAE Pre")
+sh_sae_pos    <- calcular_split_half_robusto(data, items_sae_pos, "SAE Pos")
+
+tabla_split_half <- bind_rows(sh_fonasa_pre, sh_fonasa_pos, sh_sae_pre, sh_sae_pos)
+
+kable(tabla_split_half, digits = 3, booktabs = TRUE, 
+      caption = "Confiabilidad de Mitades Partidas (Split-Half) con Corrección Spearman-Brown")
+```
+
+
+### (IRT)
+
+```{r include=FALSE}
+pacman::p_load(mirt,dplyr,knitr,kableExtra)
+
+analizar_irt_completo <- function(df, lista_grupos) {
+  resultados_tablas <- list()
+  confiabilidades <- data.frame(Test = character(), Confiabilidad_Marginal = numeric())
+  
+  for (nombre in names(lista_grupos)) {
+    cols <- lista_grupos[[nombre]]
+    # Seleccionamos y limpiamos NAs
+    datos_clean <- df[, cols] %>% na.omit()
+    
+    # Ajuste del modelo 2 Parámetros Logísticos
+    mod <- mirt(datos_clean, 1, itemtype = '2PL', verbose = FALSE)
+    
+    # Extraer parámetros
+    params <- coef(mod, IRTpars = TRUE, simplify = TRUE)$items %>%
+      as.data.frame() %>%
+      mutate(Sistema_Tiempo = nombre, Item = row.names(.)) %>%
+      select(Sistema_Tiempo, Item, a, b)
+    
+    resultados_tablas[[nombre]] <- params
+    
+    # Calcular confiabilidad marginal
+    rel <- marginal_rxx(mod)
+    confiabilidades <- rbind(confiabilidades, data.frame(Test = nombre, Confiabilidad_Marginal = rel))
+  }
+  
+  return(list(items = bind_rows(resultados_tablas), rel = confiabilidades))
+}
+
+# Ejecutar el análisis
+analisis_final <- analizar_irt_completo(data, listas_items)
+
+# Tabla de Confiabilidad (Métrica de consistencia interna)
+kable(analisis_final$rel, digits = 3, caption = "Confiabilidad Marginal de los Tests de Conocimiento Objetivo") %>%
+  kable_styling(full_width = F, latex_options = "hold_position")
+
+# Tabla Detallada de ítems (Discriminación y Dificultad)
+kable(analisis_final$items, digits = 2, booktabs = TRUE, 
+      caption = "Parámetros IRT: Validación de Ítems de Comprensión Objetiva") %>%
+  kable_styling(latex_options = c("striped", "repeat_header")) %>%
+  pack_rows("FONASA Pre (8 ítems)", 1, 8) %>%
+  pack_rows("FONASA Pos (11 ítems)", 9, 19) %>%
+  pack_rows("SAE Pre (6 ítems)", 20, 25) %>%
+  pack_rows("SAE Pos (6 ítems)", 26, 31)
+```
+
+```{r include=FALSE}
+# Configurar panel de 2x2
+par(mfrow=c(2,2))
+
+for (nombre in names(listas_items)) {
+  cols <- listas_items[[nombre]]
+  dat <- data[, cols] %>% na.omit()
+  m <- mirt(dat, 1, itemtype = '2PL', verbose = FALSE)
+  
+  # Eliminamos 'xlab' para evitar el conflicto; mirt usa theta por defecto
+  print(plot(m, type = 'info', main = paste("Curva de Información:", nombre)))
+}
+```
+
+```{r include=FALSE}
+# Ejemplo para ver si las preguntas de SAE Pos funcionan bien todas
+mod_sae_pos <- mirt(data[, items_sae_pos], 1, itemtype = '2PL', verbose = FALSE)
+plot(mod_sae_pos, type = 'trace', main = "Probabilidad de acierto por ítem (SAE Pos)")
+
+# Ejemplo para ver si las preguntas de SAE Pos funcionan bien todas
+mod_fonasa_pos <- mirt(data[, items_fonasa_pos], 1, itemtype = '2PL', verbose = FALSE)
+plot(mod_fonasa_pos, type = 'trace', main = "Probabilidad de acierto por ítem (SAE Pos)")
+```
 
 
 # Pruebas de t-test
