@@ -18,22 +18,94 @@ data <- data %>%
     ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
   ), as.factor))
 
-data <- data%>%
-  filter(eliminado == 0)
+#data <- data%>%
+ # filter(eliminado == 0)
 ```
 
 # Descripción y validez de los datos
 
 ```{r}
+library(tidyverse)
+library(psych)
+library(knitr)
+library(kableExtra)
 
+# 1. Mapeo de Variables Agregadas -> Patrones de Ítems Individuales
+# La clave es el nombre de la variable agregada y el valor es el prefijo para buscar sus ítems
+mapeo_constructos <- list(
+  # --- FONASA ---
+  "fonasa_conf_belief_funcional_pre" = "fonasa_pre_trust_belief_func_",
+  "fonasa_conf_belief_funcional_pos" = "fonasa_pos_trust_belief_func_",
+  "fonasa_conf_belief_moral_pos"     = "fonasa_pos_trust_belief_reliab_", # Mapeado a Reliability según McKnight
+  "fonasa_conf_word_funcional_pre"   = "fonasa_pre_trust_func_",
+  "fonasa_conf_word_funcional_pos"   = "fonasa_pos_trust_func_",
+  "fonasa_conf_word_moral_pre"       = "fonasa_pre_trust_moral_",
+  "fonasa_conf_word_moral_pos"       = "fonasa_pos_trust_moral_",
+  "fonasa_comp_subjetiva_pre"        = "fonasa_pre_comp_subj_",
+  "fonasa_comp_subjetiva_pos"        = "fonasa_pos_comp_subj_",
+  "fonasa_comp_subjetiva_otros_pos"  = "fonasa_pos_comp_subj_", # Usa los mismos ítems base pos
+  
+  # --- SAE ---
+  "sae_conf_belief_funcional_pre"    = "sae_pre_trust_belief_func_",
+  "sae_conf_belief_funcional_pos"    = "sae_pos_trust_belief_func_",
+  "sae_conf_belief_moral_pre"        = "sae_pre_trust_belief_reliab_",
+  "sae_conf_belief_moral_pos"        = "sae_pos_trust_belief_reliab_",
+  "sae_conf_word_funcional_pre"      = "sae_pre_trust_func_",
+  "sae_conf_word_funcional_pos"      = "sae_pos_trust_func_",
+  "sae_conf_word_moral_pre"          = "sae_pre_trust_moral_",
+  "sae_conf_word_moral_pos"          = "sae_pos_trust_moral_",
+  "sae_comp_subjetiva_pre"           = "sae_pre_comp_subj_",
+  "sae_comp_subjetiva_pos"           = "sae_pos_comp_subj_",
+  "sae_comp_subjetiva_otros_pos"     = "sae_pos_comp_subj_"
+)
+
+# 2. Función de procesamiento inteligente
+procesar_tabla_descriptiva <- function(var_agregada, prefijo_items) {
+  
+  # A. Estadísticos de la variable agregada
+  col_agregada <- data[[var_agregada]]
+  
+  # B. Cálculo de Alfa usando ítems individuales
+  df_items <- data %>% select(starts_with(prefijo_items)) %>% select(matches("_\\d+$"))
+  
+  alpha_val <- if(ncol(df_items) > 1) {
+    # Usamos try para evitar que ítems sin varianza rompan el loop
+    tryCatch(psych::alpha(df_items, check.keys = TRUE, warnings = FALSE)$total$raw_alpha, 
+             error = function(e) NA)
+  } else { NA }
+
+  tibble(
+    Sistema = ifelse(grepl("fonasa", var_agregada), "FONASA", "SAE"),
+    Variable = var_agregada,
+    Items = ncol(df_items),
+    Cronbach_Alpha = alpha_val,
+    Mean = mean(col_agregada, na.rm = TRUE),
+    SD = sd(col_agregada, na.rm = TRUE),
+    Min = min(col_agregada, na.rm = TRUE),
+    Max = max(col_agregada, na.rm = TRUE)
+  )
+}
+
+# 3. Generar Tabla
+tabla_final <- imap_dfr(mapeo_constructos, ~ procesar_tabla_descriptiva(.y, .x))
+
+# 4. Formato Kable
+n_fonasa <- sum(tabla_final$Sistema == "FONASA")
+n_sae    <- sum(tabla_final$Sistema == "SAE")
+
+tabla_final %>%
+  select(-Sistema) %>%
+  kable(digits = 3, booktabs = TRUE, 
+        caption = "Estadísticos Descriptivos y Validación de Consistencia Interna") %>%
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = F) %>%
+  pack_rows("FONASA", 1, n_fonasa) %>%
+  pack_rows("SAE", n_fonasa + 1, n_fonasa + n_sae)
 ```
 
 
 # Validez de prueba objetiva 
 
 ### Split-Half
-
-Son resultados aceptables para investigación. FONASA y SAE Pos superan el umbral de 0.70 (buena consistencia). SAE Pre es débil (0.60), probablemente por tener pocos ítems.
 
 ```{r}
 # Definición de ítems por sistema y tiempo
@@ -563,7 +635,7 @@ tab_model(
 modelos_sae,
          collapse.se = TRUE,      
   show.ci = FALSE,
-  show.aic = TRUE,
+  show.aic = FALSE,
   show.r2 = TRUE,
   show.fstat = TRUE,
   p.style = "stars")
@@ -572,7 +644,7 @@ tab_model(
 modelos_fonasa,
          collapse.se = TRUE,      
   show.ci = FALSE,
-  show.aic = TRUE,
+  show.aic = FALSE,
   show.r2 = TRUE,
   show.fstat = TRUE,
   p.style = "stars")
