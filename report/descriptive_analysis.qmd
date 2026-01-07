@@ -17,10 +17,93 @@ data <- data %>%
     # Variables FONASA
     ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
   ), as.factor))
-
-#data <- data%>%
- # filter(eliminado == 0)
 ```
+
+# Una distribución de los casos eliminados (Son aleatorios?)
+
+```{r}
+
+data <- data %>%
+  mutate(
+    grupo_muestra = factor(
+      eliminado,
+      levels = c(0, 1),
+      labels = c("No eliminado", "Eliminado")
+    )
+  )
+
+demo_vars <- c("genero", "comuna_rm", "education_recoded", "edad_tramo")
+
+library(gtsummary)
+
+tbl_demo_compare <- data %>%
+  select(grupo_muestra, all_of(demo_vars)) %>%
+  tbl_summary(
+    by = grupo_muestra,
+    percent = "column",
+    missing = "no"
+  ) %>%
+  add_overall(last = TRUE) %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_spanning_header(
+    c("stat_1", "stat_2", "stat_0") ~ "**Distribución (%)**"
+  ) %>%
+  bold_labels()
+
+
+tbl_demo_compare
+```
+
+
+# ¿Son aleatorios los eliminados?
+
+```{r}
+chi_tests <- lapply(demo_vars, function(var){
+  
+  tab <- table(data[[var]], data$grupo_muestra)
+  
+  test <- suppressWarnings(chisq.test(tab))
+  
+  tibble(
+    Variable = var,
+    Chi2 = round(test$statistic, 2),
+    df = test$parameter,
+    p_value = round(test$p.value, 4)
+  )
+})
+
+chi_results <- bind_rows(chi_tests)
+
+library(gt)
+
+gt_chi <- chi_results %>%
+  gt() %>%
+  tab_header(
+    title = md("**Aleatoriedad de la exclusión por validez de respuesta**"),
+    subtitle = md("Tests χ² comparando casos eliminados vs no eliminados")
+  ) %>%
+  fmt_number(columns = c(Chi2, p_value), decimals = 3) %>%
+  cols_label(
+    Variable = "Variable demográfica",
+    Chi2 = "χ²",
+    df = "gl",
+    p_value = "p-valor"
+  ) %>%
+  tab_source_note(
+    source_note = md("Hipótesis nula: la eliminación es independiente del perfil demográfico.")
+  )
+
+gt_chi
+
+```
+
+
+
+```{r}
+data <- data%>%
+  filter(eliminado == 0)
+```
+
 
 # Descripción y validez de los datos
 
