@@ -1,0 +1,623 @@
+---
+title: "Validación de los constructos"
+format: html
+
+execute: 
+  echo: false
+  warning: false
+---
+
+```{r}
+source(here::here("script/proc_data.R"))
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    disclosure, inf_situacional, control_humano,
+    # Variables FONASA
+    ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
+  ), as.factor))
+
+data <- data%>%
+  filter(eliminado == 0)
+```
+
+
+# Descripción y validez de los datos
+
+```{r}
+# ------------------------------------------------------------
+# Tabla descriptiva y consistencia interna por constructo
+# ------------------------------------------------------------
+
+library(tidyverse)
+library(psych)
+library(knitr)
+library(kableExtra)
+
+# ------------------------------------------------------------
+# 1. Mapeo explícito: Constructo → Ítems (NO modificar)
+# ------------------------------------------------------------
+
+mapeo_constructos <- list(
+
+  # =========================
+  # ======== FONASA =========
+  # =========================
+
+  "Ex ante: Comprensión subjetiva" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_comp_subjetiva_pre",
+    items = c(
+      "fonasa_pre_comp_subj_1",
+      "fonasa_pre_comp_subj_2",
+      "fonasa_pre_comp_subj_3",
+      "fonasa_pre_comp_subj_4"
+    )
+  ),
+
+  "Ex ante: Functional Trust MDMT" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_conf_word_funcional_pre",
+    items = c(
+      "fonasa_pre_trust_func_reliab_1",
+      "fonasa_pre_trust_func_reliab_2",
+      "fonasa_pre_trust_func_reliab_3",
+      "fonasa_pre_trust_func_capab_1",
+      "fonasa_pre_trust_func_capab_2",
+      "fonasa_pre_trust_func_capab_3"
+    )
+  ),
+
+  "Ex ante: Functional Trust McKnight" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_conf_belief_funcional_pre",
+    items = c(
+      "fonasa_pre_trust_belief_reliab_1",
+      "fonasa_pre_trust_belief_reliab_2",
+      "fonasa_pre_trust_belief_reliab_3",
+      "fonasa_pre_trust_belief_reliab_4",
+      "fonasa_pre_trust_belief_func_1",
+      "fonasa_pre_trust_belief_func_2",
+      "fonasa_pre_trust_belief_func_3"
+    )
+  ),
+
+  "Ex ante: Moral Trust MDMT" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_conf_word_moral_pre",
+    items = c(
+      "fonasa_pre_trust_moral_ethi_1",
+      "fonasa_pre_trust_moral_ethi_2",
+      "fonasa_pre_trust_moral_ethi_3",
+      "fonasa_pre_trust_moral_sinc_1",
+      "fonasa_pre_trust_moral_sinc_2",
+      "fonasa_pre_trust_moral_sinc_3"
+    )
+  ),
+
+  "Ex pos: Comprensión subjetiva" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_comp_subjetiva_pos",
+    items = paste0("fonasa_pos_comp_subj_", 1:10)
+  ),
+
+  "Ex pos: Functional Trust MDMT" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_conf_word_funcional_pos",
+    items = c(
+      "fonasa_pos_trust_func_reliab_1",
+      "fonasa_pos_trust_func_reliab_2",
+      "fonasa_pos_trust_func_reliab_3",
+      "fonasa_pos_trust_func_capab_1",
+      "fonasa_pos_trust_func_capab_2",
+      "fonasa_pos_trust_func_capab_3"
+    )
+  ),
+
+  "Ex pos: Functional Trust McKnight" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_conf_belief_funcional_pos",
+    items = c(
+      "fonasa_pos_trust_belief_reliab_1",
+      "fonasa_pos_trust_belief_reliab_2",
+      "fonasa_pos_trust_belief_reliab_3",
+      "fonasa_pos_trust_belief_reliab_4",
+      "fonasa_pos_trust_belief_func_1",
+      "fonasa_pos_trust_belief_func_2",
+      "fonasa_pos_trust_belief_func_3"
+    )
+  ),
+
+  "Ex pos: Moral Trust MDMT" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_conf_word_moral_pos",
+    items = c(
+      "fonasa_pos_trust_moral_ethi_1",
+      "fonasa_pos_trust_moral_ethi_2",
+      "fonasa_pos_trust_moral_ethi_3",
+      "fonasa_pos_trust_moral_sinc_1",
+      "fonasa_pos_trust_moral_sinc_2",
+      "fonasa_pos_trust_moral_sinc_3"
+    )
+  ),
+
+  "Ex pos: Moral Trust McKnight" = list(
+    sistema = "FONASA",
+    agregada = "fonasa_conf_belief_moral_pos",
+    items = c(
+      "fonasa_pos_trust_belief_help_1",
+      "fonasa_pos_trust_belief_help_2",
+      "fonasa_pos_trust_belief_help_3",
+      "fonasa_pos_trust_belief_help_4"
+    )
+  ),
+
+  # =========================
+  # ========== SAE ==========
+  # =========================
+
+  "Ex ante: Comprensión subjetiva" = list(
+    sistema = "SAE",
+    agregada = "sae_comp_subjetiva_pre",
+    items = c(
+      paste0("sae_pre_comp_subj_", 1:4)
+    )
+  ),
+
+  "Ex ante: Functional Trust MDMT" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_word_funcional_pre",
+    items = c(
+      "sae_pre_trust_func_reliab_1",
+      "sae_pre_trust_func_reliab_2",
+      "sae_pre_trust_func_reliab_3",
+      "sae_pre_trust_func_capab_1",
+      "sae_pre_trust_func_capab_2",
+      "sae_pre_trust_func_capab_3"
+    )
+  ),
+
+  "Ex ante: Functional Trust McKnight" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_belief_funcional_pre",
+    items = c(
+      "sae_pre_trust_belief_reliab_1",
+      "sae_pre_trust_belief_reliab_2",
+      "sae_pre_trust_belief_reliab_3",
+      "sae_pre_trust_belief_reliab_4",
+      "sae_pre_trust_belief_func_1",
+      "sae_pre_trust_belief_func_2",
+      "sae_pre_trust_belief_func_3"
+    )
+  ),
+
+  "Ex ante: Moral Trust MDMT" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_word_moral_pre",
+    items = c(
+      "sae_pre_trust_moral_ethi_1",
+      "sae_pre_trust_moral_ethi_2",
+      "sae_pre_trust_moral_ethi_3",
+      "sae_pre_trust_moral_sinc_1",
+      "sae_pre_trust_moral_sinc_2",
+      "sae_pre_trust_moral_sinc_3"
+    )
+  ),
+
+  "Ex ante: Moral Trust McKnight" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_belief_moral_pre",
+    items = c(
+      "sae_pre_trust_belief_help_1",
+      "sae_pre_trust_belief_help_2",
+      "sae_pre_trust_belief_help_3",
+      "sae_pre_trust_belief_help_4"
+    )
+  ),
+    
+    "Ex pos: Comprensión subjetiva" = list(
+    sistema = "SAE",
+    agregada = "sae_comp_subjetiva_pos",
+    items = c(
+      paste0("sae_pos_comp_subj_", 1:9)
+    )
+  ),
+
+  "Ex pos: Functional Trust MDMT" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_word_funcional_pre",
+    items = c(
+      "sae_pre_trust_func_reliab_1",
+      "sae_pre_trust_func_reliab_2",
+      "sae_pre_trust_func_reliab_3",
+      "sae_pre_trust_func_capab_1",
+      "sae_pre_trust_func_capab_2",
+      "sae_pre_trust_func_capab_3"
+    )
+  ),
+
+  "Ex pos: Functional Trust McKnight" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_belief_funcional_pos",
+    items = c(
+      "sae_pos_trust_belief_reliab_1",
+      "sae_pos_trust_belief_reliab_2",
+      "sae_pos_trust_belief_reliab_3",
+      "sae_pos_trust_belief_reliab_4",
+      "sae_pos_trust_belief_func_1",
+      "sae_pos_trust_belief_func_2",
+      "sae_pos_trust_belief_func_3"
+    )
+  ),
+
+  "Ex pos: Moral Trust MDMT" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_word_moral_pos",
+    items = c(
+      "sae_pos_trust_moral_ethi_1",
+      "sae_pos_trust_moral_ethi_2",
+      "sae_pos_trust_moral_ethi_3",
+      "sae_pos_trust_moral_sinc_1",
+      "sae_pos_trust_moral_sinc_2",
+      "sae_pos_trust_moral_sinc_3"
+    )
+  ),
+
+  "Ex pos: Moral Trust McKnight" = list(
+    sistema = "SAE",
+    agregada = "sae_conf_belief_moral_pos",
+    items = c(
+      "sae_pos_trust_belief_help_1",
+      "sae_pos_trust_belief_help_2",
+      "sae_pos_trust_belief_help_3",
+      "sae_pos_trust_belief_help_4"
+    )
+  )
+)
+
+# Definición de ítems por sistema y tiempo
+items_fonasa_pre <- paste0("fonasa_pre_comp_obj_", 1:8)
+items_fonasa_pos <- paste0("fonasa_pos_comp_obj_", 1:11)
+items_sae_pre    <- paste0("sae_pre_comp_obj_", 1:6)
+items_sae_pos    <- paste0("sae_pos_comp_obj_", 1:6)
+
+# Lista maestra para procesar
+listas_items <- list(
+  "FONASA Pre" = items_fonasa_pre,
+  "FONASA Pos" = items_fonasa_pos,
+  "SAE Pre"    = items_sae_pre,
+  "SAE Pos"    = items_sae_pos
+)
+
+# ===== 1. Función original (autoreporte – Cronbach) =====
+
+procesar_tabla_descriptiva <- function(info, nombre) {
+
+  col_agregada <- data[[info$agregada]]
+  df_items <- data %>% select(all_of(info$items))
+
+  alpha_val <- if (ncol(df_items) > 1) {
+    tryCatch(
+      psych::alpha(df_items, check.keys = TRUE, warnings = FALSE)$total$raw_alpha,
+      error = function(e) NA
+    )
+  } else NA
+
+  tibble(
+    Sistema = info$sistema,
+    Constructo = nombre,
+    Items = ncol(df_items),
+    Cronbach_Alpha = alpha_val,
+    Mean = mean(col_agregada, na.rm = TRUE),
+    SD   = sd(col_agregada, na.rm = TRUE),
+    Min  = min(col_agregada, na.rm = TRUE),
+    Max  = max(col_agregada, na.rm = TRUE)
+  )
+}
+
+# ===== 2. Tabla base (autorreporte) =====
+
+tabla_base <- imap_dfr(mapeo_constructos, procesar_tabla_descriptiva)
+
+# ===== 3. Función para pruebas objetivas (Split-Half) =====
+
+procesar_split_half_fila <- function(df, cols, nombre, sistema, var_agregada) {
+  
+  dat <- df[, cols]
+  n_completos <- sum(complete.cases(dat))
+  
+  sb <- if (n_completos >= 5) {
+    tryCatch(
+      psych::splitHalf(dat, raw = FALSE, check.keys = TRUE)$maxrb,
+      error = function(e) NA
+    )
+  } else NA
+  
+  col_agregada <- df[[var_agregada]]
+  
+  tibble(
+    Sistema = sistema,
+    Constructo = nombre,
+    Items = length(cols),
+    Cronbach_Alpha = sb,   # aquí va Spearman–Brown
+    Mean = mean(col_agregada, na.rm = TRUE),
+    SD   = sd(col_agregada, na.rm = TRUE),
+    Min  = min(col_agregada, na.rm = TRUE),
+    Max  = max(col_agregada, na.rm = TRUE)
+  )
+}
+
+# ===== 4. Filas objetivas =====
+
+filas_objetivas <- bind_rows(
+  procesar_split_half_fila(
+    data, items_fonasa_pre,
+    "Ex ante: Comprensión objetiva",
+    "FONASA", "fonasa_comp_objetiva_pre"
+  ),
+  procesar_split_half_fila(
+    data, items_fonasa_pos,
+    "Ex pos: Comprensión objetiva",
+    "FONASA", "fonasa_comp_objetiva_pos"
+  ),
+  procesar_split_half_fila(
+    data, items_sae_pre,
+    "Ex ante: Comprensión objetiva",
+    "SAE", "sae_comp_objetiva_pre"
+  ),
+  procesar_split_half_fila(
+    data, items_sae_pos,
+    "Ex pos: Comprensión objetiva",
+    "SAE", "sae_comp_objetiva_pos"
+  )
+)
+
+# ===== 5. Tabla final integrada =====
+
+tabla_final <- bind_rows(
+  tabla_base,
+  filas_objetivas
+) %>%
+  arrange(
+    factor(Sistema, levels = c("FONASA", "SAE")),
+    Constructo
+  )
+
+# ===== 6. Formateo con filas agrupadas =====
+
+n_fonasa <- sum(tabla_final$Sistema == "FONASA")
+n_sae    <- sum(tabla_final$Sistema == "SAE")
+
+tabla_final %>%
+  rename("Cronbach α/Split-Half)"=Cronbach_Alpha) %>%
+  select(-Sistema) %>%
+  kable(
+    digits = 3,
+    booktabs = TRUE,
+    caption = "Estadísticos descriptivos y confiabilidad por constructo"
+  ) %>%
+  kable_styling(
+    latex_options = c("striped", "hold_position"),
+    full_width = FALSE
+  ) %>%
+  pack_rows("FONASA", 1, n_fonasa) %>%
+  pack_rows("SAE", n_fonasa + 1, n_fonasa + n_sae)
+
+```
+
+### (IRT)
+
+```{r include=FALSE}
+pacman::p_load(mirt,dplyr,knitr,kableExtra)
+
+analizar_irt_completo <- function(df, lista_grupos) {
+  resultados_tablas <- list()
+  confiabilidades <- data.frame(Test = character(), Confiabilidad_Marginal = numeric())
+  
+  for (nombre in names(lista_grupos)) {
+    cols <- lista_grupos[[nombre]]
+    # Seleccionamos y limpiamos NAs
+    datos_clean <- df[, cols] %>% na.omit()
+    
+    # Ajuste del modelo 2 Parámetros Logísticos
+    mod <- mirt(datos_clean, 1, itemtype = '2PL', verbose = FALSE)
+    
+    # Extraer parámetros
+    params <- coef(mod, IRTpars = TRUE, simplify = TRUE)$items %>%
+      as.data.frame() %>%
+      mutate(Sistema_Tiempo = nombre, Item = row.names(.)) %>%
+      select(Sistema_Tiempo, Item, a, b)
+    
+    resultados_tablas[[nombre]] <- params
+    
+    # Calcular confiabilidad marginal
+    rel <- marginal_rxx(mod)
+    confiabilidades <- rbind(confiabilidades, data.frame(Test = nombre, Confiabilidad_Marginal = rel))
+  }
+  
+  return(list(items = bind_rows(resultados_tablas), rel = confiabilidades))
+}
+
+# Ejecutar el análisis
+analisis_final <- analizar_irt_completo(data, listas_items)
+
+# Tabla de Confiabilidad (Métrica de consistencia interna)
+kable(analisis_final$rel, digits = 3, caption = "Confiabilidad Marginal de los Tests de Conocimiento Objetivo") %>%
+  kable_styling(full_width = F, latex_options = "hold_position")
+
+# Tabla Detallada de ítems (Discriminación y Dificultad)
+kable(analisis_final$items, digits = 2, booktabs = TRUE, 
+      caption = "Parámetros IRT: Validación de Ítems de Comprensión Objetiva") %>%
+  kable_styling(latex_options = c("striped", "repeat_header")) %>%
+  pack_rows("FONASA Pre (8 ítems)", 1, 8) %>%
+  pack_rows("FONASA Pos (11 ítems)", 9, 19) %>%
+  pack_rows("SAE Pre (6 ítems)", 20, 25) %>%
+  pack_rows("SAE Pos (6 ítems)", 26, 31)
+```
+
+```{r include=FALSE}
+# Configurar panel de 2x2
+par(mfrow=c(2,2))
+
+for (nombre in names(listas_items)) {
+  cols <- listas_items[[nombre]]
+  dat <- data[, cols] %>% na.omit()
+  m <- mirt(dat, 1, itemtype = '2PL', verbose = FALSE)
+  
+  # Eliminamos 'xlab' para evitar el conflicto; mirt usa theta por defecto
+  print(plot(m, type = 'info', main = paste("Curva de Información:", nombre)))
+}
+```
+
+```{r include=FALSE}
+# Ejemplo para ver si las preguntas de SAE Pos funcionan bien todas
+mod_sae_pos <- mirt(data[, items_sae_pos], 1, itemtype = '2PL', verbose = FALSE)
+plot(mod_sae_pos, type = 'trace', main = "Probabilidad de acierto por ítem (SAE Pos)")
+
+# Ejemplo para ver si las preguntas de SAE Pos funcionan bien todas
+mod_fonasa_pos <- mirt(data[, items_fonasa_pos], 1, itemtype = '2PL', verbose = FALSE)
+plot(mod_fonasa_pos, type = 'trace', main = "Probabilidad de acierto por ítem (SAE Pos)")
+```
+
+
+# ¿Son las distribuciones normales?
+
+```{r}
+library(tidyverse)
+library(moments)     # skewness y kurtosis
+library(patchwork)   # combinar gráficos
+library(ggpubr)      # qqplot elegante
+
+plot_normality <- function(data, var, titulo) {
+
+  x <- data[[var]]
+  x <- x[!is.na(x)]
+
+  sk <- round(skewness(x), 2)
+  ku <- round(kurtosis(x), 2)
+  sh <- round(shapiro.test(x)$p.value, 3)
+
+  ggplot(data.frame(x), aes(x)) +
+    geom_histogram(aes(y = after_stat(density)),
+                   bins = 30,
+                   fill = "grey70",
+                   color = "white") +
+    geom_density(color = "black", linewidth = 1) +
+    stat_function(
+      fun = dnorm,
+      args = list(mean = mean(x), sd = sd(x)),
+      color = "red",
+      linewidth = 1,
+      linetype = "dashed"
+    ) +
+    labs(
+      title = titulo,
+      subtitle = paste0(
+        "Skew = ", sk,
+        " | Kurtosis = ", ku,
+        " | Shapiro p = ", sh
+      ),
+      x = NULL,
+      y = "Densidad"
+    ) +
+    theme_minimal()
+}
+
+plot_construct_4panels <- function(data,
+                                   fonasa_pre,
+                                   fonasa_pos,
+                                   sae_pre,
+                                   sae_pos,
+                                   titulo_general) {
+
+  p1 <- plot_normality(data, fonasa_pre, "FONASA · Pre")
+  p2 <- plot_normality(data, fonasa_pos, "FONASA · Post")
+  p3 <- plot_normality(data, sae_pre, "SAE · Pre")
+  p4 <- plot_normality(data, sae_pos, "SAE · Post")
+
+  (p1 | p2) / (p3 | p4) +
+    plot_annotation(
+      title = titulo_general,
+      theme = theme(plot.title = element_text(size = 14, face = "bold"))
+    )
+}
+
+plot_construct_3panels <- function(data,
+                                   fonasa_pos,
+                                   sae_pre,
+                                   sae_pos,
+                                   titulo_general) {
+
+  p1 <- plot_normality(data, fonasa_pos, "FONASA · Post")
+  p2 <- plot_normality(data, sae_pre, "SAE · Pre")
+  p3 <- plot_normality(data, sae_pos, "SAE · Post")
+
+  (p1 | p2) / p3 +
+    plot_annotation(
+      title = titulo_general,
+      theme = theme(
+        plot.title = element_text(size = 14, face = "bold")
+      )
+    )
+}
+
+
+plot_construct_4panels(
+  data = data,
+  fonasa_pre = "fonasa_comp_objetiva_pre",
+  fonasa_pos = "fonasa_comp_objetiva_pos",
+  sae_pre    = "sae_comp_objetiva_pre",
+  sae_pos    = "sae_comp_objetiva_pos",
+  titulo_general = "Distribución de Comprensión Objetiva"
+)
+
+plot_construct_4panels(
+  data = data,
+  fonasa_pre = "fonasa_comp_subjetiva_pre",
+  fonasa_pos = "fonasa_comp_subjetiva_pos",
+  sae_pre    = "sae_comp_subjetiva_pre",
+  sae_pos    = "sae_comp_subjetiva_pos",
+  titulo_general = "Distribución de Comprensión Subjetiva"
+)
+
+
+plot_construct_4panels(
+  data = data,
+  fonasa_pre = "fonasa_conf_word_funcional_pre",
+  fonasa_pos = "fonasa_conf_word_funcional_pos",
+  sae_pre    = "sae_conf_word_funcional_pre",
+  sae_pos    = "sae_conf_word_funcional_pos",
+  titulo_general = "Distribución de Functional Trust MDMT"
+)
+
+plot_construct_4panels(
+  data = data,
+  fonasa_pre = "fonasa_conf_belief_funcional_pre",
+  fonasa_pos = "fonasa_conf_belief_funcional_pos",
+  sae_pre    = "sae_conf_belief_funcional_pre",
+  sae_pos    = "sae_conf_belief_funcional_pos",
+  titulo_general = "Distribución de Functional Trust McKnight"
+)
+
+plot_construct_4panels(
+  data = data,
+  fonasa_pre = "fonasa_conf_word_moral_pre",
+  fonasa_pos = "fonasa_conf_word_moral_pos",
+  sae_pre    = "sae_conf_word_moral_pre",
+  sae_pos    = "sae_conf_word_moral_pos",
+  titulo_general = "Distribución de Moral Trust MDMT"
+)
+
+plot_construct_3panels(
+  data = data,
+  fonasa_pos = "fonasa_conf_belief_moral_pos",
+  sae_pre    = "sae_conf_belief_moral_pre",
+  sae_pos    = "sae_conf_belief_moral_pos",
+  titulo_general = "Distribución de Moral Trust McKnight"
+)
+
+```
+
+
