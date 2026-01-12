@@ -48,9 +48,13 @@ data <- data %>%
 
 ```
 
+
+
 # Fonasa
 
 ## Hipótesis 1
+
+
 
 ```{r}
 ## =========================================================
@@ -252,7 +256,11 @@ tab_model(
 ```
 
 
+
+
 ## Hipótesis 3
+
+
 
 ```{r}
 library(sjPlot)
@@ -476,7 +484,11 @@ tab_model(
 
 ```
 
+
+
 ## Hipótesis 5
+
+
 
 ```{r}
 ## =========================================================
@@ -768,9 +780,13 @@ tab_model(
 ```
 
 
+
+
 # SAE
 
 ## Hipótesis 2
+
+
 
 ```{r}
 library(sjPlot)
@@ -852,7 +868,11 @@ run_models("ai_skills", "AI skills")
 
 ```
 
+
+
 ## Hipótesis 4
+
+
 
 ```{r}
 run_models <- function(moderator, moderator_label) {
@@ -924,7 +944,11 @@ run_models("alfabetizacion_digital", "Digital literacy")
 run_models("ai_skills", "AI skills")
 ```
 
+
+
 ## Hipótesis 5
+
+
 
 ```{r}
 run_models <- function(moderator, moderator_label) {
