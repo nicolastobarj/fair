@@ -1,5 +1,164 @@
 ---
 title: "h_other_models"
 format: html
+
+execute: 
+  echo: false
+  warning: false
 ---
+
+```{r}
+source(here::here("script/proc_data.R"))
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    disclosure, inf_situacional, control_humano,
+    # Variables FONASA
+    ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
+  ), as.factor))
+
+data <- data%>%
+  filter(eliminado == 0)
+
+library(sjPlot)
+```
+ 
+# Comprensión - Trust Ex Ante SAE
+
+```{r}
+tab_model(
+  list(
+lm(sae_conf_belief_funcional_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_belief_funcional_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data),
+lm(sae_conf_belief_moral_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_belief_moral_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data),
+lm(sae_conf_word_funcional_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_word_funcional_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data),
+lm(sae_conf_word_moral_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_word_moral_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Objective Knowledge (Ex ante)", "Subjective Knowledge (Ex ante)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+```
+
+# Comprensión - Trust Ex pos SAE
+
+```{r}
+tab_model(
+  list(
+    lm(sae_conf_belief_funcional_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_belief_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept",
+                  "Objective Knowledge (Ex post)",
+                  "Subjective Knowledge (Ex post)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+
+```
+
+# Comprensión - Trust Ex Ante Fonasa
+
+```{r}
+tab_model(
+  list(
+lm(fonasa_conf_belief_funcional_pre ~ fonasa_comp_objetiva_pre, data = data),
+lm(fonasa_conf_belief_funcional_pre ~ fonasa_comp_objetiva_pre + fonasa_comp_subjetiva_pre, data = data),
+lm(fonasa_conf_word_funcional_pre ~ fonasa_comp_objetiva_pre, data = data),
+lm(fonasa_conf_word_funcional_pre ~ fonasa_comp_objetiva_pre + fonasa_comp_subjetiva_pre, data = data),
+lm(fonasa_conf_word_moral_pre ~ fonasa_comp_objetiva_pre, data = data),
+lm(fonasa_conf_word_moral_pre ~ fonasa_comp_objetiva_pre + fonasa_comp_subjetiva_pre, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Objective Knowledge (Ex ante)", "Subjective Knowledge (Ex ante)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+```
+
+# Comprensión - Trust Ex pos Fonasa
+
+```{r}
+tab_model(
+  list(
+    lm(fonasa_conf_belief_funcional_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_belief_funcional_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data),
+    lm(fonasa_conf_belief_moral_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_belief_moral_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data),
+    lm(fonasa_conf_word_funcional_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_word_funcional_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data),
+    lm(fonasa_conf_word_moral_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_word_moral_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept",
+                  "Objective Knowledge (Ex post)",
+                  "Subjective Knowledge (Ex post)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+```
 
