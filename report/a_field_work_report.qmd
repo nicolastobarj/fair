@@ -761,11 +761,6 @@ ggplot(var_table, aes(y = att_fail_category,
   )
 ```
 
-# Respuestas inconsistentes pre y post
-
-```{r}
-
-```
 
 # Arbol de decisiones
 

@@ -1,0 +1,291 @@
+---
+title: "Modelos de Hipótesis"
+format: html
+
+execute: 
+  echo: false
+  warning: false
+---
+
+```{r}
+source(here::here("script/proc_data.R"))
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    disclosure, inf_situacional, control_humano,
+    # Variables FONASA
+    ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
+  ), as.factor))
+
+data <- data%>%
+  filter(eliminado == 0)
+
+library(sjPlot)
+```
+
+# Fonasa
+
+## Hipótesis 1
+
+```{r h1 sin crontrol}
+tab_model(
+  list(
+lm(fonasa_comp_objetiva_pre ~ ai_disclosure_fonasa, data = data),
+lm(fonasa_comp_subjetiva_pre ~ ai_disclosure_fonasa, data = data),
+lm(fonasa_conf_word_moral_pre ~ ai_disclosure_fonasa, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Ai Disclosure (Ex ante)"),
+  dv.labels = c("Objective knowledge", "Subjective knowledge", "Moral trust (MDMT)")
+)
+
+```
+
+```{r h1 con control}
+tab_model(
+  list(
+lm(fonasa_comp_objetiva_pre ~ ai_disclosure_fonasa + edad_num + genero + education_recoded , data = data),
+lm(fonasa_comp_subjetiva_pre ~ ai_disclosure_fonasa + edad_num + genero + education_recoded, data = data),
+lm(fonasa_conf_word_moral_pre ~ ai_disclosure_fonasa + edad_num + genero + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Ai Disclosure (Ex-ante)","Edad", "Genero", "Educación: Media Completa", "Educación: Superior"),
+  dv.labels = c("Objective knowledge (Ex-ante)", "Subjective knowledge (Ex-ante)", "Moral trust MDMT (Ex-ante)")
+)
+```
+
+
+## Hipótesis 3 e Hipótesis 5
+
+```{r h3 sin control}
+tab_model(
+lm(fonasa_comp_objetiva_pos ~ performance_fonasa, data = data),
+lm(fonasa_comp_subjetiva_pos ~ performance_fonasa, data = data),
+lm(fonasa_conf_word_moral_pos ~ performance_fonasa, data = data),
+lm(fonasa_conf_belief_moral_pos ~ performance_fonasa, data = data),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Performance (Ex-pos)"),
+  dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Moral trust MDMT (Ex-pos)", "Moral trust McKnight (Ex-pos)") 
+)
+```
+
+```{r h5 sin control}
+tab_model(list(
+lm(fonasa_comp_objetiva_pos ~ control_humano_fonasa, data = data),
+lm(fonasa_comp_subjetiva_pos ~ control_humano_fonasa, data = data),
+lm(fonasa_conf_word_moral_pos ~ control_humano_fonasa, data = data),
+lm(fonasa_conf_belief_moral_pos ~ control_humano_fonasa, data = data),
+lm(fonasa_conf_word_funcional_pos ~ control_humano_fonasa, data = data)),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (Ex-pos)"),
+  dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Moral trust MDMT (Ex-pos)", "Moral trust McKnight (Ex-pos)", "Functional trust (Ex-pos)") 
+)
+```
+
+
+
+## Todas las hipótesis en un modelo
+
+```{r h3 interveciones}
+tab_model(list(
+lm(fonasa_comp_objetiva_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa, data = data),
+lm(fonasa_comp_subjetiva_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa, data = data),
+lm(fonasa_conf_word_moral_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa, data = data),
+lm(fonasa_conf_belief_moral_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa, data = data),
+lm(fonasa_conf_word_funcional_pos ~ control_humano_fonasa + ai_disclosure_fonasa, data = data)),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (Ex-pos)","Performance (Ex-pos)", "AI disclosure (Ex-ante)"),
+  dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Moral trust MDMT (Ex-pos)", "Moral trust McKnight (Ex-pos)", "Functional trust (Ex-pos") 
+)
+```
+
+## Todas las hipótesis con control
+
+```{r}
+tab_model(list(
+lm(fonasa_comp_objetiva_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa + genero + edad_num + + education_recoded, data = data),
+lm(fonasa_comp_subjetiva_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa + genero + edad_num + education_recoded, data = data),
+lm(fonasa_conf_word_moral_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa + genero + edad_num + education_recoded, data = data),
+lm(fonasa_conf_belief_moral_pos ~ control_humano_fonasa + performance_fonasa + ai_disclosure_fonasa + genero + edad_num + education_recoded, data = data),
+lm(fonasa_conf_word_funcional_pos ~ control_humano_fonasa + ai_disclosure_fonasa + genero + edad_num + education_recoded, data = data),
+lm(fonasa_conf_belief_funcional_pos ~ control_humano_fonasa + ai_disclosure_fonasa + genero + edad_num + education_recoded, data = data)),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (Ex-pos)","Performance (Ex-pos)", "AI disclosure (Ex-ante)", "Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Moral trust MDMT (Ex-pos)", "Moral trust McKnight (Ex-pos)", "Functional trust MDMT (Ex-pos)", "Functional trust McKnight (Ex-pos)") 
+)
+```
+
+# SAE
+
+## Hipótesis 2
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pre ~ disclosure, data = data),
+lm(sae_comp_subjetiva_pre ~ disclosure, data = data),
+lm(sae_conf_belief_funcional_pre ~ disclosure, data = data),
+lm(sae_conf_belief_moral_pre ~ disclosure, data = data),
+lm(sae_conf_word_funcional_pre ~ disclosure, data = data),
+lm(sae_conf_word_moral_pre ~ disclosure, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithm Disclosure (Ex-ante)"),
+  dv.labels = c("Objective knowledge (Ex-ante)", "Subjective knowledge (Ex-ante)", "Functional trust McKnight (Ex-ante)", "Moral trust McKnight (Ex-ante)", "Functional Trust MDMT (Ex-ante)", "Functional Trust MDMT (Ex-ante)")
+)
+```
+
+## Hipótesis 4
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pre ~ inf_situacional, data = data),
+lm(sae_comp_subjetiva_pre ~ inf_situacional, data = data),
+lm(sae_conf_belief_funcional_pre ~ inf_situacional, data = data),
+lm(sae_conf_belief_moral_pre ~ inf_situacional, data = data),
+lm(sae_conf_word_funcional_pre ~ inf_situacional, data = data),
+lm(sae_conf_word_moral_pre ~ inf_situacional, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Situational information (Ex-ante)"),
+  dv.labels = c("Objective knowledge (Ex-ante)", "Subjective knowledge (Ex-ante)", "Functional trust McKnight (Ex-ante)", "Moral trust McKnight (Ex-ante)", "Functional Trust MDMT (Ex-ante)", "Functional Trust MDMT (Ex-ante)")
+)
+```
+
+
+## Hipótesis 2 y 4 consolidadas
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+lm(sae_conf_word_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+lm(sae_conf_word_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)", "Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  dv.labels = c("Objective knowledge (Ex-ante)", "Subjective knowledge (Ex-ante)", "Functional trust McKnight (Ex-ante)", "Moral trust McKnight (Ex-ante)", "Functional Trust MDMT (Ex-ante)", "Functional Trust MDMT (Ex-ante)")
+)
+```
+
+
+## Hipótesis 5
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pos ~ control_humano, data = data),
+lm(sae_comp_subjetiva_pos ~ control_humano, data = data),
+lm(sae_conf_belief_funcional_pos ~ control_humano, data = data),
+lm(sae_conf_belief_moral_pos ~ control_humano, data = data),
+lm(sae_conf_word_funcional_pos ~ control_humano, data = data),
+lm(sae_conf_word_moral_pos ~ control_humano, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (Ex-pos)"),
+  dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Functional trust McKnight (Ex-pos)", "Moral trust McKnight (Ex-pos)", "Functional Trust MDMT (Ex-pos)", "Functional Trust MDMT (Ex-pos)")
+)
+```
+
+## Hipótesis 5 + demograficos
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_moral_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_word_funcional_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_word_moral_pos ~ control_humano + genero + edad_num + + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (Ex-pos)", "Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Functional trust McKnight (Ex-pos)", "Moral trust McKnight (Ex-pos)","Functional Trust MDMT (Ex-pos)", "Functional Trust MDMT (Ex-pos)")
+)
+```
+
+
+## Hipótesis 5 consolidada
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_word_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_word_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (Ex-pos)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Functional trust McKnight (Ex-pos)", "Moral trust McKnight (Ex-pos)","Functional Trust MDMT (Ex-pos)", "Functional Trust MDMT (Ex-pos)")
+)
+```
+

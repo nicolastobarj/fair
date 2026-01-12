@@ -40,7 +40,7 @@ data <- data %>%
         str_detect(tolower(educacion), "educación superior") |
         str_detect(tolower(educacion), "superior completa") |
         str_detect(tolower(educacion), "superior incompleta") |
-        str_detect(tolower(educacion), "profesional") ~ 4,
+        str_detect(tolower(educacion), "profesional") ~ 3,
       
       # 5. Posgrado
       str_detect(tolower(educacion), "magister") |
@@ -48,7 +48,7 @@ data <- data %>%
         str_detect(tolower(educacion), "master") |
         str_detect(tolower(educacion), "doctor") |
         str_detect(tolower(educacion), "postgrado") |
-        str_detect(tolower(educacion), "posgrado") ~ 5,
+        str_detect(tolower(educacion), "posgrado") ~ 3,
       
       TRUE ~ NA_real_
     ),
@@ -56,13 +56,11 @@ data <- data %>%
     # Convertir a factor con etiquetas (opcional)
     education_recoded = factor(
       education_recoded,
-      levels = 1:5,
+      levels = 1:3,
       labels = c(
         "Media incompleta",
         "Media completa",
-        "Técnico superior",
-        "Universitaria",
-        "Posgrado"
+        "Educación superior"
       )
     )
   )
@@ -86,8 +84,8 @@ data$edad_num <- as.numeric(data$edad)
 # Crear variable de tramos
 data$edad_tramo <- cut(
   data$edad_num,
-  breaks = c(-Inf, 30, 45, 65, Inf),
-  labels = c("18–30", "31–45", "46–65", "66+"),
+  breaks = c(-Inf, 30, 45, 65),
+  labels = c("18–30", "31–45", "46–65"),
   right = TRUE
 )
 
