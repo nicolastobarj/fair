@@ -154,3 +154,10 @@ data <- data %>%
       TRUE ~ 0
     )
   )
+
+data <- data |>
+  mutate(
+    genero = ifelse(genero == "m", "Mujer", "Hombre"),
+    genero = factor(genero, levels = c("Hombre", "Mujer"))
+  )
+
