@@ -142,7 +142,7 @@ lm(fonasa_conf_belief_funcional_pos ~ control_humano_fonasa + ai_disclosure_fona
   show.r2 = TRUE,
   show.fstat = TRUE,
   p.style = "stars",
-  pred.labels = c("Intercept", "Human control (Ex-pos)","Performance (Ex-pos)", "AI disclosure (Ex-ante)", "Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  pred.labels = c("Intercept", "Human control (Ex-pos)","Performance (Ex-pos)", "AI disclosure (Ex-ante)", "Género: Mujer", "Edad", "Educación: Media completa", "Educación: Superior"),
   dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Moral trust MDMT (Ex-pos)", "Moral trust McKnight (Ex-pos)", "Functional trust MDMT (Ex-pos)", "Functional trust McKnight (Ex-pos)") 
 )
 ```
@@ -213,7 +213,7 @@ lm(sae_conf_word_moral_pre ~ disclosure + inf_situacional + genero + edad_num + 
   show.r2 = TRUE,
   show.fstat = TRUE,
   p.style = "stars",
-  pred.labels = c("Intercept", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)", "Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  pred.labels = c("Intercept", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)", "Género: Mujer", "Edad", "Educación: Media completa", "Educación: Superior"),
   dv.labels = c("Objective knowledge (Ex-ante)", "Subjective knowledge (Ex-ante)", "Functional trust McKnight (Ex-ante)", "Moral trust McKnight (Ex-ante)", "Functional Trust MDMT (Ex-ante)", "Functional Trust MDMT (Ex-ante)")
 )
 ```
@@ -260,7 +260,7 @@ lm(sae_conf_word_moral_pos ~ control_humano + genero + edad_num + + education_re
   show.r2 = TRUE,
   show.fstat = TRUE,
   p.style = "stars",
-  pred.labels = c("Intercept", "Human control (Ex-pos)", "Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  pred.labels = c("Intercept", "Human control (Ex-pos)", "Género: Mujer", "Edad", "Educación: Media completa", "Educación: Superior"),
   dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Functional trust McKnight (Ex-pos)", "Moral trust McKnight (Ex-pos)","Functional Trust MDMT (Ex-pos)", "Functional Trust MDMT (Ex-pos)")
 )
 ```
@@ -284,7 +284,7 @@ lm(sae_conf_word_moral_pos ~ control_humano + disclosure + inf_situacional + gen
   show.r2 = TRUE,
   show.fstat = TRUE,
   p.style = "stars",
-  pred.labels = c("Intercept", "Human control (Ex-pos)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Género: Hombre", "Edad", "Educación: Media completa", "Educación: Superior"),
+  pred.labels = c("Intercept", "Human control (Ex-pos)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Género: Mujer", "Edad", "Educación: Media completa", "Educación: Superior"),
   dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Functional trust McKnight (Ex-pos)", "Moral trust McKnight (Ex-pos)","Functional Trust MDMT (Ex-pos)", "Functional Trust MDMT (Ex-pos)")
 )
 ```
