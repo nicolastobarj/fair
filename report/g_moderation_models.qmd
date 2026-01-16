@@ -82,6 +82,59 @@ ggcorrplot(moderators_corr,
 
 ## FONASA
 
+### Ex Ante Human control
+
+```{r}
+tab_model(list(
+lm(fonasa_comp_objetiva_pre ~ control_humano_fonasa*ai_skills + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_comp_subjetiva_pre ~ control_humano_fonasa*ai_skills + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_conf_belief_funcional_pre ~ control_humano_fonasa*ai_skills + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_conf_word_funcional_pre ~ control_humano_fonasa*ai_skills + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_conf_word_moral_pre ~ control_humano_fonasa*ai_skills + 
+     genero + edad_num + education_recoded, data = data)),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+```{r}
+tab_model(list(
+lm(fonasa_comp_objetiva_pre ~ control_humano_fonasa*attitudes_ai + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_comp_subjetiva_pre ~ control_humano_fonasa*attitudes_ai + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_conf_belief_funcional_pre ~ control_humano_fonasa*attitudes_ai + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_conf_word_funcional_pre ~ control_humano_fonasa*attitudes_ai + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(fonasa_conf_word_moral_pre ~ control_humano_fonasa*attitudes_ai + 
+     genero + edad_num + education_recoded, data = data)),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+
 ### AI SKILLS
 
 ```{r}
