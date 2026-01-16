@@ -210,3 +210,6 @@ ggcorrplot(corr_fonasa,
            colors = c("#E46726", "white", "#6D9EC1"),
            title = "Correlaciones Significativas FONASA")
 ```
+
+
+

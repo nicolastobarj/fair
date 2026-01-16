@@ -288,4 +288,3 @@ lm(sae_conf_word_moral_pos ~ control_humano + disclosure + inf_situacional + gen
   dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Functional trust McKnight (Ex-pos)", "Moral trust McKnight (Ex-pos)","Functional Trust MDMT (Ex-pos)", "Functional Trust MDMT (Ex-pos)")
 )
 ```
-
