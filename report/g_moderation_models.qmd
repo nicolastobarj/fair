@@ -674,11 +674,6 @@ tab_model(
 
 ```
 
-```{r}
-
-```
-
-
 ### AI SKILLS
 ```{r}
 tab_model(list(
@@ -1075,6 +1070,142 @@ lm(sae_conf_word_moral_pos ~ control_humano*device_type + inf_situacional + disc
 lm(sae_conf_word_moral_pos ~ control_humano + inf_situacional*device_type + disclosure + genero + edad_num + education_recoded, data = data),
 
 lm(sae_conf_word_moral_pos ~ control_humano + inf_situacional + disclosure*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+### Use SAE
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pos ~ control_humano + inf_situacional + disclosure, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + inf_situacional + disclosure + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano*uso_sae + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + inf_situacional + disclosure*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pos ~ control_humano + inf_situacional + disclosure, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + inf_situacional + disclosure + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano*uso_sae + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + inf_situacional + disclosure*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pos ~ control_humano + inf_situacional + disclosure, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + inf_situacional + disclosure + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano*uso_sae + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + inf_situacional + disclosure*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pos ~ control_humano + inf_situacional + disclosure, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + inf_situacional + disclosure + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano*uso_sae + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + inf_situacional + disclosure*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_word_funcional_pos ~ control_humano + inf_situacional + disclosure, data = data),
+
+lm(sae_conf_word_funcional_pos ~ control_humano + inf_situacional + disclosure + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_word_funcional_pos ~ control_humano*uso_sae + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_word_funcional_pos ~ control_humano + inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_word_funcional_pos ~ control_humano + inf_situacional + disclosure*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_word_moral_pos ~ control_humano + inf_situacional + disclosure, data = data),
+
+lm(sae_conf_word_moral_pos ~ control_humano + inf_situacional + disclosure + 
+     genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_word_moral_pos ~ control_humano*uso_sae + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_word_moral_pos ~ control_humano + inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_word_moral_pos ~ control_humano + inf_situacional + disclosure*uso_sae + genero + edad_num + education_recoded, data = data)
 ),
   collapse.se = TRUE,      
   show.ci = FALSE,
