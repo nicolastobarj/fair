@@ -1347,6 +1347,44 @@ lm(sae_conf_word_moral_pos ~ control_humano + inf_situacional + disclosure*uso_s
 
 ```{r}
 ggpredict(
+lm(sae_comp_subjetiva_pre ~ inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("uso_sae", "inf_situacional")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "SAE use",
+    y = "Subjective comprehension (SAE, post)",
+    color = "Situational information",
+    fill  = "Situational information"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+
+```{r}
+ggpredict(
 lm(sae_comp_objetiva_pos ~ control_humano + inf_situacional*ai_skills + disclosure + genero + edad_num + education_recoded, data = data),
   terms = c("ai_skills", "inf_situacional")
 )%>%
