@@ -1364,7 +1364,7 @@ ggplot(aes(
   ) +
   labs(
     x = "SAE use",
-    y = "Objective comprehension (SAE, post)",
+    y = "Subjective comprehension (SAE, post)",
     color = "Situational information",
     fill  = "Situational information"
   ) +
