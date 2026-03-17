@@ -1,0 +1,33 @@
+0000000000000000000000000000000000000000 d7b08227112ef7fc830b27de96ef6d7d0c8caf84 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1765806603 -0300	commit (initial): Initial commit
+d7b08227112ef7fc830b27de96ef6d7d0c8caf84 bc9d1dbb458a286cf43b8b3a44ce4a3a0270263f Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1765807013 -0300	commit: eliminado column
+bc9d1dbb458a286cf43b8b3a44ce4a3a0270263f 0b6bd11e5ab3a45ea0c29c8d485b1e91c4e02d86 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766429972 -0300	pull --ff --recurse-submodules --progress origin: Fast-forward
+0b6bd11e5ab3a45ea0c29c8d485b1e91c4e02d86 12c8e2deb3d1a25d7c36644a26b8d708608c97e2 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766437056 -0300	commit: descriptive analysis qmd
+12c8e2deb3d1a25d7c36644a26b8d708608c97e2 0f546d63f4dfc746112344b0c379751190b45e76 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766437307 -0300	commit (merge): Merge branch 'inaki-processes'
+0f546d63f4dfc746112344b0c379751190b45e76 cb4609c843d10a327a147522e715790cb796d1ed Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766441578 -0300	commit: nico report
+cb4609c843d10a327a147522e715790cb796d1ed c311f29b31be5648d8232c8d5030793955a421d7 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766442876 -0300	commit: report descriptive
+c311f29b31be5648d8232c8d5030793955a421d7 3aee673d32e9ea5909aff1ef0324778532f33992 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766454251 -0300	commit: last changes
+3aee673d32e9ea5909aff1ef0324778532f33992 7b2c8be2a86e67edfcd4bb68689d8aeda81ea62e Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766501528 -0300	commit: report for today
+7b2c8be2a86e67edfcd4bb68689d8aeda81ea62e 72756cbbc7c44d79952a16c1d5ae297588c28306 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766510206 -0300	pull --ff --recurse-submodules --progress origin: Fast-forward
+72756cbbc7c44d79952a16c1d5ae297588c28306 308f4301191ffcb60287ca5a21e966ecec87ab27 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1767818744 -0300	commit: upload
+308f4301191ffcb60287ca5a21e966ecec87ab27 e64f3b985dbc9195b69be34cfb4006295966a4bc Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1767890968 -0300	commit: upload reports
+e64f3b985dbc9195b69be34cfb4006295966a4bc 8d3a4ba52fa516a0887cfeefb48ede52ad4da39d Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1767891372 -0300	commit: fix links readme
+8d3a4ba52fa516a0887cfeefb48ede52ad4da39d 730b0db7999fdb51e443d6798950961d643a9547 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768222293 -0300	commit: new moderations
+730b0db7999fdb51e443d6798950961d643a9547 1a27b9edda77bfc769e4bfc01dfd484e6d8d4837 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768223325 -0300	commit: exploring knowledge
+1a27b9edda77bfc769e4bfc01dfd484e6d8d4837 2f5d5bf4fa6a0be7aed3f284a9ad2108d9713b9b Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768252551 -0300	commit: fix sae
+2f5d5bf4fa6a0be7aed3f284a9ad2108d9713b9b cfb34c84c0bdc2e50cc8666b6b28edba828cdae9 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768309008 -0300	commit: actualize gender labels
+cfb34c84c0bdc2e50cc8666b6b28edba828cdae9 956a679459e00a760704aa1d6fc862c71dd3784b Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768591308 -0300	commit: moderations and plots
+956a679459e00a760704aa1d6fc862c71dd3784b c6d27cc7a0671ccd7e707bf8091adf7808bdbfa9 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768593496 -0300	commit: variable mods
+c6d27cc7a0671ccd7e707bf8091adf7808bdbfa9 58a59a7d1ba12566aed9fb341024e39cc733b0c6 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768594032 -0300	commit: ex ante models
+58a59a7d1ba12566aed9fb341024e39cc733b0c6 c24aeba5beecf22d3ea31a2e15921f542aefacfd Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768596441 -0300	commit: sae uso
+c24aeba5beecf22d3ea31a2e15921f542aefacfd 05ffd265259be5eee8afbe537908cdf7d6ef2f71 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768822350 -0300	commit: uso sae pre
+05ffd265259be5eee8afbe537908cdf7d6ef2f71 216512bef1f34b37119729db62da0995547d8e81 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768828343 -0300	commit: uso sae plot
+216512bef1f34b37119729db62da0995547d8e81 0ac1fbea571ac493ec0991549af6a897f16e67f7 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768828775 -0300	commit: update sae use plot
+0ac1fbea571ac493ec0991549af6a897f16e67f7 3f37d886001fd1f22628498c90234106774b7e8d Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1768930152 -0300	commit: uso sae fix
+3f37d886001fd1f22628498c90234106774b7e8d 9e5fda371817cf916475be04f8368f56abbfb3af Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1769168738 -0300	commit: change moderators sae
+9e5fda371817cf916475be04f8368f56abbfb3af 2f70833dc766915b1f5876f4b7bb4806c16cf677 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1769444727 -0300	commit: Advances 3 and 4 analysis
+2f70833dc766915b1f5876f4b7bb4806c16cf677 7a366259f7b155d3779749de2e29d854304858d4 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1769444767 -0300	commit (merge): Merge branch 'main' of https://github.com/nicolastobarj/fair
+7a366259f7b155d3779749de2e29d854304858d4 2f0524b98a9a22e09ee23e28981e39c845b07447 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1770083678 -0300	commit: moderations obj know sae
+2f0524b98a9a22e09ee23e28981e39c845b07447 2a784e3f89edde9c9882b76f5dba71667d4934ac Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1772994472 -0300	commit: report path j_path_analysis_models
+2a784e3f89edde9c9882b76f5dba71667d4934ac eb6da04f5a3b154a077a18fba466bed2291009a2 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1773176986 -0300	commit: Refactor FONASA models and add decision GLM
+eb6da04f5a3b154a077a18fba466bed2291009a2 790cca45e5629200448626dc5d5e18a4b2470577 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1773177062 -0300	commit (merge): Merge branch 'main' of https://github.com/nicolastobarj/fair
+790cca45e5629200448626dc5d5e18a4b2470577 6f904a37b8f63360c3f6ed34253ff93b3a359d93 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1773758471 -0300	commit: new version

@@ -1,0 +1,54 @@
+"0","library(ggcorrplot)"
+"2","Warning: package ‘ggcorrplot’ was built under R version 4.4.3"
+"0","library(rstatix)"
+"2","Warning: package ‘rstatix’ was built under R version 4.4.3"
+"2","
+Attaching package: ‘rstatix’
+
+"
+"2","The following object is masked from ‘package:ggcorrplot’:
+
+    cor_pmat
+
+"
+"2","The following object is masked from ‘package:janitor’:
+
+    make_clean_names
+
+"
+"2","The following object is masked from ‘package:stats’:
+
+    filter
+
+"
+"0","# Seleccionamos las columnas en el orden exacto deseado"
+"0","moderators <- data %>%"
+"0","  select("
+"0","    ai_skills,attitudes_ai,attitudes_tech,alfabetizacion_digital, get_variable_ord,"
+"0","    device_type)%>%"
+"0","  mutate("
+"0","    device_type = ifelse(device_type == ""desktop"",1,0)"
+"0","  )# Esto quita ""sae_"" de todos los nombres"
+"0",""
+"0","# Calculamos correlación"
+"0","moderators <- moderators %>%"
+"0","  rename("
+"0","    attitudes_mcknight = attitudes_tech,"
+"0","    hargittai_literacy = alfabetizacion_digital"
+"0","  )"
+"0","p_mat_moderators <- cor_pmat(moderators)"
+"0","moderators_corr <- cor(moderators, use = ""complete.obs"")"
+"0",""
+"0","# 3. Graficar filtrando por significancia (p < 0.05)"
+"0","ggcorrplot(moderators_corr, "
+"0","           hc.order = FALSE,"
+"0","           type = ""upper"","
+"0","           lab = TRUE,"
+"0","           lab_size = 2.5,"
+"0","           sig.level = 0.05,       # Nivel de significancia (0.05 para 95% confianza)"
+"0","           insig = ""blank"",        # ""blank"" deja vacío lo que NO es significativo"
+"0","           colors = c(""#E46726"", ""white"", ""#6D9EC1""),"
+"0","           title = ""Correlaciones Significativas"")"
+"2","Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+Please use tidy evaluation idioms with `aes()`. 
+See also `vignette(""ggplot2-in-packages"")` for more information."

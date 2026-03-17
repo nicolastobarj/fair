@@ -1,0 +1,410 @@
+---
+title: "h_other_models"
+format: html
+
+execute: 
+  echo: false
+  warning: false
+---
+
+```{r}
+source(here::here("script/proc_data.R"))
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    disclosure, inf_situacional, control_humano,
+    # Variables FONASA
+    ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
+  ), as.factor))
+
+data <- data%>%
+  filter(eliminado == 0)
+
+library(sjPlot)
+```
+
+# Comprensión - Trust Ex Ante SAE
+
+```{r}
+tab_model(
+  list(
+lm(sae_conf_belief_funcional_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_belief_funcional_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data),
+lm(sae_conf_belief_moral_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_belief_moral_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data),
+lm(sae_conf_word_funcional_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_word_funcional_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data),
+lm(sae_conf_word_moral_pre ~ sae_comp_objetiva_pre, data = data),
+lm(sae_conf_word_moral_pre ~ sae_comp_objetiva_pre + sae_comp_subjetiva_pre, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Objective Knowledge (Ex ante)", "Subjective Knowledge (Ex ante)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+```
+
+# Comprensión - Trust Ex pos SAE
+
+```{r}
+tab_model(
+  list(
+    lm(sae_conf_belief_funcional_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_belief_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept",
+                  "Objective Knowledge (Ex post)",
+                  "Subjective Knowledge (Ex post)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+
+```
+
+# Comprensión - Trust Ex Ante Fonasa
+
+```{r}
+tab_model(
+  list(
+lm(fonasa_conf_belief_funcional_pre ~ fonasa_comp_objetiva_pre, data = data),
+lm(fonasa_conf_belief_funcional_pre ~ fonasa_comp_objetiva_pre + fonasa_comp_subjetiva_pre, data = data),
+lm(fonasa_conf_word_funcional_pre ~ fonasa_comp_objetiva_pre, data = data),
+lm(fonasa_conf_word_funcional_pre ~ fonasa_comp_objetiva_pre + fonasa_comp_subjetiva_pre, data = data),
+lm(fonasa_conf_word_moral_pre ~ fonasa_comp_objetiva_pre, data = data),
+lm(fonasa_conf_word_moral_pre ~ fonasa_comp_objetiva_pre + fonasa_comp_subjetiva_pre, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Objective Knowledge (Ex ante)", "Subjective Knowledge (Ex ante)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+```
+
+# Comprensión - Trust Ex pos Fonasa
+
+```{r}
+tab_model(
+  list(
+    lm(fonasa_conf_belief_funcional_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_belief_funcional_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data),
+    lm(fonasa_conf_belief_moral_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_belief_moral_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data),
+    lm(fonasa_conf_word_funcional_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_word_funcional_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data),
+    lm(fonasa_conf_word_moral_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(fonasa_conf_word_moral_pos ~ fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept",
+                  "Objective Knowledge (Ex post)",
+                  "Subjective Knowledge (Ex post)"),
+dv.labels = c(
+  "Functional trust MDMT (Ex ante)",
+  "Functional trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Moral trust MDMT (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Functional Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)",
+  "Moral Trust McKnight (Ex ante)"
+)
+)
+```
+
+# Moderación de comprensiones
+
+```{r}
+run_models_fonasa <- function(dv, data) {
+
+  formulas <- c(
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded",
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded + fonasa_comp_objetiva_pos",
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded + fonasa_comp_subjetiva_pos",
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded + fonasa_comp_objetiva_pos + fonasa_comp_subjetiva_pos",
+
+    "{dv} ~ ai_disclosure_fonasa*fonasa_comp_objetiva_pos + control_humano_fonasa + performance_fonasa +  + genero + edad_num + education_recoded + fonasa_comp_subjetiva_pos",
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa*fonasa_comp_objetiva_pos + performance_fonasa +   genero + edad_num + education_recoded + fonasa_comp_subjetiva_pos",
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa*fonasa_comp_objetiva_pos + genero + edad_num + education_recoded + fonasa_comp_subjetiva_pos",
+
+    "{dv} ~ ai_disclosure_fonasa*fonasa_comp_subjetiva_pos + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded + fonasa_comp_objetiva_pos",
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa*fonasa_comp_subjetiva_pos + performance_fonasa + genero + edad_num + education_recoded + fonasa_comp_objetiva_pos",
+    "{dv} ~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa*fonasa_comp_subjetiva_pos + genero + edad_num + education_recoded + fonasa_comp_objetiva_pos"
+  )
+
+  models <- lapply(formulas, function(f) {
+    lm(as.formula(glue::glue(f, dv = dv)), data = data)
+  })
+
+  tab_model(
+    models,
+    collapse.se = TRUE,
+    show.ci = FALSE,
+    show.aic = FALSE,
+    show.r2 = TRUE,
+    show.fstat = TRUE,
+    p.style = "stars"
+  )
+}
+
+```
+
+```{r}
+run_models_fonasa("fonasa_conf_belief_funcional_pos", data)
+run_models_fonasa("fonasa_conf_belief_moral_pos", data)
+run_models_fonasa("fonasa_conf_word_funcional_pos", data)
+run_models_fonasa("fonasa_conf_word_moral_pos", data)
+```
+
+# Gráficos interacciones
+
+```{r}
+library(ggeffects)
+library(ggplot2)
+library(patchwork)
+
+# =========================
+# MODELOS NECESARIOS
+# =========================
+
+m_func_ai_obj <- lm(
+  fonasa_conf_belief_funcional_pos ~ 
+    ai_disclosure_fonasa * fonasa_comp_objetiva_pos +
+    control_humano_fonasa + performance_fonasa +
+    fonasa_comp_subjetiva_pos,
+  data = data
+)
+
+m_func_ctrl_obj <- lm(
+  fonasa_conf_belief_funcional_pos ~ 
+    control_humano_fonasa * fonasa_comp_objetiva_pos +
+    ai_disclosure_fonasa + performance_fonasa +
+    fonasa_comp_subjetiva_pos,
+  data = data
+)
+
+m_func_perf_subj <- lm(
+  fonasa_conf_belief_funcional_pos ~ 
+    performance_fonasa * fonasa_comp_subjetiva_pos +
+    ai_disclosure_fonasa + control_humano_fonasa +
+    fonasa_comp_objetiva_pos,
+  data = data
+)
+
+m_moral_ctrl_obj <- lm(
+  fonasa_conf_belief_moral_pos ~ 
+    control_humano_fonasa * fonasa_comp_objetiva_pos +
+    ai_disclosure_fonasa + performance_fonasa +
+    fonasa_comp_subjetiva_pos,
+  data = data
+)
+
+m_moral_perf_subj <- lm(
+  fonasa_conf_belief_moral_pos ~ 
+    performance_fonasa * fonasa_comp_subjetiva_pos +
+    ai_disclosure_fonasa + control_humano_fonasa +
+    fonasa_comp_objetiva_pos,
+  data = data
+)
+
+# =========================
+# PREDICCIONES
+# =========================
+
+p1 <- ggpredict(m_func_ai_obj,
+                terms = c("fonasa_comp_objetiva_pos", "ai_disclosure_fonasa")) %>%
+  ggplot(aes(x, predicted, color = group)) +
+  geom_line(linewidth = 1.1) +
+  labs(
+    title = "AI disclosure × Conocimiento objetivo",
+    y = "Confianza funcional",
+    x = "Conocimiento objetivo",
+    color = "AI disclosure"
+  ) +
+  theme_minimal()
+
+p2 <- ggpredict(m_func_ctrl_obj,
+                terms = c("fonasa_comp_objetiva_pos", "control_humano_fonasa")) %>%
+  ggplot(aes(x, predicted, color = group)) +
+  geom_line(linewidth = 1.1) +
+  labs(
+    title = "Control humano × Conocimiento objetivo",
+    y = "Confianza funcional",
+    x = "Conocimiento objetivo",
+    color = "Control humano"
+  ) +
+  theme_minimal()
+
+p3 <- ggpredict(m_func_perf_subj,
+                terms = c("fonasa_comp_subjetiva_pos", "performance_fonasa")) %>%
+  ggplot(aes(x, predicted, color = group)) +
+  geom_line(linewidth = 1.1) +
+  labs(
+    title = "Performance × Conocimiento subjetivo",
+    y = "Confianza funcional",
+    x = "Conocimiento subjetivo",
+    color = "Performance"
+  ) +
+  theme_minimal()
+
+p4 <- ggpredict(m_moral_ctrl_obj,
+                terms = c("fonasa_comp_objetiva_pos", "control_humano_fonasa")) %>%
+  ggplot(aes(x, predicted, color = group)) +
+  geom_line(linewidth = 1.1) +
+  labs(
+    title = "Control humano × Conocimiento objetivo",
+    y = "Confianza moral",
+    x = "Conocimiento objetivo",
+    color = "Control humano"
+  ) +
+  theme_minimal()
+
+p5 <- ggpredict(m_moral_perf_subj,
+                terms = c("fonasa_comp_subjetiva_pos", "performance_fonasa")) %>%
+  ggplot(aes(x, predicted, color = group)) +
+  geom_line(linewidth = 1.1) +
+  labs(
+    title = "Performance × Conocimiento subjetivo",
+    y = "Confianza moral",
+    x = "Conocimiento subjetivo",
+    color = "Performance"
+  ) +
+  theme_minimal()
+
+# =========================
+# PANEL FINAL
+# =========================
+
+(p1 | p2) / (p3 | p4) / p5
+
+```
+# Moderación comprensión SAE
+
+```{r}
+run_models_sae <- function(dv, data) {
+
+  formulas <- c(
+    "{dv} ~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded",
+    "{dv} ~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded + sae_comp_objetiva_pos",
+    "{dv} ~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded + sae_comp_subjetiva_pos",
+    "{dv} ~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded + sae_comp_objetiva_pos + sae_comp_subjetiva_pos",
+
+    "{dv} ~ disclosure*sae_comp_objetiva_pos + inf_situacional + control_humano +  + genero + edad_num + education_recoded + sae_comp_subjetiva_pos",
+    "{dv} ~ disclosure + inf_situacional*sae_comp_objetiva_pos + control_humano +   genero + edad_num + education_recoded + sae_comp_subjetiva_pos",
+    "{dv} ~ disclosure + inf_situacional + control_humano*sae_comp_objetiva_pos + genero + edad_num + education_recoded + sae_comp_subjetiva_pos",
+
+    "{dv} ~ disclosure*sae_comp_subjetiva_pos + inf_situacional + control_humano + genero + edad_num + education_recoded + sae_comp_objetiva_pos",
+    "{dv} ~ disclosure + inf_situacional*sae_comp_subjetiva_pos + control_humano + genero + edad_num + education_recoded + sae_comp_objetiva_pos",
+    "{dv} ~ disclosure + inf_situacional + control_humano*sae_comp_subjetiva_pos + genero + edad_num + education_recoded + sae_comp_objetiva_pos"
+  )
+
+  models <- lapply(formulas, function(f) {
+    lm(as.formula(glue::glue(f, dv = dv)), data = data)
+  })
+
+  tab_model(
+    models,
+    collapse.se = TRUE,
+    show.ci = FALSE,
+    show.aic = FALSE,
+    show.r2 = TRUE,
+    show.fstat = TRUE,
+    p.style = "stars"
+  )
+}
+```
+
+```{r}
+run_models_sae("sae_conf_belief_funcional_pos", data)
+run_models_sae("sae_conf_belief_moral_pos", data)
+run_models_sae("sae_conf_word_funcional_pos", data)
+run_models_sae("sae_conf_word_moral_pos", data)
+```
+
+Nada significativo en las moderaciones.
+
+
+```{r}
+tab_model(
+  list(
+    lm(sae_conf_belief_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_belief_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos +
+         sae_comp_objetiva_pos*sae_comp_subjetiva_pos + disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos +
+         sae_comp_objetiva_pos*sae_comp_subjetiva_pos + disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos + sae_comp_objetiva_pos*sae_comp_subjetiva_pos + disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos +
+         sae_comp_objetiva_pos*sae_comp_subjetiva_pos + disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+dv.labels = c(
+  "Functional trust MDMT (Ex pos)",
+  "Functional trust MDMT (Ex pos)",
+  "Moral trust MDMT (Ex pos)",
+  "Moral trust MDMT (Ex pos)",
+  "Functional Trust McKnight (Ex pos)",
+  "Functional Trust McKnight (Ex pos)",
+  "Moral Trust McKnight (Ex pos)",
+  "Moral Trust McKnight (Ex pos)"
+)
+)
+```
+

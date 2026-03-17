@@ -1,0 +1,601 @@
+---
+title: "i_informed_trust"
+format: html
+---
+
+# Estrategia 1. Escala cuantitativa Informed Trust
+
+# Distribución informed trust
+
+```{r}
+
+source(here::here("script/proc_data.R"))
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(sjPlot)
+
+vars_informed <- c(
+  "fonasa_conf_belief_funcional_pos_calibrated",
+  "fonasa_conf_belief_moral_pos_calibrated",
+  "fonasa_conf_word_funcional_pos_calibrated",
+  "fonasa_conf_word_moral_pos_calibrated"
+)
+
+data_long <- data %>%
+  select(all_of(vars_informed)) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "tipo_confianza",
+    values_to = "valor"
+  )
+
+data <- data%>%
+  filter(eliminado == 0)
+```
+
+```{r}
+ggplot(data_long, aes(x = valor)) +
+  geom_histogram(bins = 30, fill = "grey70", color = "white", na.rm = TRUE) +
+  facet_wrap(~ tipo_confianza, scales = "free_y") +
+  labs(
+    x = "Confianza desinformada/Esceptiscismo o desconfianza/Confianza informada",
+    y = "Frecuencia"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+dv <- "fonasa_conf_belief_funcional_pos_calibrated"
+
+ivs <- c(
+  "ai_disclosure_fonasa",
+  "control_humano_fonasa",
+  "performance_fonasa"
+)
+
+library(dplyr)
+
+data %>%
+  group_by(ai_disclosure_fonasa) %>%
+  summarise(
+    mean = mean(.data[[dv]], na.rm = TRUE),
+    sd   = sd(.data[[dv]], na.rm = TRUE),
+    n    = n()
+  )
+
+
+data %>%
+  group_by(performance_fonasa) %>%
+  summarise(
+    mean = mean(.data[[dv]], na.rm = TRUE),
+    sd   = sd(.data[[dv]], na.rm = TRUE),
+    n    = n()
+  )
+
+
+data %>%
+  group_by(control_humano_fonasa) %>%
+  summarise(
+    mean = mean(.data[[dv]], na.rm = TRUE),
+    sd   = sd(.data[[dv]], na.rm = TRUE),
+    n    = n()
+  )
+
+```
+
+```{r}
+dv <- "fonasa_conf_belief_moral_pos_calibrated"
+
+data %>%
+  group_by(ai_disclosure_fonasa) %>%
+  summarise(
+    mean = mean(.data[[dv]], na.rm = TRUE),
+    sd   = sd(.data[[dv]], na.rm = TRUE),
+    n    = n()
+  )
+
+
+data %>%
+  group_by(performance_fonasa) %>%
+  summarise(
+    mean = mean(.data[[dv]], na.rm = TRUE),
+    sd   = sd(.data[[dv]], na.rm = TRUE),
+    n    = n()
+  )
+
+
+data %>%
+  group_by(control_humano_fonasa) %>%
+  summarise(
+    mean = mean(.data[[dv]], na.rm = TRUE),
+    sd   = sd(.data[[dv]], na.rm = TRUE),
+    n    = n()
+  )
+
+```
+
+
+```{r}
+dv <- "fonasa_conf_belief_funcional_pos_calibrated"
+
+ggplot(data, aes(
+  x = factor(ai_disclosure_fonasa),
+  y = .data[[dv]]
+)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  labs(
+    x = "AI disclosure",
+    y = "Calibrated trust"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+ggplot(data, aes(
+  x = factor(performance_fonasa),
+  y = .data[[dv]]
+)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  labs(
+    x = "Performance",
+    y = "Calibrated trust"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+ggplot(data, aes(
+  x = factor(control_humano_fonasa),
+  y = .data[[dv]]
+)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  labs(
+    x = "Human control",
+    y = "Calibrated trust"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+dv <- "fonasa_conf_belief_moral_pos_calibrated"
+
+ggplot(data, aes(
+  x = factor(ai_disclosure_fonasa),
+  y = .data[[dv]]
+)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  labs(
+    x = "AI disclosure",
+    y = "Calibrated trust"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+ggplot(data, aes(
+  x = factor(performance_fonasa),
+  y = .data[[dv]]
+)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  labs(
+    x = "Performance",
+    y = "Calibrated trust"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+ggplot(data, aes(
+  x = factor(control_humano_fonasa),
+  y = .data[[dv]]
+)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  labs(
+    x = "Human control",
+    y = "Calibrated trust"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+models_total <- list(
+  belief_funcional = lm(as.formula(paste("fonasa_conf_belief_funcional_pos_calibrated", "~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded")), data = data),
+  belief_moral = lm(as.formula(paste("fonasa_conf_belief_moral_pos_calibrated", "~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded")), data = data),
+  word_funcional = lm(as.formula(paste("fonasa_conf_word_funcional_pos_calibrated", "~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded")), data = data),
+  word_moral = lm(as.formula(paste("fonasa_conf_word_moral_pos_calibrated", "~ ai_disclosure_fonasa + control_humano_fonasa + performance_fonasa + genero + edad_num + education_recoded")), data = data)
+)
+
+tab_model(
+  models_total,
+  dv.labels = c("Calibrated functional McKnight trust (FONASA)","Calibrated moral McKnight trust (FONASA)","Calibrated functional MDMT trust (FONASA)","Calibrated moral MDMT trust (FONASA)"),
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "Human control",
+    "Performance",
+    "Genero: Mujer",
+    "Edad",
+    "Educación: Media completa",
+    "Educación: Superior"
+  ),
+    collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+# Estrategia 2. Tricotomizar y modelo multinomial
+
+```{r}
+library(nnet)
+
+data <- data %>%
+  mutate(
+    z_know_fonasa = as.numeric(scale(fonasa_comp_objetiva_pos)),
+    z_trust_func_fonasa = as.numeric(scale(fonasa_conf_belief_funcional_pos)),
+    z_trust_moral_fonasa = as.numeric(scale(fonasa_conf_belief_moral_pos))
+  )
+
+data <- data %>%
+  mutate(
+    fonasa_calibrated_misinfo_func = case_when(
+      z_know_fonasa >= 0 & z_trust_func_fonasa >= 0 ~ "Informed trust",
+      z_know_fonasa < 0 & z_trust_func_fonasa >= 0 ~ "Ignorant trust",
+      z_trust_func_fonasa < 0 ~ "Skeptical informed / mistrust uninformed"
+    )
+  )
+
+data <- data %>%
+  mutate(
+    fonasa_calibrated_misinfo_moral = case_when(
+      z_know_fonasa >= 0 & z_trust_moral_fonasa >= 0 ~ "Informed trust",
+      z_know_fonasa < 0 & z_trust_moral_fonasa >= 0 ~ "Ignorant trust",
+      z_trust_moral_fonasa < 0 ~ "Skeptical informed / mistrust uninformed"
+    )
+  )
+
+data <- data %>%
+  mutate(
+    fonasa_calibrated_funcional_cat = relevel(
+      factor(fonasa_calibrated_misinfo_func),
+      ref = "Skeptical informed / mistrust uninformed"
+    ),
+    fonasa_calibrated_moral_cat = relevel(
+      factor(fonasa_calibrated_misinfo_moral),
+      ref = "Skeptical informed / mistrust uninformed"
+    )
+  )
+
+ivs_intervencion <- c(
+  "ai_disclosure_fonasa",
+  "control_humano_fonasa",
+  "performance_fonasa"
+)
+
+ivs_demograficas <- c(
+  "genero",
+  "edad_num",
+  "education_recoded"
+)
+```
+
+```{r}
+count(data,sae_calibrated_funcional_cat)
+count(data,sae_calibrated_moral_cat)
+```
+
+```{r}
+tab_model(
+  multinom(
+  fonasa_calibrated_funcional_cat ~ 
+    ai_disclosure_fonasa +
+    control_humano_fonasa +
+    performance_fonasa +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+),
+  dv.labels = c(
+    "Calibrated Trust – Functional (FONASA, post)"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  string.est = "β (Multinomial logit)",
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "Human control",
+    "System performance",
+    "Gender (Women = 1)",
+    "Age",
+    "Educational level"
+  )
+)
+
+tab_model(
+  multinom(
+  fonasa_calibrated_moral_cat ~ 
+    ai_disclosure_fonasa +
+    control_humano_fonasa +
+    performance_fonasa +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+),
+  dv.labels = c(
+    "Calibrated Trust – Moral (FONASA, post)"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  string.est = "β (Multinomial logit)",
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "Human control",
+    "System performance",
+    "Gender (Women = 1)",
+    "Age",
+    "Educational level"
+  )
+)
+```
+
+```{r}
+data <- data %>%
+  mutate(
+    z_know_sae = as.numeric(scale(sae_comp_objetiva_pos)),
+    z_trust_func_sae = as.numeric(scale(sae_conf_belief_funcional_pos)),
+    z_trust_moral_sae = as.numeric(scale(sae_conf_belief_moral_pos))
+  )
+
+data <- data %>%
+  mutate(
+    sae_calibrated_misinfo_func = case_when(
+      z_know_sae >= 0 & z_trust_func_sae >= 0 ~ "Informed trust",
+      z_know_sae < 0 & z_trust_func_sae >= 0 ~ "Ignorant trust",
+      z_trust_func_sae < 0 ~ "Skeptical informed / mistrust uninformed"
+    )
+  )
+
+data <- data %>%
+  mutate(
+    sae_calibrated_misinfo_moral = case_when(
+      z_know_sae >= 0 & z_trust_moral_sae >= 0 ~ "Informed trust",
+      z_know_sae < 0 & z_trust_moral_sae >= 0 ~ "Ignorant trust",
+      z_trust_moral_sae < 0 ~ "Skeptical informed / mistrust uninformed"
+    )
+  )
+
+data <- data %>%
+  mutate(
+    sae_calibrated_funcional_cat = relevel(
+      factor(sae_calibrated_misinfo_func),
+      ref = "Skeptical informed / mistrust uninformed"
+    ),
+    sae_calibrated_moral_cat = relevel(
+      factor(sae_calibrated_misinfo_moral),
+      ref = "Skeptical informed / mistrust uninformed"
+    )
+  )
+
+ivs_intervencion <- c(
+  "disclosure",
+  "control_humano",
+  "inf_situacional"
+)
+
+ivs_demograficas <- c(
+  "genero",
+  "edad_num",
+  "education_recoded"
+)
+```
+
+```{r}
+count(data,sae_calibrated_funcional_cat)
+count(data,sae_calibrated_moral_cat)
+```
+
+```{r}
+tab_model(
+  multinom(
+    sae_calibrated_funcional_cat ~
+      disclosure +
+      control_humano +
+      inf_situacional +
+      genero +
+      edad_num +
+      education_recoded,
+    data = data
+  ),
+  dv.labels = c(
+    "Calibrated Trust – Functional (SAE, post)"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  string.est = "β (Multinomial logit)",
+  pred.labels = c(
+    "(Intercept)",
+    "Disclosure",
+    "Human control",
+    "Situational information",
+    "Gender (Women = 1)",
+    "Age",
+    "Educational level"
+  )
+)
+
+tab_model(
+  multinom(
+    sae_calibrated_moral_cat ~
+      disclosure +
+      control_humano +
+      inf_situacional +
+      genero +
+      edad_num +
+      education_recoded,
+    data = data
+  ),
+  dv.labels = c(
+    "Calibrated Trust – Moral (SAE, post)"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  string.est = "β (Multinomial logit)",
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "Human control",
+    "System performance",
+    "Gender (Women = 1)",
+    "Age",
+    "Educational level"
+  )
+)
+```
+
+# SAE
+
+## Modelo Informed Trust continuos
+
+```{r}
+models_total <- list(
+  belief_funcional = lm(
+    as.formula(paste(
+      "sae_conf_belief_funcional_pos_calibrated",
+      "~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded"
+    )),
+    data = data
+  ),
+  belief_moral = lm(
+    as.formula(paste(
+      "sae_conf_belief_moral_pos_calibrated",
+      "~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded"
+    )),
+    data = data
+  ),
+  word_funcional = lm(
+    as.formula(paste(
+      "sae_conf_word_funcional_pos_calibrated",
+      "~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded"
+    )),
+    data = data
+  ),
+  word_moral = lm(
+    as.formula(paste(
+      "sae_conf_word_moral_pos_calibrated",
+      "~ disclosure + inf_situacional + control_humano + genero + edad_num + education_recoded"
+    )),
+    data = data
+  )
+)
+
+tab_model(
+  models_total,
+  dv.labels = c(
+    "Calibrated functional McKnight trust (SAE)",
+    "Calibrated moral McKnight trust (SAE)",
+    "Calibrated functional MDMT trust (SAE)",
+    "Calibrated moral MDMT trust (SAE)"
+  ),
+  pred.labels = c(
+    "(Intercept)",
+    "Disclosure",
+    "Situational information",
+    "Human control",
+    "Genero: Mujer",
+    "Edad",
+    "Educación: Media completa",
+    "Educación: Superior"
+  ),
+  collapse.se = TRUE,
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+```{r}
+models_total <- list(
+  belief_funcional = lm(
+    as.formula(paste(
+      "sae_conf_belief_funcional_pos_calibrated",
+      "~ disclosure*attitudes_ai + inf_situacional*attitudes_ai + control_humano*attitudes_ai + genero + edad_num + education_recoded"
+    )),
+    data = data
+  ),
+  belief_moral = lm(
+    as.formula(paste(
+      "sae_conf_belief_moral_pos_calibrated",
+      "~ disclosure*attitudes_ai + inf_situacional*attitudes_ai + control_humano*attitudes_ai + genero + edad_num + education_recoded"
+    )),
+    data = data
+  ),
+  word_funcional = lm(
+    as.formula(paste(
+      "sae_conf_word_funcional_pos_calibrated",
+      "~ disclosure*attitudes_ai + inf_situacional*attitudes_ai + control_humano*attitudes_ai + genero + edad_num + education_recoded"
+    )),
+    data = data
+  ),
+  word_moral = lm(
+    as.formula(paste(
+      "sae_conf_word_moral_pos_calibrated",
+      "~ disclosure*attitudes_ai + inf_situacional*attitudes_ai + control_humano*attitudes_ai + genero + edad_num + education_recoded"
+    )),
+    data = data
+  )
+)
+
+tab_model(
+  models_total,
+  dv.labels = c(
+    "Calibrated functional McKnight trust (SAE)",
+    "Calibrated moral McKnight trust (SAE)",
+    "Calibrated functional MDMT trust (SAE)",
+    "Calibrated moral MDMT trust (SAE)"
+  ),
+  collapse.se = TRUE,
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+```{r}
+plot_model(
+  lm(
+    sae_conf_belief_funcional_pos_calibrated ~
+      disclosure *
+      attitudes_ai +
+      inf_situacional * attitudes_ai +
+      control_humano * attitudes_ai +
+      genero +
+      edad_num +
+      education_recoded,
+    data = data
+  ),
+  terms = c("control_humano", "attitudes_ai"),
+  type = "int"
+)
+```

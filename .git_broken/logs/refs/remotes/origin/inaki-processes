@@ -1,0 +1,2 @@
+0000000000000000000000000000000000000000 f0ba3003273b63b55b1cfab330dbba3456dc2828 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766429960 -0300	fetch --progress --prune --recurse-submodules=on-demand origin: storing head
+f0ba3003273b63b55b1cfab330dbba3456dc2828 5d84190b0c6aa7c65c214479a89c4e3ec39a9c51 Nicolas Tobar <nicolas.tobar@ug.uchile.cl> 1766435454 -0300	fetch --progress --prune --recurse-submodules=on-demand origin: fast-forward

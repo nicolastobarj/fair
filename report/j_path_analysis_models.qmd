@@ -1,0 +1,79 @@
+---
+title: Análisis de sendero Device_type
+format: html
+
+execute: 
+  echo: false
+  warning: false
+---
+
+```{r}
+
+source(here::here("script/proc_data.R"))
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(sjPlot)
+
+data <- data%>%
+  filter(eliminado == 0) %>%
+  filter(cantidad_colegios < 5)
+```
+
+## Crear variable
+
+```{r}
+data <- data %>%
+  mutate(
+    decision_sae = ifelse(
+      x402b_repostulacion == "Incluiría más escuelas",
+      1,
+      0
+    )
+  )
+```
+
+```{r}
+tab_model(
+  list(
+    glm(
+      decision_sae ~
+        sae_comp_objetiva_pre +
+        sae_comp_subjetiva_pre +
+        control_humano,
+      data = data,
+      family = "binomial"
+    ),
+    glm(
+      decision_sae ~
+        sae_comp_objetiva_pre * control_humano + 
+        sae_comp_subjetiva_pre * control_humano,
+      data = data,
+      family = "binomial"
+    )
+  ),
+  collapse.se = TRUE,
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
+
+## Gráficos
+
+```{r}
+plot_model(
+  glm(
+    decision_sae ~
+      sae_comp_objetiva_pre *
+      control_humano,
+    data = data,
+    family = "binomial"
+  ),
+  terms = c("sae_comp_objetiva_pre", "control_humano"),
+  type = "int"
+)
+```

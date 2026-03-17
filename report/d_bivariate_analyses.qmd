@@ -1,0 +1,215 @@
+---
+title: "Análisis correlaciones y bi-variados"
+format: html
+
+execute: 
+  echo: false
+  warning: false
+---
+
+```{r}
+source(here::here("script/proc_data.R"))
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    # Variables SAE
+    disclosure, inf_situacional, control_humano,
+    # Variables FONASA
+    ai_disclosure_fonasa, control_humano_fonasa, performance_fonasa
+  ), as.factor))
+
+data <- data%>%
+  filter(eliminado == 0)
+```
+
+# Pruebas de t-test
+
+```{r}
+library(ggplot2)
+library(patchwork) # Para unir los gráficos
+library(dplyr)
+
+plot_clean_hypothesis <- function(df, x_var, y_var, title_text) {
+  
+  # t-test
+  formula_obj <- as.formula(paste(y_var, "~", x_var))
+  t_test <- t.test(formula_obj, data = df)
+
+  # Formato editorial del p-valor
+  p_val <- t_test$p.value
+  p_label <- ifelse(
+    p_val < 0.001, "p < 0.001",
+    ifelse(p_val < 0.05, "p < 0.05",
+           paste0("p = ", round(p_val, 3)))
+  )
+
+  ggplot(df, aes_string(x = x_var, y = y_var)) +
+    # Media + IC 95%
+    stat_summary(
+      fun.data = function(x) mean_cl_normal(x, conf.int = 0.95),
+      geom = "errorbar",
+      width = 0.1,
+      size = 0.8
+    ) +
+    stat_summary(fun = "mean", geom = "point", size = 3) +
+    
+    # Línea que conecta las medias
+    stat_summary(
+      fun = "mean",
+      geom = "line",
+      aes(group = 1),
+      linetype = "solid",
+      alpha = 0.5
+    ) +
+    
+    labs(
+      subtitle = paste0(title_text, "\n(", p_label, ")"),
+      x = NULL,
+      y = NULL
+    ) +
+    
+    theme_minimal() +
+    theme(
+      plot.subtitle = element_text(size = 9, face = "italic"),
+      panel.grid.minor = element_blank()
+    )
+}
+
+```
+
+```{r}
+f1 <- plot_clean_hypothesis(data, "disclosure", "sae_comp_subjetiva_pos", "Disclosure: Subjetiva")
+f2 <- plot_clean_hypothesis(data, "disclosure", "sae_comp_objetiva_pos", "Disclosure: Objetiva")
+f3 <- plot_clean_hypothesis(data, "inf_situacional", "sae_comp_subjetiva_pos", "Situational info: Subjetiva")
+f4 <- plot_clean_hypothesis(data, "inf_situacional", "sae_comp_objetiva_pos", "Situational info: Objetiva")
+f5 <- plot_clean_hypothesis(data, "control_humano", "sae_comp_subjetiva_pos", "Control humano: Subjetiva")
+f6 <- plot_clean_hypothesis(data, "control_humano", "sae_comp_objetiva_pos", "Control humano: Objetiva")
+
+panel_sae_comp <- (f1 | f2) / (f3 | f4) / (f5 | f6) + 
+  plot_annotation(title = "SAE: Análisis de Comprensión (Medias e IC 95%)")
+
+panel_sae_comp
+```
+
+```{r}
+# --- SAE CONFIANZA ---
+sc1 <- plot_clean_hypothesis(data, "disclosure", "sae_conf_belief_moral_pos", "Disclosure: Moral (McK)")
+sc2 <- plot_clean_hypothesis(data, "disclosure", "sae_conf_word_moral_pos", "Disclosure: Moral (MDMT)")
+sc3 <- plot_clean_hypothesis(data, "inf_situacional", "sae_conf_belief_moral_pos", "Situational Info: Moral (McK)")
+sc4 <- plot_clean_hypothesis(data, "inf_situacional", "sae_conf_word_moral_pos", "Situational Info: Moral (MDMT)")
+sc5 <- plot_clean_hypothesis(data, "control_humano", "sae_conf_belief_funcional_pos", "Human Control: Funcional (Belief)")
+sc6 <- plot_clean_hypothesis(data, "control_humano", "sae_conf_word_funcional_pos", "Human Control: Funcional (MDMT)")
+
+panel_sae_conf <- (sc1 | sc2) / (sc3 | sc4) / (sc5 | sc6) + 
+  plot_annotation(title = "SAE: Análisis de Confianza (Medias e IC 95%)")
+
+panel_sae_conf
+```
+
+```{r}
+# --- FONASA COMPRENSIÓN ---
+fc1 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_comp_subjetiva_pos", "Disclosure: Subjetiva")
+fc2 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_comp_objetiva_pos", "Disclosure: Objetiva")
+fc3 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_comp_subjetiva_pos", "Performance: Subjetiva")
+fc4 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_comp_objetiva_pos", "Performance: Objetiva")
+fc5 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_comp_subjetiva_pos", "Human Control: Subjetiva")
+fc6 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_comp_objetiva_pos", "Human Control: Objetiva")
+
+panel_fonasa_comp <- (fc1 | fc2) / (fc3 | fc4) / (fc5 | fc6) + 
+  plot_annotation(title = "FONASA: Análisis de Comprensión (Medias e IC 95%)")
+
+panel_fonasa_comp
+```
+
+
+```{r}
+# --- FONASA CONFIANZA ---
+fcf1 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_conf_belief_moral_pos", "Disclosure: Moral (McK)")
+fcf2 <- plot_clean_hypothesis(data, "ai_disclosure_fonasa", "fonasa_conf_word_moral_pos", "Disclosure: Moral (MDMT)")
+fcf3 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_conf_belief_moral_pos", "Performance: Moral (McK)")
+fcf4 <- plot_clean_hypothesis(data, "performance_fonasa", "fonasa_conf_word_moral_pos", "Performance: Moral (MDMT)")
+fcf5 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_conf_belief_funcional_pos", "Human Control: Funcional (Belief)")
+fcf6 <- plot_clean_hypothesis(data, "control_humano_fonasa", "fonasa_conf_word_funcional_pos", "Human Control: Funcional (MDMT)")
+
+panel_fonasa_conf <- (fcf1 | fcf2) / (fcf3 | fcf4) / (fcf5 | fcf6) + 
+  plot_annotation(title = "FONASA: Análisis de Confianza (Medias e IC 95%)")
+
+panel_fonasa_conf
+```
+
+
+
+# Correlaciones
+
+SAE muestra correlaciones fuertes y positivas entre sus medidas principales. Algunas superan el >.85 que da cuenta de un riesgo de colinealidad al que tener ojo. En FONASA no todas las correlaciones son significativas, llamando la atención las débiles relaciones de comprensión objetiva.
+
+### SAE
+
+```{r}
+library(ggcorrplot)
+# 1. Preparación de datos y limpieza de nombres
+sae_data <- data %>%
+  select(
+    sae_conf_belief_funcional_pre, sae_conf_belief_funcional_pos,
+    sae_conf_belief_moral_pre, sae_conf_belief_moral_pos,
+    sae_conf_word_funcional_pre, sae_conf_word_funcional_pos,
+    sae_conf_word_moral_pre, sae_conf_word_moral_pos,
+    sae_comp_subjetiva_pre, sae_comp_subjetiva_pos,
+    sae_comp_subjetiva_otros_pos,
+    sae_comp_objetiva_pre, sae_comp_objetiva_pos
+  ) %>%
+  rename_with(~ gsub("sae_", "", .x))
+
+# 2. Calcular matriz de correlación Y matriz de valores p
+# La función cor_pmat calcula automáticamente los valores p
+p_mat_sae <- cor_pmat(sae_data)
+corr_sae <- cor(sae_data, use = "complete.obs")
+
+# 3. Graficar filtrando por significancia (p < 0.05)
+ggcorrplot(corr_sae, 
+           hc.order = FALSE,
+           type = "upper",
+           lab = TRUE,
+           lab_size = 2.5,
+           p.mat = p_mat_sae,      # Matriz de valores p
+           sig.level = 0.05,       # Nivel de significancia (0.05 para 95% confianza)
+           insig = "blank",        # "blank" deja vacío lo que NO es significativo
+           colors = c("#E46726", "white", "#6D9EC1"),
+           title = "Correlaciones Significativas SAE")
+```
+
+```{r}
+library(ggcorrplot)
+
+# Seleccionamos las columnas en el orden exacto deseado
+fonasa_data <- data %>%
+  select(
+    fonasa_conf_belief_funcional_pre, fonasa_conf_belief_funcional_pos,
+    fonasa_conf_word_funcional_pre, fonasa_conf_word_funcional_pos,
+    fonasa_conf_word_moral_pre, fonasa_conf_word_moral_pos,
+    fonasa_comp_subjetiva_pre, fonasa_comp_subjetiva_pos,
+    fonasa_comp_subjetiva_otros_pos,
+    fonasa_comp_objetiva_pre, fonasa_comp_objetiva_pos
+  ) %>%
+  rename_with(~ gsub("fonasa_", "", .x)) # Esto quita "sae_" de todos los nombres
+
+# Calculamos correlación
+p_mat_fonasa <- cor_pmat(fonasa_data)
+corr_fonasa <- cor(fonasa_data, use = "complete.obs")
+
+# 3. Graficar filtrando por significancia (p < 0.05)
+ggcorrplot(corr_fonasa, 
+           hc.order = FALSE,
+           type = "upper",
+           lab = TRUE,
+           lab_size = 2.5,
+           p.mat = p_mat_fonasa,      # Matriz de valores p
+           sig.level = 0.05,       # Nivel de significancia (0.05 para 95% confianza)
+           insig = "blank",        # "blank" deja vacío lo que NO es significativo
+           colors = c("#E46726", "white", "#6D9EC1"),
+           title = "Correlaciones Significativas FONASA")
+```
+
+
+

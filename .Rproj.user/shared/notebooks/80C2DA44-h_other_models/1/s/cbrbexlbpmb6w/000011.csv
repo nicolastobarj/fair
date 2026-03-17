@@ -1,0 +1,4 @@
+"0","run_models_sae(""sae_conf_belief_funcional_pos"", data)"
+"0","run_models_sae(""sae_conf_belief_moral_pos"", data)"
+"0","run_models_sae(""sae_conf_word_funcional_pos"", data)"
+"0","run_models_sae(""sae_conf_word_moral_pos"", data)"

@@ -1,0 +1,38 @@
+"0","tab_model(
+  list(
+    lm(sae_conf_belief_funcional_pos ~ fonasa_comp_objetiva_pos, data = data),
+    lm(sae_conf_belief_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos +
+         sae_comp_objetiva_pos*sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_belief_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos +
+         sae_comp_objetiva_pos*sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_word_funcional_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos + sae_comp_objetiva_pos*sae_comp_subjetiva_pos, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos, data = data),
+    lm(sae_conf_word_moral_pos ~ sae_comp_objetiva_pos + sae_comp_subjetiva_pos +
+         sae_comp_objetiva_pos*sae_comp_subjetiva_pos, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = ""stars"",
+  pred.labels = c(""Intercept"",
+                  ""Objective Knowledge (Ex post)"",
+                  ""Subjective Knowledge (Ex post)"",
+                  ""Interacción""),
+dv.labels = c(
+  ""Functional trust MDMT (Ex ante)"",
+  ""Functional trust MDMT (Ex ante)"",
+  ""Moral trust MDMT (Ex ante)"",
+  ""Moral trust MDMT (Ex ante)"",
+  ""Functional Trust McKnight (Ex ante)"",
+  ""Functional Trust McKnight (Ex ante)"",
+  ""Moral Trust McKnight (Ex ante)"",
+  ""Moral Trust McKnight (Ex ante)""
+)
+)
+"
+"2","Length of `pred.labels` does not equal number of predictors, no labelling applied.
+"
