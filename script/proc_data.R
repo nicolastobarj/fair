@@ -226,4 +226,32 @@ data <- data %>%
   )
 
 
-data$sae_conf_belief_funcional_pos_calibrated
+data <- data %>%
+  mutate(
+    attitudes_tech = rowMeans(
+      select(., starts_with("pre_general_attitudes_tech")),
+      na.rm = TRUE
+    ),
+    alfabetizacion_digital = rowMeans(
+      select(., starts_with("alfabetizacion_digital")),
+      na.rm = TRUE
+    ),
+    ai_skills = rowMeans(
+      select(., starts_with("ai_skills")),
+      na.rm = TRUE
+    ),
+    attitudes_ai = rowMeans(
+      select(., starts_with("general_attitudes_ai")),
+      na.rm = TRUE
+    ),
+    get_variable_ord_sae = ifelse(get_variable_ord == 1, "Fonasa", "SAE"),
+    uso_sae = rowMeans(
+      select(., starts_with("sae_familiaridad_uso")),
+      na.rm = TRUE
+    ),
+    sae_familiaridad_recode = ifelse(
+      sae_familiaridad_3 == "No sé.",
+      "No.",
+      sae_familiaridad_3
+    )
+  )

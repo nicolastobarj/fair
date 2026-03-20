@@ -294,8 +294,8 @@ ivs_demograficas <- c(
 ```
 
 ```{r}
-count(data,sae_calibrated_funcional_cat)
-count(data,sae_calibrated_moral_cat)
+count(data,fonasa_calibrated_funcional_cat)
+count(data,fonasa_calibrated_moral_cat)
 ```
 
 ```{r}
