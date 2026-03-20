@@ -25,6 +25,7 @@ data <- data %>%
       # 2. Media completa (incluye técnico nivel medio)
       str_detect(tolower(educacion), "media completa") |
         str_detect(tolower(educacion), "enseñanza media completa") |
+        str_detect(tolower(educacion), "bachiller") |
         str_detect(tolower(educacion), "básica completa") |
         str_detect(tolower(educacion), "educación básica completa") |
         str_detect(tolower(educacion), "técnico nivel medio") |

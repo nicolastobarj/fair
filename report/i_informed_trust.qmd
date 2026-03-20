@@ -36,6 +36,10 @@ data <- data%>%
 ```
 
 ```{r}
+count(data, get_variable_saec)
+```
+
+```{r}
 ggplot(data_long, aes(x = valor)) +
   geom_histogram(bins = 30, fill = "grey70", color = "white", na.rm = TRUE) +
   facet_wrap(~ tipo_confianza, scales = "free_y") +
