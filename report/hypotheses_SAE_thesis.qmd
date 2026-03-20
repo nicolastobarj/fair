@@ -1,0 +1,1448 @@
+---
+title: "hypotheses_SAE_thesis"
+format: html
+editor: visual
+---
+
+execute: echo: false warning: false ---
+
+# SAE (Ex-ante)
+
+```{r}
+#| include: false
+
+knitr::opts_chunk$set(
+  fig.path = "figures/",
+  dpi = 300,
+  fig.width = 7,
+  fig.height = 5,
+  dev = "png"
+)
+
+library(ggeffects)
+source(here::here("script/proc_data.R"))
+
+# Convertimos las variables de control a factores
+data <- data %>%
+  mutate(across(c(
+    disclosure, inf_situacional, control_humano
+  ), as.factor))
+
+data <- data%>%
+  filter(eliminado == 0)
+
+library(sjPlot)
+
+data <- data %>%
+  mutate(
+    attitudes_tech = rowMeans(
+      select(., starts_with("pre_general_attitudes_tech")),
+      na.rm = TRUE),
+    alfabetizacion_digital = rowMeans(
+      select(., starts_with("alfabetizacion_digital")),
+      na.rm = TRUE),  
+    ai_skills = rowMeans(
+      select(., starts_with("ai_skills")),
+      na.rm = TRUE), 
+    attitudes_ai = rowMeans(
+      select(., starts_with("general_attitudes_ai")),
+      na.rm = TRUE),
+    get_variable_ord_sae = ifelse(get_variable_ord == 1, "Fonasa", "SAE"),
+    uso_sae = rowMeans(
+      select(., starts_with("sae_familiaridad_uso")),
+      na.rm = TRUE),
+    sae_familiaridad_recode = ifelse(sae_familiaridad_3 == "No sé.", "No.", sae_familiaridad_3)
+    )
+```
+
+## Hipótesis 1
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pre ~ disclosure, data = data),
+lm(sae_comp_subjetiva_pre ~ disclosure, data = data),
+lm(sae_conf_belief_funcional_pre ~ disclosure, data = data),
+lm(sae_conf_belief_moral_pre ~ disclosure, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithm disclosure"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_H1_simple.html"
+)
+```
+
+## Hipótesis 1 con demográficos
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pre ~ disclosure + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pre ~ disclosure + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pre ~ disclosure + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_moral_pre ~ disclosure + genero + edad_num + + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithm disclosure", "Gender: <br> Female", "Age", "High school diploma", "Higher <br> education"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_H1_demog.html"
+)
+```
+
+## Hipótesis 2
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pre ~ inf_situacional, data = data),
+lm(sae_comp_subjetiva_pre ~ inf_situacional, data = data),
+lm(sae_conf_belief_funcional_pre ~ inf_situacional, data = data),
+lm(sae_conf_belief_moral_pre ~ inf_situacional, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Situational information"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_H2_simple.html"
+)
+```
+
+## Hipótesis 2 con demográficos
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pre ~ inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pre ~ inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pre ~ inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_moral_pre ~ inf_situacional + genero + edad_num + + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Situational information", "Gender:<br>  Female", "Age", "High school diploma", "Higher <br> education"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_H2_demog.html"
+)
+```
+
+## Hipótesis 1 y 2 consolidadas
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: <br> Female", "Age", "High school diploma", "Higher <br> education"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_H1_H2_demog.html"
+)
+```
+
+### Ex ante moderators progresivos
+
+### AI SKILLS PRE
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: <br> Female", "Age", "High school diploma", "Higher <br> education", "AI skills", "Algorithm disclosure x AI skills", "Situational information x AI skills"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_OU_AIskills.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "AI skills", "Algorithm disclosure x AI skills", "Situational information x AI skills"),
+  dv.labels = c("Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_SU_AIskills.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: <br> Female", "Age", "High school diploma", "Higher <br> education", "AI skills", "Algorithm disclosure x <br> AI skills", "Situational information x <br> AI skills"),
+  dv.labels = c("Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)"),
+  file = "tabla_exante_PT_AIskills.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic<br>  disclosure","Situational <br> information", "Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "AI skills", "Algorithm <br> disclosure x <br> AI skills", "Situational <br> information x <br> AI skills"),
+  dv.labels = c("Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_MT_AIskills.html"
+)
+```
+
+### AI ATTITUDES PRE
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure*attitudes_ai + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "AI Attitudes", "Algorithm disclosure x AI Attitudes", "Situational information x AI Attitudes"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_OU_AIattitudes.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure*attitudes_ai + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "AI Attitudes", "Algorithm disclosure x AI Attitudes", "Situational information x AI Attitudes"),
+  dv.labels = c("Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_SU_AIattitudes.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure*attitudes_ai + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: <br> Female", "Age", "High school diploma", "Higher <br> education", "AI Attitudes", "Algorithm disclosure x <br> AI Attitudes", "Situational information x <br> AI Attitudes"),
+  dv.labels = c("Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)"),
+  file = "tabla_exante_PT_AIattitudes.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure*attitudes_ai + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic <br> disclosure","Situational <br> information", "Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "AI Attitudes", "Algorithm <br> disclosure x <br> AI Attitudes", "Situational <br> information x <br> AI Attitudes"),
+  dv.labels = c("Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_MT_AIattitudes.html"
+)
+```
+
+### Device type pre
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "Device", "Algorithm disclosure x Device", "Situational information x Device"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_OU_Device.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "Device", "Algorithm disclosure x Device", "Situational information x Device"),
+  dv.labels = c("Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_SU_Device.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "Device", "Algorithm disclosure x Device", "Situational information x Device"),
+  dv.labels = c("Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)"),
+  file = "tabla_exante_PT_Device.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic <br> disclosure","Situational <br> information", "Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "Device", "Algorithm <br> disclosure x <br> Device", "Situational <br> information x <br> Device"),
+  dv.labels = c("Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_MT_Device.html"
+)
+```
+
+### Use SAE PRE
+
+#uso_sae
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pre ~ disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "Previous use", "Algorithm disclosure x Previous use", "Situational information x Previous use"),
+  dv.labels = c("Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)", "Objective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_OU_UsoSAE.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pre ~ disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: Female", "Age", "High school diploma", "Higher education", "Previous use", "Algorithm disclosure x Previous use", "Situational information x Previous use"),
+  dv.labels = c("Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)", "Subjective understanding <br> (Ex-ante)"),
+  file = "tabla_exante_SU_UsoSAE.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pre ~ disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic disclosure","Situational information", "Gender: <br> Female", "Age", "High school diploma", "Higher <br> education", "Previous use", "Algorithm disclosure x Previous use", "Situational information x Previous use"),
+  dv.labels = c("Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)", "Functional trust <br> (Ex-ante)"),
+  file = "tabla_exante_PT_UsoSAE.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Algorithmic <br> disclosure","Situational <br> information", "Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "Previous use", "Algorithm <br> disclosure x <br> Previous use", "Situational <br> information x <br> Previous use"),
+  dv.labels = c("Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)", "Moral trust <br> (Ex-ante)"),
+  file = "tabla_exante_MT_UsoSAE.html"
+)
+```
+
+
+## Hipótesis 3
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pos ~ control_humano, data = data),
+lm(sae_comp_subjetiva_pos ~ control_humano, data = data),
+lm(sae_conf_belief_funcional_pos ~ control_humano, data = data),
+lm(sae_conf_belief_moral_pos ~ control_humano, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control"),
+  dv.labels = c("Objective understanding <br> (During)", "Subjective understanding <br> (During)", "Functional trust <br> (During)", "Moral trust <br> (During)"),
+  file = "tabla_during_H3_simple.html"
+)
+```
+
+## Hipótesis 3 con demograficos
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pos ~ control_humano + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_moral_pos ~ control_humano + genero + edad_num + + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control", "Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education"),
+  dv.labels = c("Objective understanding <br> (During)", "Subjective understanding <br> (During)", "Functional trust <br> (During)", "Moral trust <br> (During)"),
+  file = "tabla_during_H3_demograf.html"
+)
+```
+
+## Hipótesis 3 controlada por manipulaciones Ex-ante
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional, data = data),
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control <br> (During)", "Algorithmic <br> disclosure <br> (Ex-ante)","Situational <br> information <br> (Ex-ante)"),
+  dv.labels = c("Objective understanding <br> (During)", "Subjective understanding <br> (During)", "Functional trust <br> (During)", "Moral trust <br> (During)"),
+  file = "tabla_during_H3_manip_exante.html"
+)
+```
+
+## Hipótesis 3 consolidada con demográficos
+
+```{r}
+tab_model(
+  list(
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data),
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + + education_recoded, data = data)
+  ),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control <br> (During)", "Algorithmic disclosure <br> (Ex-ante)","Situational information <br> (Ex-ante)","Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education"),
+  dv.labels = c("Objective understanding <br> (During)", "Subjective understanding <br> (During)", "Functional trust <br> (During)", "Moral trust <br> (During)"),
+  file = "tabla_during_H3_manip_exante_demog.html"
+)
+```
+
+### DURING moderatos progresivos
+
+### AI SKILLS POST
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano*ai_skills + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "AI skills", "Human control x <br> AI skills", "Algorithm disclosure x AI skills", "Situational information x AI skills"),
+  dv.labels = c("Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)"),
+  file = "tabla_during_OU_AIskills.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano*ai_skills + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "AI skills", "Human control x <br> AI skills", "Algorithm disclosure x <br> AI skills", "Situational information x AI skills"),
+  dv.labels = c("Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)"),
+  file = "tabla_during_SU_AIskills.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano*ai_skills + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "AI skills", "Human control x <br> AI skills", "Algorithm disclosure x <br> AI skills", "Situational information x AI skills"),
+  dv.labels = c("Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)"),
+  file = "tabla_during_PT_AIskills.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + ai_skills, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano*ai_skills + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure*ai_skills + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional*ai_skills + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control <br> (During)", "Algorithmic <br> disclosure <br> (Ex-ante)","Situational <br> information <br> (Ex-ante)","Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "AI skills", "Human<br> control x <br> AI skills", "Algorithm disclosure x <br> AI skills", "Situational information x <br> AI skills"),
+  dv.labels = c("Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)"),
+  file = "tabla_during_MT_AIskills.html"
+)
+```
+
+### AI ATTITUDES POST
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano*attitudes_ai + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure*attitudes_ai + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "AI attitudes", "Human control x <br> AI attitudes", "Algorithm disclosure x <br> AI attitudes", "Situational inform. x <br> AI attitudes"),
+  dv.labels = c("Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)"),
+  file = "tabla_during_OU_AIattitudes.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano*attitudes_ai + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure*attitudes_ai + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "AI attitudes", "Human control x <br> AI attitudes", "Algorithm disclosure x <br> AI attitudes", "Situational inform. x <br> AI attitudes"),
+  dv.labels = c("Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)"),
+  file = "tabla_during_SU_AIattitudes.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano*attitudes_ai + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure*attitudes_ai + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "AI attitudes", "Human control x <br> AI attitudes", "Algorithm disclosure x <br> AI attitudes", "Situational inform. x <br> AI attitudes"),
+  dv.labels = c("Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)", "Functional Trust <br> (During)"),
+  file = "tabla_during_PT_AIattitudes.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + attitudes_ai, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano*attitudes_ai + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure*attitudes_ai + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional*attitudes_ai + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control <br> (During)", "Algorithmic <br> disclosure <br> (Ex-ante)","Situational information <br> (Ex-ante)","Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "AI attitudes", "Human <br> control x <br> AI attitudes", "Algorithm disclosure x <br> AI attitudes", "Situational information x <br> AI attitudes"),
+  dv.labels = c("Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)", "Moral Trust <br> (During)"),
+  file = "tabla_during_MT_AIattitudes.html"
+)
+```
+
+### Device type post
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano*device_type + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "Device", "Human control x Device", "Algorithm disclosure x Device", "Situational information x Device"),
+  dv.labels = c("Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)"),
+  file = "tabla_during_OU_Device.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano*device_type + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "Device", "Human control x Device", "Algorithm disclosure x Device", "Situational information x Device"),
+  dv.labels = c("Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)"),
+  file = "tabla_during_SU_Device.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano*device_type + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "Device", "Human control x Device", "Algorithm disclosure x Device", "Situational information x Device"),
+  dv.labels = c("Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)"),
+  file = "tabla_during_PT_Device.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + device_type, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano*device_type + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure*device_type + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional*device_type + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control <br> (During)", "Algorithmic <br> disclosure <br> (Ex-ante)","Situational<br>  information <br> (Ex-ante)","Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "Device", "Human <br>  control x <br> Device", "Algorithm <br> disclosure x <br> Device", "Situational information x <br> Device"),
+  dv.labels = c("Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)"),
+  file = "tabla_during_MT_Device.html"
+)
+```
+
+### Use SAE POST
+
+```{r}
+tab_model(list(
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano*uso_sae + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_objetiva_pos ~ control_humano + disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "Previous <br> use", "Human control x <br> Previous use", "Algorithm disclosure x <br> Previous use", "Situational inform. x <br> Previous use"),
+  dv.labels = c("Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)", "Objective understanding <br> (During)"),
+  file = "tabla_during_OU_UsoSAE.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano*uso_sae + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_comp_subjetiva_pos ~ control_humano + disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "Previous <br> use", "Human control x <br> Previous use", "Algorithm disclosure x <br> Previous use", "Situational inform. x <br> Previous use"),
+  dv.labels = c("Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)", "Subjective understanding <br> (During)"),
+  file = "tabla_during_SU_UsoSAE.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano*uso_sae + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_funcional_pos ~ control_humano + disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human control (During)", "Algorithmic disclosure (Ex-ante)","Situational information (Ex-ante)","Gender: Female", "Age", "High school <br> diploma", "Higher <br> education", "Previous <br> use", "Human control x <br> Previous use", "Algorithm disclosure x <br> Previous use", "Situational inform. x <br> Previous use"),
+  dv.labels = c("Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)", "Functional trust <br> (During)"),
+  file = "tabla_during_PT_UsoSAE.html"
+)
+```
+
+```{r}
+tab_model(list(
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional + genero + edad_num + education_recoded + uso_sae, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano*uso_sae + disclosure + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure*uso_sae + inf_situacional + genero + edad_num + education_recoded, data = data),
+
+lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional*uso_sae + genero + edad_num + education_recoded, data = data)
+),
+  collapse.se = TRUE,      
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c("Intercept", "Human <br> control <br> (During)", "Algorithmic <br> disclosure <br> (Ex-ante)","Situational <br> information <br> (Ex-ante)","Gender: <br> Female", "Age", "High school <br> diploma", "Higher <br> education", "Previous <br> use", "Human <br> control x <br> Previous use", "Algorithm disclosure x <br> Previous use", "Situational inform. x <br> Previous use"),
+  dv.labels = c("Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)", "Moral trust <br> (During)"),
+  file = "tabla_during_MT_UsoSAE.html"
+)
+```
+
+#una sola vez para convertir a imágenes
+```{r}
+library(webshot2)
+
+files <- list.files(pattern = "^tabla_.*\\.html$")
+
+for (f in files) {
+  webshot2::webshot(f, paste0(sub(".html","",f),".png"), zoom = 3)
+}
+```
+
+### Gráficos SAE
+
+```{r plot_exante_SI_MT_AIattitudes}
+ggpredict(
+lm(sae_conf_belief_moral_pre ~ inf_situacional*attitudes_ai + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("attitudes_ai", "inf_situacional")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "AI Attitudes",
+    y = "Moral trust (Ex-ante)",
+    color = "Situational information",
+    fill  = "Situational information"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+```{r plot_exante_SI_SU_UsoSAE}
+ggpredict(
+lm(sae_comp_subjetiva_pre ~ inf_situacional*uso_sae + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("uso_sae", "inf_situacional")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "Previous use (SAE)",
+    y = "Subjective understanding (Ex-ante)",
+    color = "Situational information",
+    fill  = "Situational information"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+```{r plot_during_SI_OU_AISkills}
+ggpredict(
+lm(sae_comp_objetiva_pos ~ control_humano + inf_situacional*ai_skills + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("ai_skills", "inf_situacional")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "AI skills",
+    y = "Objective understanding (During)",
+    color = "Situational information",
+    fill  = "Situational information"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+```{r plot_during_HC_OU_AIattitudes}
+ggpredict(
+lm(sae_comp_objetiva_pos ~ control_humano*attitudes_ai + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("attitudes_ai", "control_humano")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "AI attitudes",
+    y = "Objective understanding (During)",
+    color = "Human Control",
+    fill  = "Human Control"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Human Control = 0", "1" = "Human Control = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Human Control = 0", "1" = "Human Control = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+```{r plot_during_HC_SU_AIattitudes}
+ggpredict(
+lm(sae_comp_subjetiva_pos ~ control_humano*attitudes_ai + inf_situacional + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("attitudes_ai", "control_humano")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "AI attitudes",
+    y = "Subjective understanding (During)",
+    color = "Human Control",
+    fill  = "Human Control"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Human Control = 0", "1" = "Human Control = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Human Control = 0", "1" = "Human Control = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+```{r plot_during_SI_PT_AIattitudes}
+ggpredict(
+lm(sae_conf_belief_funcional_pos ~ control_humano + inf_situacional*attitudes_ai + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("attitudes_ai", "inf_situacional")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "AI attitudes",
+    y = "Functional trust (During)",
+    color = "Situational information",
+    fill  = "Situational information"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+```{r plot_during_SI_MT_AIattitudes}
+ggpredict(
+lm(sae_conf_belief_moral_pos ~ control_humano + inf_situacional*attitudes_ai + disclosure + genero + edad_num + education_recoded, data = data),
+  terms = c("attitudes_ai", "inf_situacional")
+)%>%
+
+ggplot(aes(
+         x = x,
+         y = predicted,
+         color = group
+       )) +
+  geom_line(linewidth = 1.2) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high, fill = group),
+    alpha = 0.15,
+    color = NA
+  ) +
+  labs(
+    x = "AI attitudes",
+    y = "Moral trust (During)",
+    color = "Situational information",
+    fill  = "Situational information"
+  ) +
+  scale_color_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  scale_fill_manual(
+    values = c("0" = "#1B9E77", "1" = "#D95F02"),
+    labels = c("0" = "Situational information = 0", "1" = "Situational information = 1")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top"
+  )
+```
+
+# A partir de aquí no arreglé
+
+```{r}
+data <- data %>%
+  mutate(
+    device_type = factor(
+      device_type,
+      levels = c("desktop", "mobile")  # referencia clara
+    ),
+    control_humano = factor(
+      control_humano,
+      levels = c(0, 1)
+    )
+  )
+
+library(ggeffects)
+library(ggplot2)
+
+m_device_control <- lm(
+  sae_comp_objetiva_pos ~ 
+    control_humano * device_type +
+    inf_situacional +
+    disclosure +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+)
+
+plot_model(m_device_control, terms = c("control_humano", "device_type"), type = "int")
+
+```
+
+```{r}
+plot_model(lm(
+  sae_comp_subjetiva_pos ~ 
+    control_humano * device_type +
+    inf_situacional +
+    disclosure +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+), terms = c("control_humano", "device_type"), type = "int")
+
+```
+
+```{r}
+plot_model(lm(
+  sae_conf_belief_funcional_pos ~ 
+    control_humano * device_type +
+    inf_situacional +
+    disclosure +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+), terms = c("control_humano", "device_type"), type = "int")
+
+```
+
+```{r}
+plot_model(lm(
+  sae_conf_belief_moral_pos ~ 
+    control_humano * device_type +
+    inf_situacional +
+    disclosure +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+), terms = c("control_humano", "device_type"), type = "int")
+```
+
+```{r}
+plot_model(lm(
+  sae_conf_word_funcional_pos ~ 
+    control_humano * device_type +
+    inf_situacional +
+    disclosure +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+), terms = c("control_humano", "device_type"), type = "int")
+```
+
+```{r}
+plot_model(lm(
+  sae_conf_belief_moral_pos ~ 
+    control_humano * device_type +
+    inf_situacional +
+    disclosure +
+    genero +
+    edad_num +
+    education_recoded,
+  data = data
+), terms = c("control_humano", "device_type"), type = "int")
+```
