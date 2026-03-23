@@ -1,6 +1,9 @@
 ---
 title: "i_informed_trust"
 format: html
+execute: 
+  echo: false
+  warning: false
 ---
 
 # Estrategia 1. Escala cuantitativa Informed Trust
@@ -37,6 +40,50 @@ data <- data%>%
 
 ```{r}
 count(data, get_variable_saec)
+```
+
+### Compare variables distributions (standariezed)
+
+```{r}
+trust_long <- data |>
+  transmute(
+    FONASA_objective = (fonasa_comp_objetiva_pos - 1) / (11 - 1),
+    SAE_objective = (sae_comp_objetiva_pos - 1) / (7 - 1),
+    FONASA_functional = (fonasa_conf_belief_funcional_pos - 1) / (7 - 1),
+    SAE_functional = (sae_conf_belief_funcional_pos - 1) / (7 - 1),
+    FONASA_moral = (fonasa_conf_belief_moral_pos - 1) / (7 - 1),
+    SAE_moral = (sae_conf_belief_moral_pos - 1) / (7 - 1)
+  ) |>
+  pivot_longer(
+    cols = everything(),
+    names_to = "measure",
+    values_to = "score_norm"
+  ) |>
+  mutate(
+    system = case_when(
+      grepl("^FONASA", measure) ~ "FONASA",
+      grepl("^SAE", measure) ~ "SAE"
+    ),
+    construct = case_when(
+      grepl("objective", measure) ~ "Objective knowledge",
+      grepl("functional", measure) ~ "Functional trust",
+      grepl("moral", measure) ~ "Moral trust"
+    )
+  )
+
+ggplot(trust_long, aes(x = score_norm, fill = system)) +
+  geom_density(alpha = 0.4, na.rm = TRUE) +
+  facet_wrap(~construct) +
+  scale_x_continuous(
+    labels = scales::percent_format(),
+    breaks = seq(0, 1, 0.2)
+  ) +
+  labs(
+    x = "Normalized position in scale",
+    y = "Density",
+    fill = "System"
+  ) +
+  theme_minimal()
 ```
 
 ```{r}
@@ -86,7 +133,6 @@ data %>%
     sd   = sd(.data[[dv]], na.rm = TRUE),
     n    = n()
   )
-
 ```
 
 ```{r}
@@ -298,8 +344,117 @@ ivs_demograficas <- c(
 ```
 
 ```{r}
-count(data,fonasa_calibrated_funcional_cat)
-count(data,fonasa_calibrated_moral_cat)
+count(data,fonasa_calibrated_funcional_cat)%>%
+  mutate(prop = round(n / sum(n),2)) %>%
+  kable()
+
+count(data,fonasa_calibrated_moral_cat)%>%
+  mutate(prop = round(n / sum(n),2)) %>%
+  kable()
+```
+
+```{r}
+library(scales)
+
+vars_interes <- c(
+  "ai_disclosure_fonasa",
+  "control_humano_fonasa",
+  "performance_fonasa"
+)
+
+etiquetas_vars <- c(
+  ai_disclosure_fonasa = "AI disclosure",
+  control_humano_fonasa = "Human control",
+  performance_fonasa = "Performance"
+)
+
+plot_data_func <- data |>
+  select(fonasa_calibrated_funcional_cat, all_of(vars_interes)) |>
+  pivot_longer(
+    cols = all_of(vars_interes),
+    names_to = "variable",
+    values_to = "valor"
+  ) |>
+  count(fonasa_calibrated_funcional_cat, variable, valor) |>
+  group_by(fonasa_calibrated_funcional_cat, variable) |>
+  mutate(
+    prop = n / sum(n),
+    label = percent(prop, accuracy = 1)
+  ) |>
+  ungroup() |>
+  mutate(
+    variable = recode(variable, !!!etiquetas_vars),
+    valor = factor(valor, levels = c(0, 1))
+  )
+
+p_func <- ggplot(
+  plot_data_func,
+  aes(
+    y = variable,
+    x = prop,
+    fill = factor(valor)
+  )
+) +
+  geom_col() +
+  geom_text(
+    aes(label = label),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ fonasa_calibrated_funcional_cat, ncol = 1) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(
+    title = "Informed Functional trust",
+    x = "Percentage",
+    y = NULL,
+    fill = "Value"
+  ) +
+  theme_minimal()
+
+plot_data_moral <- data |>
+  select(fonasa_calibrated_moral_cat, all_of(vars_interes)) |>
+  pivot_longer(
+    cols = all_of(vars_interes),
+    names_to = "variable",
+    values_to = "valor"
+  ) |>
+  count(fonasa_calibrated_moral_cat, variable, valor) |>
+  group_by(fonasa_calibrated_moral_cat, variable) |>
+  mutate(
+    prop = n / sum(n),
+    label = percent(prop, accuracy = 1)
+  ) |>
+  ungroup() |>
+  mutate(
+    variable = recode(variable, !!!etiquetas_vars),
+    valor = factor(valor, levels = c(0, 1))
+  )
+
+p_moral <- ggplot(
+  plot_data_moral,
+  aes(
+    y = variable,
+    x = prop,
+    fill = factor(valor)
+  )
+) +
+  geom_col() +
+  geom_text(
+    aes(label = label),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ fonasa_calibrated_moral_cat, ncol = 1) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(
+    title = "Informed Moral trust",
+    x = "Percentage",
+    y = NULL,
+    fill = "Value"
+  ) +
+  theme_minimal()
+
+p_func / p_moral
 ```
 
 ```{r}
@@ -315,11 +470,10 @@ tab_model(
   data = data
 ),
   dv.labels = c(
-    "Calibrated Trust – Functional (FONASA, post)"
+    "Informed Trust – Functional (FONASA, post)"
   ),
   show.ci = FALSE,
   p.style = "stars",
-  string.est = "β (Multinomial logit)",
   pred.labels = c(
     "(Intercept)",
     "AI disclosure",
@@ -343,11 +497,10 @@ tab_model(
   data = data
 ),
   dv.labels = c(
-    "Calibrated Trust – Moral (FONASA, post)"
+    "Informed Trust – Moral (FONASA, post)"
   ),
   show.ci = FALSE,
   p.style = "stars",
-  string.est = "β (Multinomial logit)",
   pred.labels = c(
     "(Intercept)",
     "AI disclosure",
@@ -412,8 +565,117 @@ ivs_demograficas <- c(
 ```
 
 ```{r}
-count(data,sae_calibrated_funcional_cat)
-count(data,sae_calibrated_moral_cat)
+count(data, sae_calibrated_funcional_cat) %>%
+  mutate(prop = round(n / sum(n), 2)) %>%
+  kable()
+count(data, sae_calibrated_moral_cat) %>%
+  mutate(prop = round(n / sum(n), 2)) %>%
+  kable()
+```
+
+```{r}
+library(scales)
+library(patchwork)
+
+vars_interes <- c(
+  "disclosure",
+  "control_humano",
+  "inf_situacional"
+)
+
+etiquetas_vars <- c(
+  disclosure = "Disclosure",
+  control_humano = "Human control",
+  inf_situacional = "Situational information"
+)
+
+plot_data_func <- data |>
+  select(sae_calibrated_funcional_cat, all_of(vars_interes)) |>
+  pivot_longer(
+    cols = all_of(vars_interes),
+    names_to = "variable",
+    values_to = "valor"
+  ) |>
+  count(sae_calibrated_funcional_cat, variable, valor) |>
+  group_by(sae_calibrated_funcional_cat, variable) |>
+  mutate(
+    prop = n / sum(n),
+    label = percent(prop, accuracy = 1)
+  ) |>
+  ungroup() |>
+  mutate(
+    variable = recode(variable, !!!etiquetas_vars),
+    valor = factor(valor, levels = c(0, 1))
+  )
+
+p_func <- ggplot(
+  plot_data_func,
+  aes(
+    y = variable,
+    x = prop,
+    fill = valor
+  )
+) +
+  geom_col() +
+  geom_text(
+    aes(label = label),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~sae_calibrated_funcional_cat, ncol = 1) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(
+    title = "Informed Functional trust",
+    x = "Percentage",
+    y = NULL,
+    fill = "Value"
+  ) +
+  theme_minimal()
+
+plot_data_moral <- data |>
+  select(sae_calibrated_moral_cat, all_of(vars_interes)) |>
+  pivot_longer(
+    cols = all_of(vars_interes),
+    names_to = "variable",
+    values_to = "valor"
+  ) |>
+  count(sae_calibrated_moral_cat, variable, valor) |>
+  group_by(sae_calibrated_moral_cat, variable) |>
+  mutate(
+    prop = n / sum(n),
+    label = percent(prop, accuracy = 1)
+  ) |>
+  ungroup() |>
+  mutate(
+    variable = recode(variable, !!!etiquetas_vars),
+    valor = factor(valor, levels = c(0, 1))
+  )
+
+p_moral <- ggplot(
+  plot_data_moral,
+  aes(
+    y = variable,
+    x = prop,
+    fill = valor
+  )
+) +
+  geom_col() +
+  geom_text(
+    aes(label = label),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~sae_calibrated_moral_cat, ncol = 1) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(
+    title = "Informed Moral trust",
+    x = "Percentage",
+    y = NULL,
+    fill = "Value"
+  ) +
+  theme_minimal()
+
+p_func / p_moral
 ```
 
 ```{r}
@@ -429,11 +691,10 @@ tab_model(
     data = data
   ),
   dv.labels = c(
-    "Calibrated Trust – Functional (SAE, post)"
+    "Informed Trust – Functional (SAE, post)"
   ),
   show.ci = FALSE,
   p.style = "stars",
-  string.est = "β (Multinomial logit)",
   pred.labels = c(
     "(Intercept)",
     "Disclosure",
@@ -457,11 +718,10 @@ tab_model(
     data = data
   ),
   dv.labels = c(
-    "Calibrated Trust – Moral (SAE, post)"
+    "Informed Trust – Moral (SAE, post)"
   ),
   show.ci = FALSE,
   p.style = "stars",
-  string.est = "β (Multinomial logit)",
   pred.labels = c(
     "(Intercept)",
     "AI disclosure",

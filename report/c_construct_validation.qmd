@@ -311,6 +311,7 @@ procesar_tabla_descriptiva <- function(info, nombre) {
     Items = ncol(df_items),
     Cronbach_Alpha = alpha_val,
     Mean = mean(col_agregada, na.rm = TRUE),
+    Median = median(col_agregada, na.rm = TRUE),
     SD   = sd(col_agregada, na.rm = TRUE),
     Min  = min(col_agregada, na.rm = TRUE),
     Max  = max(col_agregada, na.rm = TRUE)
@@ -343,6 +344,7 @@ procesar_split_half_fila <- function(df, cols, nombre, sistema, var_agregada) {
     Items = length(cols),
     Cronbach_Alpha = sb,   # aquí va Spearman–Brown
     Mean = mean(col_agregada, na.rm = TRUE),
+    Median = median(col_agregada, na.rm = TRUE),
     SD   = sd(col_agregada, na.rm = TRUE),
     Min  = min(col_agregada, na.rm = TRUE),
     Max  = max(col_agregada, na.rm = TRUE)
