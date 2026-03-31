@@ -623,3 +623,72 @@ plot_construct_3panels(
 ```
 
 
+# Factorial confianzas
+
+```{r}
+# R
+# EFA para ítems de confianza (FONASA · post)
+library(tidyverse)
+library(psych)
+library(ggplot2)
+library(patchwork)
+
+# 1) Seleccionar ítems que coincidan con el patrón solicitado
+items_fonasa_trust <- names(data)[grepl(
+  "^fonasa_pos_trust_belief.*_[0-9]+$",
+  names(data)
+)]
+if (length(items_fonasa_trust) == 0) {
+  stop("No se encontraron variables que cumplan el patrón.")
+}
+
+items_sae_trust <- names(data)[grepl(
+  "^sae_pos_trust_belief.*_[0-9]+$",
+  names(data)
+)]
+if (length(items_sae_trust) == 0) {
+  stop("No se encontraron variables que cumplan el patrón.")
+}
+
+df_items_fonasa <- data |> select(all_of(items_fonasa_trust))
+
+
+df_items_sae <- data |> select(all_of(items_sae_trust))
+
+# Usar casos completos para las pruebas factoriales (común en EFA)
+#df_complete <- df_items |> drop_na()
+#n_complete <- nrow(df_complete)
+#if (n_complete < 50) {
+# warning(
+#"Pocos casos completos para EFA (n = ",
+#n_complete,
+# "). Interpretar con cautela."
+#)
+#}
+
+# 4) Análisis paralelo + scree (visual)
+fa.parallel(
+  df_items_fonasa,
+  fm = "ml",
+  fa = "fa",
+  n.iter = 100,
+  main = "Parallel analysis (FONASA trust items)"
+)
+
+fa.parallel(
+  df_items_sae,
+  fm = "ml",
+  fa = "fa",
+  n.iter = 100,
+  main = "Parallel analysis (SAE trust items)"
+)
+```
+
+
+```{r}
+sjPlot::tab_fa(df_items_fonasa)
+```
+
+```{r}
+sjPlot::tab_fa(df_items_sae)
+```
