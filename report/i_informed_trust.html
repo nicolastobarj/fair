@@ -134,6 +134,15 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   ai_disclosure_fonasa    mean    sd     n
@@ -183,15 +192,6 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
 <p><img src="i_informed_trust_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
@@ -229,6 +229,15 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <figure class="figure">
 <p><img src="i_informed_trust_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -702,7 +711,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -713,7 +722,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -724,7 +733,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-16-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-17-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -803,7 +812,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1144,7 +1153,7 @@ converged</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1423,6 +1432,178 @@ converged</code></pre>
 
 </div>
 </div>
+<section id="sistema-como-control-multinomial-con-ambos-sistemas" class="level3">
+<h3 class="anchored" data-anchor-id="sistema-como-control-multinomial-con-ambos-sistemas">Sistema como control (Multinomial con ambos sistemas)</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">construct</th>
+<th style="text-align: right;">n_nonmissing</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">fonasa_trust_mean</td>
+<td style="text-align: right;">514</td>
+<td style="text-align: right;">2.707287</td>
+<td style="text-align: right;">2.636364</td>
+<td style="text-align: right;">1.0042373</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sae_trust_mean</td>
+<td style="text-align: right;">514</td>
+<td style="text-align: right;">3.328794</td>
+<td style="text-align: right;">3.363636</td>
+<td style="text-align: right;">0.8994303</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  33 (20 variable)
+initial  value 564.686716 
+iter  10 value 498.235313
+iter  20 value 492.023422
+final  value 492.003054 
+converged</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">Informed Trust SAE</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Odds Ratios</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Response</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.77 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">disclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.80 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.24 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">inf_situacional</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.17 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.67 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.99 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.13 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.84 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.69 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.46 <sup>*</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.00 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">disclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.43 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.38 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">inf_situacional</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.51 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.00 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.01 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.64 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.40 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.67 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.13 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">514</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.083 / 0.081</td>
+</tr>
+<tr class="odd">
+<td colspan="3" style="text-align: right; font-style: italic; border-top: double black;">* p&lt;0.05&nbsp;&nbsp;&nbsp;** p&lt;0.01&nbsp;&nbsp;&nbsp;*** p&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
 </section>
 </section>
 

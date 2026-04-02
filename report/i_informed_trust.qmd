@@ -45,45 +45,200 @@ count(data, get_variable_saec)|>kable()
 ### Compare variables distributions (standariezed)
 
 ```{r}
-trust_long <- data |>
+# R
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+
+# --- ítems subjetivos (explícitos) ---
+fonasa_items <- c(
+  "fonasa_pos_comp_subj_1","fonasa_pos_comp_subj_2","fonasa_pos_comp_subj_3",
+  "fonasa_pos_comp_subj_4","fonasa_pos_comp_subj_5","fonasa_pos_comp_subj_6",
+  "fonasa_pos_comp_subj_7","fonasa_pos_comp_subj_8","fonasa_pos_comp_subj_9",
+  "fonasa_pos_comp_subj_10"
+)
+sae_items <- c(
+  "sae_pos_comp_subj_1","sae_pos_comp_subj_2","sae_pos_comp_subj_3",
+  "sae_pos_comp_subj_4","sae_pos_comp_subj_5","sae_pos_comp_subj_6",
+  "sae_pos_comp_subj_7","sae_pos_comp_subj_8","sae_pos_comp_subj_9"
+)
+
+# comprobar existencia de columnas
+stopifnot(all(c(fonasa_items, sae_items,
+                "fonasa_comp_objetiva_pos","sae_comp_objetiva_pos",
+                "fonasa_conf_belief_funcional_pos","sae_conf_belief_funcional_pos",
+                "fonasa_conf_belief_moral_pos","sae_conf_belief_moral_pos") %in% names(data)))
+
+# calcular media por participante de los ítems subjetivos (>=50% respondidos)
+min_prop <- 0.5
+fonasa_req <- ceiling(length(fonasa_items) * min_prop)
+sae_req    <- ceiling(length(sae_items) * min_prop)
+
+data <- data %>%
+  mutate(
+    fonasa_subj_n = rowSums(!is.na(select(., all_of(fonasa_items)))),
+    fonasa_subj_mean_raw = if_else(fonasa_subj_n >= fonasa_req,
+                                   rowMeans(select(., all_of(fonasa_items)), na.rm = TRUE),
+                                   NA_real_),
+    sae_subj_n = rowSums(!is.na(select(., all_of(sae_items)))),
+    sae_subj_mean_raw = if_else(sae_subj_n >= sae_req,
+                                rowMeans(select(., all_of(sae_items)), na.rm = TRUE),
+                                NA_real_)
+  )
+
+# normalizar a [0,1] cada constructo por su rango observado
+norm01 <- function(x){
+  rng <- range(x, na.rm = TRUE)
+  if (any(is.na(rng)) || diff(rng) == 0) return(rep(NA_real_, length(x)))
+  (x - rng[1]) / diff(rng)
+}
+
+measures_long <- data %>%
   transmute(
     FONASA_objective = (fonasa_comp_objetiva_pos - 1) / (11 - 1),
-    SAE_objective = (sae_comp_objetiva_pos - 1) / (7 - 1),
+    SAE_objective    = (sae_comp_objetiva_pos - 1) / (6 - 1),
     FONASA_functional = (fonasa_conf_belief_funcional_pos - 1) / (7 - 1),
-    SAE_functional = (sae_conf_belief_funcional_pos - 1) / (7 - 1),
+    SAE_functional    = (sae_conf_belief_funcional_pos - 1) / (7 - 1),
     FONASA_moral = (fonasa_conf_belief_moral_pos - 1) / (7 - 1),
-    SAE_moral = (sae_conf_belief_moral_pos - 1) / (7 - 1)
-  ) |>
-  pivot_longer(
-    cols = everything(),
-    names_to = "measure",
-    values_to = "score_norm"
-  ) |>
+    SAE_moral    = (sae_conf_belief_moral_pos - 1) / (7 - 1),
+    FONASA_subjective = norm01(fonasa_subj_mean_raw),
+    SAE_subjective    = norm01(sae_subj_mean_raw)
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "measure", values_to = "score_norm") %>%
   mutate(
     system = case_when(
       grepl("^FONASA", measure) ~ "FONASA",
       grepl("^SAE", measure) ~ "SAE"
     ),
     construct = case_when(
-      grepl("objective", measure) ~ "Objective knowledge",
-      grepl("functional", measure) ~ "Functional trust",
-      grepl("moral", measure) ~ "Moral trust"
+      grepl("objective", measure)   ~ "Objective knowledge",
+      grepl("functional", measure)  ~ "Functional trust",
+      grepl("moral", measure)       ~ "Moral trust",
+      grepl("subjective", measure)  ~ "Subjective knowledge"
     )
   )
 
-ggplot(trust_long, aes(x = score_norm, fill = system)) +
+# plot: 2 filas x 2 columnas
+ggplot(measures_long, aes(x = score_norm, fill = system)) +
   geom_density(alpha = 0.4, na.rm = TRUE) +
-  facet_wrap(~construct) +
-  scale_x_continuous(
-    labels = scales::percent_format(),
-    breaks = seq(0, 1, 0.2)
-  ) +
+  facet_wrap(~ construct, ncol = 2) +
+  scale_x_continuous(labels = percent_format(), breaks = seq(0, 1, 0.2), limits = c(0, 1)) +
   labs(
     x = "Normalized position in scale",
     y = "Density",
-    fill = "System"
+    fill = "System",
+    title = "Comparación FONASA vs SAE: Objective / Functional / Moral / Subjective"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
+```{r}
+# R
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+
+# variables explícitas (ya las enumeraste)
+fonasa_items <- c(
+  "fonasa_pos_comp_subj_1",
+  "fonasa_pos_comp_subj_2",
+  "fonasa_pos_comp_subj_3",
+  "fonasa_pos_comp_subj_4",
+  "fonasa_pos_comp_subj_5",
+  "fonasa_pos_comp_subj_6",
+  "fonasa_pos_comp_subj_7",
+  "fonasa_pos_comp_subj_8",
+  "fonasa_pos_comp_subj_9",
+  "fonasa_pos_comp_subj_10"
+)
+
+sae_items <- c(
+  "sae_pos_comp_subj_1",
+  "sae_pos_comp_subj_2",
+  "sae_pos_comp_subj_3",
+  "sae_pos_comp_subj_4",
+  "sae_pos_comp_subj_5",
+  "sae_pos_comp_subj_6",
+  "sae_pos_comp_subj_7",
+  "sae_pos_comp_subj_8",
+  "sae_pos_comp_subj_9"
+)
+
+# comprobar que las columnas existen
+stopifnot(all(c(fonasa_items, sae_items) %in% names(data)))
+
+# calcular medias por fila (requiriendo >=50% ítems respondidos)
+min_prop <- 0.5
+fonasa_req <- ceiling(length(fonasa_items) * min_prop)
+sae_req <- ceiling(length(sae_items) * min_prop)
+
+data <- data %>%
+  mutate(
+    fonasa_subj_n = rowSums(!is.na(select(., all_of(fonasa_items)))),
+    fonasa_subj_mean_raw = if_else(
+      fonasa_subj_n >= fonasa_req,
+      rowMeans(select(., all_of(fonasa_items)), na.rm = TRUE),
+      NA_real_
+    ),
+    sae_subj_n = rowSums(!is.na(select(., all_of(sae_items)))),
+    sae_subj_mean_raw = if_else(
+      sae_subj_n >= sae_req,
+      rowMeans(select(., all_of(sae_items)), na.rm = TRUE),
+      NA_real_
+    )
+  )
+
+# normalizar cada mean a [0,1] por rango observado (evita división por cero)
+norm01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  if (any(is.na(rng)) || diff(rng) == 0) {
+    return(rep(NA_real_, length(x)))
+  }
+  (x - rng[1]) / diff(rng)
+}
+
+data <- data %>%
+  mutate(
+    fonasa_subj_mean = norm01(fonasa_subj_mean_raw),
+    sae_subj_mean = norm01(sae_subj_mean_raw)
+  )
+
+# preparar long para graficar
+comp_long <- data %>%
+  select(fonasa_subj_mean, sae_subj_mean) %>%
+  pivot_longer(everything(), names_to = "system", values_to = "score") %>%
+  mutate(
+    system = recode(system, fonasa_subj_mean = "FONASA", sae_subj_mean = "SAE")
+  )
+
+# histograma comparado (densidad normalizada) + curvas de densidad
+p_subj_comp <- ggplot(
+  comp_long,
+  aes(x = score, fill = system, color = system)
+) +
+  geom_histogram(
+    aes(y = ..density..),
+    position = "identity",
+    alpha = 0.35,
+    bins = 30,
+    na.rm = TRUE
+  ) +
+  geom_density(alpha = 0, size = 1, na.rm = TRUE) +
+  scale_x_continuous(labels = percent_format(accuracy = 1), limits = c(0, 1)) +
+  labs(
+    title = "Comparación: conocimiento subjetivo (media ítems, normalizado 0–100%)",
+    x = "Posición normalizada en la escala (0 = mínimo observado, 1 = máximo observado)",
+    y = "Densidad",
+    fill = NULL,
+    color = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+p_subj_comp
 ```
 
 ```{r}
