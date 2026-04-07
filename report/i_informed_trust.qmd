@@ -1132,3 +1132,332 @@ tab_model(
   )
 )
 ```
+
+# Estrategia 3. Tricotomizar una confianza y modelo multinomial
+
+## Construcción de la variable
+```{r}
+library(nnet)
+
+data <- data %>%
+  mutate(
+    z_know_fonasa = as.numeric(scale(fonasa_comp_objetiva_pos)),
+    z_trust_fonasa = as.numeric(scale(fonasa_pos_trust)),
+    z_know_sae = as.numeric(scale(sae_comp_objetiva_pos)),
+    z_trust_sae = as.numeric(scale(sae_pos_trust))
+  )
+
+data <- data %>%
+  mutate(
+    fonasa_informed_trust = case_when(
+      z_know_fonasa >= 0 & z_trust_fonasa >= 0 ~ "Informed trust",
+      z_know_fonasa < 0 & z_trust_fonasa >= 0 ~ "Ignorant trust",
+      z_trust_fonasa < 0 ~ "Skeptical informed / mistrust uninformed"
+    ),
+    sae_informed_trust = case_when(
+      z_know_sae >= 0 & z_trust_sae >= 0 ~ "Informed trust",
+      z_know_sae < 0 & z_trust_sae >= 0 ~ "Ignorant trust",
+      z_trust_sae < 0 ~ "Skeptical informed / mistrust uninformed"
+    )
+  )
+
+data <- data %>%
+  mutate(
+    fonasa_informed_trust = relevel(
+      factor(fonasa_informed_trust),
+      ref = "Skeptical informed / mistrust uninformed"
+    ),
+    sae_informed_trust = relevel(
+      factor(sae_informed_trust),
+      ref = "Skeptical informed / mistrust uninformed"
+    )
+  )
+```
+
+```{r}
+count(data, fonasa_informed_trust) %>%
+  mutate(prop = round(n / sum(n), 2)) %>%
+  kable()
+
+count(data, sae_informed_trust) %>%
+  mutate(prop = round(n / sum(n), 2)) %>%
+  kable()
+```
+
+## Pruebas t
+
+```{r}
+# Diferencia de medias: conocimiento subjetivo por grupo de informed trust
+
+library(dplyr)
+library(knitr)
+library(rstatix)
+
+# --- FONASA ---
+# Descriptivos
+data %>%
+  group_by(fonasa_informed_trust) %>%
+  summarise(
+    n = n(),
+    mean = mean(fonasa_comp_subjetiva_pos, na.rm = TRUE),
+    sd = sd(fonasa_comp_subjetiva_pos, na.rm = TRUE)
+  ) %>%
+  kable(caption = "Conocimiento subjetivo por grupo (FONASA)", digits = 2)
+
+# ANOVA
+anova_fonasa <- aov(
+  fonasa_comp_subjetiva_pos ~ fonasa_informed_trust,
+  data = data
+)
+summary(anova_fonasa)
+
+# Post-hoc Tukey
+tukey_fonasa <- TukeyHSD(anova_fonasa)
+tukey_fonasa
+
+# --- SAE ---
+# Descriptivos
+data %>%
+  group_by(sae_informed_trust) %>%
+  summarise(
+    n = n(),
+    mean = mean(sae_comp_subjetiva_pos, na.rm = TRUE),
+    sd = sd(sae_comp_subjetiva_pos, na.rm = TRUE)
+  ) %>%
+  kable(caption = "Conocimiento subjetivo por grupo (SAE)", digits = 2)
+
+# ANOVA
+anova_sae <- aov(sae_comp_subjetiva_pos ~ sae_informed_trust, data = data)
+summary(anova_sae)
+
+# Post-hoc Tukey
+tukey_sae <- TukeyHSD(anova_sae)
+tukey_sae
+```
+
+## Modelos multinomiales
+
+```{r}
+tab_model(
+  multinom(
+    sae_informed_trust ~
+      disclosure +
+      inf_situacional +
+      control_humano +
+      sae_comp_subjetiva_pos +
+      genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data
+  ),
+  dv.labels = c(
+    "SAE"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "Situational information",
+    "Human control",
+    "Subjective knowledge",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes towards AI",
+    "AI skills",
+    "(Intercept)",
+    "AI disclosure",
+    "Situational information",
+    "Human control",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes towards AI",
+    "AI skills"
+  )
+)
+```
+
+```{r}
+tab_model(
+  multinom(
+    fonasa_informed_trust ~
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa +
+      fonasa_comp_subjetiva_pos +
+      genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data
+  ),
+  dv.labels = c(
+    "FONASA"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "System performance",
+    "Human control",
+    "Subjective knowledge",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes towards AI",
+    "AI skills",
+    "(Intercept)",
+    "AI disclosure",
+    "System performance",
+    "Human control",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes towards AI",
+    "AI skills"
+  )
+)
+```
+
+## Otra construcción de la variable (Corte teórico)
+
+
+```{r}
+data <- data %>%
+  mutate(
+    fonasa_informed_trust_teorico = case_when(
+      fonasa_comp_objetiva_pos >= 6 & fonasa_pos_trust >= 3 ~ "Informed trust",
+      fonasa_comp_objetiva_pos < 6 & fonasa_pos_trust >= 3 ~ "Ignorant trust",
+      fonasa_pos_trust < 3 ~ "Skeptical / mistrust"
+    ),
+    sae_informed_trust_teorico = case_when(
+      sae_comp_objetiva_pos >= 3 & sae_pos_trust >= 3 ~ "Informed trust",
+      sae_comp_objetiva_pos < 3 & sae_pos_trust >= 3 ~ "Ignorant trust",
+      sae_pos_trust < 3 ~ "Skeptical / mistrust"
+    )
+  )
+
+data <- data %>%
+  mutate(
+    fonasa_informed_trust_teorico = relevel(
+      factor(fonasa_informed_trust_teorico),
+      ref = "Skeptical / mistrust"
+    ),
+    sae_informed_trust_teorico = relevel(
+      factor(sae_informed_trust_teorico),
+      ref = "Skeptical / mistrust"
+    )
+  )
+```
+
+```{r}
+count(data, fonasa_informed_trust_teorico) %>%
+  mutate(prop = round(n / sum(n), 2)) %>%
+  kable()
+
+count(data, sae_informed_trust_teorico) %>%
+  mutate(prop = round(n / sum(n), 2)) %>%
+  kable()
+```
+
+```{r}
+tab_model(
+  multinom(
+    sae_informed_trust_teorico ~
+      disclosure +
+      inf_situacional +
+      control_humano +
+      sae_comp_subjetiva_pos +
+      genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data
+  ),
+  dv.labels = c(
+    "SAE"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "Situational information",
+    "Human control",
+    "Subjective knowledge",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes towards AI",
+    "AI skills",
+    "(Intercept)",
+    "AI disclosure",
+    "Situational information",
+    "Human control",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes towards AI",
+    "AI skills"
+  )
+)
+```
+
+```{r}
+tab_model(
+  multinom(
+    fonasa_informed_trust_teorico ~
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa +
+      fonasa_comp_subjetiva_pos +
+      genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data
+  ),
+  dv.labels = c(
+    "FONASA"
+  ),
+  show.ci = FALSE,
+  p.style = "stars",
+  pred.labels = c(
+    "(Intercept)",
+    "AI disclosure",
+    "System performance",
+    "Human control",
+    "Subjective knowledge",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes towards AI",
+    "AI skills",
+    "(Intercept)",
+    "AI disclosure",
+    "System performance",
+    "Human control",
+    "Gender (Women = 1)",
+    "Age",
+    "Secondary education",
+    "Higher education",
+    "Attitudes hacia AI",
+    "AI skills"
+  )
+)
+```

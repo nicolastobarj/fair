@@ -143,15 +143,6 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   ai_disclosure_fonasa    mean    sd     n
@@ -201,6 +192,15 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
 <p><img src="i_informed_trust_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
@@ -238,15 +238,6 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <figure class="figure">
 <p><img src="i_informed_trust_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -720,7 +711,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -731,7 +722,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -742,7 +733,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-18-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-17-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -821,7 +812,7 @@ humano</td>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1162,7 +1153,7 @@ converged</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="i_informed_trust_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1613,6 +1604,847 @@ converged</code></pre>
 </div>
 </div>
 </section>
+</section>
+</section>
+<section id="estrategia-3.-tricotomizar-una-confianza-y-modelo-multinomial" class="level1">
+<h1>Estrategia 3. Tricotomizar una confianza y modelo multinomial</h1>
+<section id="construcción-de-la-variable-1" class="level2">
+<h2 class="anchored" data-anchor-id="construcción-de-la-variable-1">Construcción de la variable</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">fonasa_informed_trust</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Skeptical informed / mistrust uninformed</td>
+<td style="text-align: right;">268</td>
+<td style="text-align: right;">0.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ignorant trust</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Informed trust</td>
+<td style="text-align: right;">146</td>
+<td style="text-align: right;">0.28</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">sae_informed_trust</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Skeptical informed / mistrust uninformed</td>
+<td style="text-align: right;">242</td>
+<td style="text-align: right;">0.47</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ignorant trust</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">0.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Informed trust</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">0.35</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="pruebas-t" class="level2">
+<h2 class="anchored" data-anchor-id="pruebas-t">Pruebas t</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Conocimiento subjetivo por grupo (FONASA)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">fonasa_informed_trust</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Skeptical informed / mistrust uninformed</td>
+<td style="text-align: right;">268</td>
+<td style="text-align: right;">2.53</td>
+<td style="text-align: right;">0.78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ignorant trust</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">3.24</td>
+<td style="text-align: right;">0.91</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Informed trust</td>
+<td style="text-align: right;">146</td>
+<td style="text-align: right;">3.51</td>
+<td style="text-align: right;">0.86</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       Df Sum Sq Mean Sq F value Pr(&gt;F)    
+fonasa_informed_trust   2  101.2   50.59   73.41 &lt;2e-16 ***
+Residuals             511  352.2    0.69                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = fonasa_comp_subjetiva_pos ~ fonasa_informed_trust, data = data)
+
+$fonasa_informed_trust
+                                                             diff        lwr
+Ignorant trust-Skeptical informed / mistrust uninformed 0.7110821 0.48241161
+Informed trust-Skeptical informed / mistrust uninformed 0.9779314 0.77720249
+Informed trust-Ignorant trust                           0.2668493 0.01354376
+                                                              upr     p adj
+Ignorant trust-Skeptical informed / mistrust uninformed 0.9397526 0.0000000
+Informed trust-Skeptical informed / mistrust uninformed 1.1786603 0.0000000
+Informed trust-Ignorant trust                           0.5201549 0.0361905</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Conocimiento subjetivo por grupo (SAE)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">sae_informed_trust</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Skeptical informed / mistrust uninformed</td>
+<td style="text-align: right;">242</td>
+<td style="text-align: right;">2.68</td>
+<td style="text-align: right;">0.73</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ignorant trust</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">3.41</td>
+<td style="text-align: right;">0.74</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Informed trust</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">3.91</td>
+<td style="text-align: right;">0.80</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    Df Sum Sq Mean Sq F value Pr(&gt;F)    
+sae_informed_trust   2  160.0   79.99   139.7 &lt;2e-16 ***
+Residuals          511  292.6    0.57                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = sae_comp_subjetiva_pos ~ sae_informed_trust, data = data)
+
+$sae_informed_trust
+                                                             diff       lwr
+Ignorant trust-Skeptical informed / mistrust uninformed 0.7271950 0.5101873
+Informed trust-Skeptical informed / mistrust uninformed 1.2346888 1.0593376
+Informed trust-Ignorant trust                           0.5074938 0.2801316
+                                                              upr p adj
+Ignorant trust-Skeptical informed / mistrust uninformed 0.9442027 0e+00
+Informed trust-Skeptical informed / mistrust uninformed 1.4100400 0e+00
+Informed trust-Ignorant trust                           0.7348561 7e-07</code></pre>
+</div>
+</div>
+</section>
+<section id="modelos-multinomiales" class="level2">
+<h2 class="anchored" data-anchor-id="modelos-multinomiales">Modelos multinomiales</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  36 (22 variable)
+initial  value 564.686716 
+iter  10 value 456.010284
+iter  20 value 406.946899
+iter  30 value 405.788812
+final  value 405.788804 
+converged</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">SAE</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Odds Ratios</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Response</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.02 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">disclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.77 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">inf_situacional</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.75 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.97 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">sae_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.74 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.81 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.00 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.13 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.55 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.99 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.90 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.00 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">disclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.17 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">inf_situacional</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.10 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.03 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">sae_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.21 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.35 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.01 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.34 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.86 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.70 <sup>*</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.17 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">514</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.235 / 0.233</td>
+</tr>
+<tr class="odd">
+<td colspan="3" style="text-align: right; font-style: italic; border-top: double black;">* p&lt;0.05&nbsp;&nbsp;&nbsp;** p&lt;0.01&nbsp;&nbsp;&nbsp;*** p&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  36 (22 variable)
+initial  value 564.686716 
+iter  10 value 444.011132
+iter  20 value 425.670399
+final  value 425.081125 
+converged</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">FONASA</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Odds Ratios</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Response</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.03 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_disclosure_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.73 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">performance_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.75 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.43 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">fonasa_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.81 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.72 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.02 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.67 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.45 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.11 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.95 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.00 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_disclosure_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.04 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">performance_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.19 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.29 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">fonasa_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.42 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.20 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.99 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.79 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.71 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.54 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.80 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">514</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.186 / 0.184</td>
+</tr>
+<tr class="odd">
+<td colspan="3" style="text-align: right; font-style: italic; border-top: double black;">* p&lt;0.05&nbsp;&nbsp;&nbsp;** p&lt;0.01&nbsp;&nbsp;&nbsp;*** p&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="otra-construcción-de-la-variable-corte-teórico" class="level2">
+<h2 class="anchored" data-anchor-id="otra-construcción-de-la-variable-corte-teórico">Otra construcción de la variable (Corte teórico)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">fonasa_informed_trust_teorico</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Skeptical / mistrust</td>
+<td style="text-align: right;">324</td>
+<td style="text-align: right;">0.63</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ignorant trust</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">0.11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Informed trust</td>
+<td style="text-align: right;">133</td>
+<td style="text-align: right;">0.26</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">sae_informed_trust_teorico</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Skeptical / mistrust</td>
+<td style="text-align: right;">163</td>
+<td style="text-align: right;">0.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ignorant trust</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">0.06</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Informed trust</td>
+<td style="text-align: right;">319</td>
+<td style="text-align: right;">0.62</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  36 (22 variable)
+initial  value 564.686716 
+iter  10 value 349.455059
+iter  20 value 325.065266
+iter  30 value 324.872373
+iter  30 value 324.872370
+iter  30 value 324.872370
+final  value 324.872370 
+converged</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">SAE</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Odds Ratios</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Response</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.01 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">disclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.78 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">inf_situacional</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.02 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.53 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">sae_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.89 <sup>*</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.63 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.01 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.67 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.43 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.57 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.92 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.00 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">disclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.91 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">inf_situacional</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.94 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.22 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">sae_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.28 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.77 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.01 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.74 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.15 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.48 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.08 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">514</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.241 / 0.239</td>
+</tr>
+<tr class="odd">
+<td colspan="3" style="text-align: right; font-style: italic; border-top: double black;">* p&lt;0.05&nbsp;&nbsp;&nbsp;** p&lt;0.01&nbsp;&nbsp;&nbsp;*** p&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  36 (22 variable)
+initial  value 564.686716 
+iter  10 value 363.369222
+iter  20 value 341.173584
+final  value 340.919112 
+converged</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">FONASA</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Odds Ratios</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Response</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.00 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_disclosure_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.63 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">performance_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.52 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.26 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">fonasa_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.58 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.72 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.05 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.41 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.33 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.03 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.02 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ignorant trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.00 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_disclosure_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.96 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">performance_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.87 <sup>*</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control_humano_fonasa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.22 <sup>**</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">fonasa_comp_subjetiva_pos</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.35 <sup>***</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">generoMujer</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.88 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">edad_num</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.00 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedMedia completa</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.75 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">education_recodedEducación superior</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.52 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">attitudes_ai</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.69 <sup>*</sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">ai_skills</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.86 <sup></sup></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Informed trust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">514</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="2" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.250 / 0.248</td>
+</tr>
+<tr class="odd">
+<td colspan="3" style="text-align: right; font-style: italic; border-top: double black;">* p&lt;0.05&nbsp;&nbsp;&nbsp;** p&lt;0.01&nbsp;&nbsp;&nbsp;*** p&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
 </section>
 </section>
 
