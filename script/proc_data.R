@@ -256,3 +256,18 @@ data <- data %>%
       sae_familiaridad_3
     )
   )
+
+data <- data%>%
+  mutate(
+    sae_pos_trust = rowMeans(
+      select(., starts_with("sae_pos_trust_belief")),
+      na.rm = TRUE
+    ),
+    fonasa_pos_trust = rowMeans(
+      select(., starts_with("fonasa_pos_trust_belief")),
+      na.rm = TRUE
+    )
+  )
+
+data$sae_pos_trust
+data$fonasa_pos_trust

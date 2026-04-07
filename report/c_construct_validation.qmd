@@ -692,3 +692,31 @@ sjPlot::tab_fa(df_items_fonasa)
 ```{r}
 sjPlot::tab_fa(df_items_sae)
 ```
+
+
+```{r}
+library(psych)
+
+# FONASA trust belief (post)
+items_fonasa_trust <- names(data)[grepl(
+  "^fonasa_pos_trust_belief.*_[0-9]+$",
+  names(data)
+)]
+alpha_fonasa <- psych::alpha(data[, items_fonasa_trust], check.keys = TRUE)
+
+# SAE trust belief (post)
+items_sae_trust <- names(data)[grepl(
+  "^sae_pos_trust_belief.*_[0-9]+$",
+  names(data)
+)]
+alpha_sae <- psych::alpha(data[, items_sae_trust], check.keys = TRUE)
+
+# Resumen
+tibble(
+  Sistema = c("FONASA", "SAE"),
+  n_items = c(length(items_fonasa_trust), length(items_sae_trust)),
+  Cronbach_alpha = c(alpha_fonasa$total$raw_alpha, alpha_sae$total$raw_alpha)
+) %>%
+  kable(digits = 3, caption = "Confiabilidad de los ítems de confianza (post)") %>%
+  kable_styling(full_width = F, latex_options = "hold_position")
+```
