@@ -720,3 +720,96 @@ tibble(
   kable(digits = 3, caption = "Confiabilidad de los ítems de confianza (post)") %>%
   kable_styling(full_width = F, latex_options = "hold_position")
 ```
+
+# Factorial MDMT
+
+```{r}
+# EFA para ítems de confianza MDMT (FONASA y SAE · post)
+library(tidyverse)
+library(psych)
+library(ggplot2)
+library(patchwork)
+
+# --- FONASA: Functional Trust MDMT ---
+items_fonasa_mdmt <- c(
+  "fonasa_pos_trust_func_reliab_1",
+  "fonasa_pos_trust_func_reliab_2",
+  "fonasa_pos_trust_func_reliab_3",
+  "fonasa_pos_trust_func_capab_1",
+  "fonasa_pos_trust_func_capab_2",
+  "fonasa_pos_trust_func_capab_3",
+  "fonasa_pos_trust_moral_ethi_1",
+  "fonasa_pos_trust_moral_ethi_2",
+  "fonasa_pos_trust_moral_ethi_3",
+  "fonasa_pos_trust_moral_sinc_1",
+  "fonasa_pos_trust_moral_sinc_2",
+  "fonasa_pos_trust_moral_sinc_3"
+)
+
+# --- SAE: Functional Trust MDMT ---
+items_sae_mdmt <- c(
+  "sae_pos_trust_func_reliab_1",
+  "sae_pos_trust_func_reliab_2",
+  "sae_pos_trust_func_reliab_3",
+  "sae_pos_trust_func_capab_1",
+  "sae_pos_trust_func_capab_2",
+  "sae_pos_trust_func_capab_3",
+  "sae_pos_trust_moral_ethi_1",
+  "sae_pos_trust_moral_ethi_2",
+  "sae_pos_trust_moral_ethi_3",
+  "sae_pos_trust_moral_sinc_1",
+  "sae_pos_trust_moral_sinc_2",
+  "sae_pos_trust_moral_sinc_3"
+)
+
+# Crear dataframes
+df_fonasa_mdmt <- data |> select(all_of(items_fonasa_mdmt))
+df_sae_mdmt <- data |> select(all_of(items_sae_mdmt))
+
+# Parallel analysis
+fa.parallel(
+  df_fonasa_mdmt,
+  fm = "ml",
+  fa = "fa",
+  n.iter = 100,
+  main = "Parallel analysis: FONASA Functional Trust MDMT"
+)
+
+fa.parallel(
+  df_sae_mdmt,
+  fm = "ml",
+  fa = "fa",
+  n.iter = 100,
+  main = "Parallel analysis: SAE Functional Trust MDMT"
+)
+```
+
+```{r}
+sjPlot::tab_fa(df_fonasa_mdmt, nmbr.fctr = 2)
+```
+
+```{r}
+sjPlot::tab_fa(df_sae_mdmt, nmbr.fctr = 2)
+```
+
+
+```{r}
+library(psych)
+library(knitr)
+library(kableExtra)
+
+# FONASA trust belief (post)
+alpha_fonasa_mdmt <- psych::alpha(data[, items_fonasa_mdmt], check.keys = TRUE)
+
+# SAE trust belief (post)
+alpha_sae_mdmt <- psych::alpha(data[, items_sae_mdmt], check.keys = TRUE)
+
+# Resumen
+tibble(
+  Sistema = c("FONASA", "SAE"),
+  n_items = c(length(items_fonasa_mdmt), length(items_sae_mdmt)),
+  Cronbach_alpha = c(alpha_fonasa_mdmt$total$raw_alpha, alpha_sae_mdmt$total$raw_alpha)
+) %>%
+  kable(digits = 3, caption = "Confiabilidad de los ítems de confianza (post)") %>%
+  kable_styling(full_width = F, latex_options = "hold_position")
+```

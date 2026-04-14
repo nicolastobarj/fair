@@ -6,10 +6,6 @@ execute:
   warning: false
 ---
 
-# Estrategia 1. Escala cuantitativa Informed Trust
-
-# Distribución informed trust
-
 ```{r}
 
 source(here::here("script/proc_data.R"))
@@ -38,9 +34,15 @@ data <- data%>%
   filter(eliminado == 0)
 ```
 
+
+# Estrategia 1. Escala cuantitativa Informed Trust
+
+# Distribución informed trust
 ```{r}
 count(data, get_variable_saec)|>kable()
 ```
+
+
 
 ### Compare variables distributions (standariezed)
 
@@ -53,77 +55,118 @@ library(scales)
 
 # --- ítems subjetivos (explícitos) ---
 fonasa_items <- c(
-  "fonasa_pos_comp_subj_1","fonasa_pos_comp_subj_2","fonasa_pos_comp_subj_3",
-  "fonasa_pos_comp_subj_4","fonasa_pos_comp_subj_5","fonasa_pos_comp_subj_6",
-  "fonasa_pos_comp_subj_7","fonasa_pos_comp_subj_8","fonasa_pos_comp_subj_9",
+  "fonasa_pos_comp_subj_1",
+  "fonasa_pos_comp_subj_2",
+  "fonasa_pos_comp_subj_3",
+  "fonasa_pos_comp_subj_4",
+  "fonasa_pos_comp_subj_5",
+  "fonasa_pos_comp_subj_6",
+  "fonasa_pos_comp_subj_7",
+  "fonasa_pos_comp_subj_8",
+  "fonasa_pos_comp_subj_9",
   "fonasa_pos_comp_subj_10"
 )
 sae_items <- c(
-  "sae_pos_comp_subj_1","sae_pos_comp_subj_2","sae_pos_comp_subj_3",
-  "sae_pos_comp_subj_4","sae_pos_comp_subj_5","sae_pos_comp_subj_6",
-  "sae_pos_comp_subj_7","sae_pos_comp_subj_8","sae_pos_comp_subj_9"
+  "sae_pos_comp_subj_1",
+  "sae_pos_comp_subj_2",
+  "sae_pos_comp_subj_3",
+  "sae_pos_comp_subj_4",
+  "sae_pos_comp_subj_5",
+  "sae_pos_comp_subj_6",
+  "sae_pos_comp_subj_7",
+  "sae_pos_comp_subj_8",
+  "sae_pos_comp_subj_9"
 )
 
 # comprobar existencia de columnas
-stopifnot(all(c(fonasa_items, sae_items,
-                "fonasa_comp_objetiva_pos","sae_comp_objetiva_pos",
-                "fonasa_conf_belief_funcional_pos","sae_conf_belief_funcional_pos",
-                "fonasa_conf_belief_moral_pos","sae_conf_belief_moral_pos") %in% names(data)))
+stopifnot(all(
+  c(
+    fonasa_items,
+    sae_items,
+    "fonasa_comp_objetiva_pos",
+    "sae_comp_objetiva_pos",
+    "fonasa_conf_belief_funcional_pos",
+    "sae_conf_belief_funcional_pos",
+    "fonasa_conf_belief_moral_pos",
+    "sae_conf_belief_moral_pos"
+  ) %in%
+    names(data)
+))
 
 # calcular media por participante de los ítems subjetivos (>=50% respondidos)
 min_prop <- 0.5
 fonasa_req <- ceiling(length(fonasa_items) * min_prop)
-sae_req    <- ceiling(length(sae_items) * min_prop)
+sae_req <- ceiling(length(sae_items) * min_prop)
 
 data <- data %>%
   mutate(
     fonasa_subj_n = rowSums(!is.na(select(., all_of(fonasa_items)))),
-    fonasa_subj_mean_raw = if_else(fonasa_subj_n >= fonasa_req,
-                                   rowMeans(select(., all_of(fonasa_items)), na.rm = TRUE),
-                                   NA_real_),
+    fonasa_subj_mean_raw = if_else(
+      fonasa_subj_n >= fonasa_req,
+      rowMeans(select(., all_of(fonasa_items)), na.rm = TRUE),
+      NA_real_
+    ),
     sae_subj_n = rowSums(!is.na(select(., all_of(sae_items)))),
-    sae_subj_mean_raw = if_else(sae_subj_n >= sae_req,
-                                rowMeans(select(., all_of(sae_items)), na.rm = TRUE),
-                                NA_real_)
+    sae_subj_mean_raw = if_else(
+      sae_subj_n >= sae_req,
+      rowMeans(select(., all_of(sae_items)), na.rm = TRUE),
+      NA_real_
+    )
   )
 
 # normalizar a [0,1] cada constructo por su rango observado
-norm01 <- function(x){
+norm01 <- function(x) {
   rng <- range(x, na.rm = TRUE)
-  if (any(is.na(rng)) || diff(rng) == 0) return(rep(NA_real_, length(x)))
+  if (any(is.na(rng)) || diff(rng) == 0) {
+    return(rep(NA_real_, length(x)))
+  }
   (x - rng[1]) / diff(rng)
 }
 
 measures_long <- data %>%
   transmute(
     FONASA_objective = (fonasa_comp_objetiva_pos - 1) / (11 - 1),
-    SAE_objective    = (sae_comp_objetiva_pos - 1) / (6 - 1),
-    FONASA_functional = (fonasa_conf_belief_funcional_pos - 1) / (7 - 1),
-    SAE_functional    = (sae_conf_belief_funcional_pos - 1) / (7 - 1),
-    FONASA_moral = (fonasa_conf_belief_moral_pos - 1) / (7 - 1),
-    SAE_moral    = (sae_conf_belief_moral_pos - 1) / (7 - 1),
+    SAE_objective = (sae_comp_objetiva_pos - 1) / (6 - 1),
+    FONASA_functional = (fonasa_conf_belief_funcional_pos - 1) / (6 - 1),
+    SAE_functional = (sae_conf_belief_funcional_pos - 1) / (6 - 1),
+    FONASA_moral = (fonasa_conf_belief_moral_pos - 1) / (5 - 1),
+    SAE_moral = (sae_conf_belief_moral_pos - 1) / (5 - 1),
+    FONASA_mdmt1 = (fonasa_conf_word_funcional_pos - 1) / (6 - 1),
+    SAE_mdmt1 = (sae_conf_word_funcional_pos - 1) / (6 - 1),
+    FONASA_mdmt2 = (fonasa_conf_word_moral_pos - 1) / (6 - 1),
+    SAE_mdmt2 = (sae_conf_word_moral_pos - 1) / (6 - 1),
     FONASA_subjective = norm01(fonasa_subj_mean_raw),
-    SAE_subjective    = norm01(sae_subj_mean_raw)
+    SAE_subjective = norm01(sae_subj_mean_raw)
   ) %>%
-  pivot_longer(cols = everything(), names_to = "measure", values_to = "score_norm") %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "measure",
+    values_to = "score_norm"
+  ) %>%
   mutate(
     system = case_when(
       grepl("^FONASA", measure) ~ "FONASA",
       grepl("^SAE", measure) ~ "SAE"
     ),
     construct = case_when(
-      grepl("objective", measure)   ~ "Objective knowledge",
-      grepl("functional", measure)  ~ "Functional trust",
-      grepl("moral", measure)       ~ "Moral trust",
-      grepl("subjective", measure)  ~ "Subjective knowledge"
+      grepl("objective", measure) ~ "Objective knowledge",
+      grepl("functional", measure) ~ "Functional trust Mcknight",
+      grepl("moral", measure) ~ "Moral trust Mcknight",
+      grepl("mdmt1", measure) ~ "Functional trust MDMT",
+      grepl("mdmt2", measure) ~ "Moral trust MDMT",
+      grepl("subjective", measure) ~ "Subjective knowledge"
     )
   )
 
 # plot: 2 filas x 2 columnas
 ggplot(measures_long, aes(x = score_norm, fill = system)) +
   geom_density(alpha = 0.4, na.rm = TRUE) +
-  facet_wrap(~ construct, ncol = 2) +
-  scale_x_continuous(labels = percent_format(), breaks = seq(0, 1, 0.2), limits = c(0, 1)) +
+  facet_wrap(~construct, ncol = 2) +
+  scale_x_continuous(
+    labels = percent_format(),
+    breaks = seq(0, 1, 0.2),
+    limits = c(0, 1)
+  ) +
   labs(
     x = "Normalized position in scale",
     y = "Density",
@@ -1255,32 +1298,40 @@ tab_model(
   dv.labels = c(
     "SAE"
   ),
+  terms = c(
+    "disclosure",
+    "inf_situacional",
+    "control_humano",
+    "sae_comp_subjetiva_pos",
+    "attitudes_ai",
+    "ai_skills"
+  ),
   show.ci = FALSE,
   p.style = "stars",
   pred.labels = c(
-    "(Intercept)",
+    #"(Intercept)",
     "AI disclosure",
     "Situational information",
     "Human control",
     "Subjective knowledge",
-    "Gender (Women = 1)",
-    "Age",
-    "Secondary education",
-    "Higher education",
+   # "Gender (Women = 1)",
+    #"Age",
+    #"Secondary education",
+    #"Higher education",
     "Attitudes towards AI",
     "AI skills",
-    "(Intercept)",
+  #  "(Intercept)",
     "AI disclosure",
     "Situational information",
     "Human control",
-    "Gender (Women = 1)",
-    "Age",
-    "Secondary education",
-    "Higher education",
+    "Subjective knowledge",
+   # "Gender (Women = 1)",
+    #"Age",
+    #"Secondary education",
+    #"Higher education",
     "Attitudes towards AI",
     "AI skills"
-  )
-)
+  ))
 ```
 
 ```{r}
@@ -1303,26 +1354,35 @@ tab_model(
   ),
   show.ci = FALSE,
   p.style = "stars",
+  terms = c(
+    "ai_disclosure_fonasa",
+    "performance_fonasa",
+    "control_humano_fonasa",
+    "fonasa_comp_subjetiva_pos",
+    "attitudes_ai",
+    "ai_skills"
+  ),
   pred.labels = c(
-    "(Intercept)",
+    # "(Intercept)",
     "AI disclosure",
     "System performance",
     "Human control",
     "Subjective knowledge",
-    "Gender (Women = 1)",
-    "Age",
-    "Secondary education",
-    "Higher education",
+    # "Gender (Women = 1)",
+    #"Age",
+    #"Secondary education",
+    #"Higher education",
     "Attitudes towards AI",
     "AI skills",
-    "(Intercept)",
+    #"(Intercept)",
     "AI disclosure",
     "System performance",
     "Human control",
-    "Gender (Women = 1)",
-    "Age",
-    "Secondary education",
-    "Higher education",
+    #"Gender (Women = 1)",
+    #"Age",
+    #"Secondary education",
+    #"Higher education",
+    "Subjective knowledge",
     "Attitudes towards AI",
     "AI skills"
   )

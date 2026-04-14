@@ -17,8 +17,7 @@ library(ggplot2)
 library(sjPlot)
 
 data <- data%>%
-  filter(eliminado == 0) %>%
-  filter(cantidad_colegios < 5)
+  filter(eliminado == 0)
 ```
 
 ## Crear variable
@@ -76,4 +75,232 @@ plot_model(
   terms = c("sae_comp_objetiva_pre", "control_humano"),
   type = "int"
 )
+```
+
+## Path analysis: Efecto del disclaimer de control humano en la corrección de decisiones
+
+- De la gente que cometió el error inicial (eligió menos de 5 colegios) y se expuso a control humano, 90 corrigieron su decisión y 81 no.
+```{r}
+library(dplyr)
+library(lavaan)
+library(semPlot)
+library(ggplot2)
+library(tidyr)
+
+# --- 1. Preparar variables ---
+data <- data %>%
+  mutate(
+    # Decisión previa equivocada (1 = error, eligió menos de 5 colegios)
+    decision_error = ifelse(cantidad_colegios < 5, 1, 0),
+    
+    # Decisión corregida (1 = corrigió añadiendo más escuelas)
+    decision_corregida = ifelse(decision_error == 1 & x402b_repostulacion == "Incluiría más escuelas", 1, 0),
+    
+    # Asegurar que control_humano sea numérico
+    control_humano_num = as.numeric(control_humano),
+
+    comp_pre_z = scale(sae_comp_objetiva_pre), # Comprensión previa estandarizada
+    comp_post_z = scale(sae_comp_objetiva_pos),  # Comprensión posterior estandarizada
+
+    interaccion = control_humano_num * decision_error # Interacción para moderación
+  )
+
+# Verificar distribución de variables clave
+cat("=== Distribución de variables ===\n")
+cat("\nDecisión error (cantidad_colegios < 5):\n")
+table(data$decision_error, useNA = "ifany") %>% print()
+
+cat("\nDecisión corregida (Incluiría más escuelas):\n")
+table(data$decision_corregida, useNA = "ifany") %>% print()
+
+cat("\nControl humano:\n")
+table(data$control_humano, useNA = "ifany") %>% print()
+
+cat("\nCruce: Error inicial × Corrección × Control humano:\n")
+data %>%
+  count(decision_error, control_humano, decision_corregida) %>%
+  kable()
+```
+
+```{r}
+# --- 2. Especificar modelo de sendero ---
+
+# Modelo teórico:
+# - Comprensión previa afecta la probabilidad de error inicial
+# - Comprensión previa + Control humano afectan comprensión posterior
+# - Comprensión posterior + Control humano + Error inicial afectan corrección
+# - Efecto indirecto: Control humano → Comprensión posterior → Corrección
+
+modelo_path <- '
+  # Efectos directos
+  
+  # 1. Comprensión previa predice error inicial (se espera negativo)
+  decision_error ~ a1*comp_pre_z
+  
+
+  # 2. Comprensión posterior es función de:
+  #    - Comprensión previa
+  #    - Control humano (disclaimer)
+  #    - Interacción (el disclaimer aumenta más la comprensión en quienes erraron)
+  comp_pos_z ~ b1*comp_pre_z + b2*control_humano_num + b3*decision_error
+  
+  # 3. Corrección es función de:
+  #    - Comprensión posterior
+  #    - Control humano directo
+  #    - Haber cometido error inicialmente
+  decision_corregida ~ c1*comp_pos_z + c2*control_humano_num + c3*decision_error
+  
+  # Efectos indirectos
+  # Control humano → Comprensión posterior → Corrección
+  ind_control := b2 * c1
+  
+  # Comprensión previa → Error → Comprensión posterior → Corrección
+  ind_comp_error := a1 * b3 * c1
+  
+  # Efecto total de control humano sobre corrección
+  total_control := c2 + ind_control
+'
+
+# Ajustar modelo
+fit_path <- sem(
+  modelo_path,
+  data = data,
+  estimator = "WLSMV", # Mejor para variables dicotómicas
+  ordered = c("decision_error", "decision_corregida")
+)
+
+# Resumen del modelo
+summary(fit_path, fit.measures = TRUE, standardized = TRUE, rsquare = TRUE)
+```
+
+```{r}
+# --- 3. Tabla de efectos directos e indirectos ---
+library(knitr)
+library(kableExtra)
+
+# Extraer parámetros
+params <- parameterEstimates(fit_path, standardized = TRUE) %>%
+  filter(op %in% c("~", ":=")) %>%
+  select(lhs, op, rhs, label, est, se, pvalue, std.all) %>%
+  mutate(
+    pvalue = round(pvalue, 4),
+    est = round(est, 3),
+    se = round(se, 3),
+    std.all = round(std.all, 3),
+    sig = case_when(
+      pvalue < 0.001 ~ "***",
+      pvalue < 0.01 ~ "**",
+      pvalue < 0.05 ~ "*",
+      pvalue < 0.1 ~ ".",
+      TRUE ~ ""
+    )
+  )
+
+# Tabla de regresiones
+params %>%
+  filter(op == "~") %>%
+  select(
+    Predictor = rhs,
+    Outcome = lhs,
+    B = est,
+    SE = se,
+    `p-value` = pvalue,
+    `β` = std.all,
+    sig
+  ) %>%
+  kable(caption = "Efectos directos del modelo de sendero") %>%
+  kable_styling(full_width = FALSE)
+
+# Tabla de efectos indirectos
+params %>%
+  filter(op == ":=") %>%
+  select(Effect = label, Estimate = est, SE = se, `p-value` = pvalue, sig) %>%
+  kable(caption = "Efectos indirectos y totales") %>%
+  kable_styling(full_width = FALSE)
+```
+
+```{r}
+# --- 4. Visualización del modelo de sendero ---
+
+# Opción A: semPlot (rápido)
+semPaths(
+ fit_path,
+ what = "std",
+ whatLabels = "std",
+ style = "lisrel",
+ layout = "tree2",
+ rotation = 2,
+ edge.label.cex = 1.2,
+ node.label.cex = 1,
+ sizeMan = 10,
+ sizeLat = 10,
+ edge.color = "black",
+ residuals = FALSE,
+ intercepts = FALSE,
+ thresholds = FALSE,
+ nCharNodes = 0,
+ nodeLabels = c(
+   "Error\ninicial",
+   "Comprensión\nposterior",
+   "Corrección",
+   "Comprensión\nprevia",
+   "Control\nhumano"
+ ),
+ title = TRUE,
+ mar = c(2, 2, 2, 2)
+)
+title("Modelo de sendero: Efecto del disclaimer en la corrección de decisiones", line = 2.5)
+```
+
+```{r}
+# --- 5. Gráfico más elaborado con ggplot (para presentación) ---
+library(ggdag)
+library(dagitty)
+
+# Definir DAG
+dag <- dagitty(
+  '
+dag {
+   "Comprensión previa" [pos="0,1"]
+   "Control humano" [pos="1,0"]
+   "Error inicial" [pos="1,2"]
+   "Comprensión posterior" [pos="2,1"]
+   "Corrección" [pos="3,1"]
+
+  "Comprensión previa" -> "Error inicial"
+  "Comprensión previa" -> "Comprensión posterior"
+  "Control humano" -> "Comprensión posterior"
+  "Error inicial" -> "Comprensión posterior"
+  "Comprensión posterior" -> "Corrección"
+  "Control humano" -> "Corrección"
+  "Error inicial" -> "Corrección"
+}
+'
+)
+
+# Extraer coeficientes estandarizados
+std_params <- parameterEstimates(fit_path, standardized = TRUE) %>%
+  filter(op == "~") %>%
+  mutate(
+    path = paste(rhs, "->", lhs),
+    coef_label = paste0(round(std.all, 2), ifelse(pvalue < 0.05, "*", ""))
+  )
+
+# Convertir a tidy
+dag_tidy <- tidy_dagitty(dag)
+
+# Plot
+ggdag(dag_tidy) +
+  geom_dag_edges(edge_width = 0.8) +
+  geom_dag_point(color = "steelblue", size = 18) +
+  geom_dag_text(color = "white", size = 3, fontface = "bold") +
+  theme_dag_blank() +
+  labs(
+    title = "Modelo de sendero: Efecto del disclaimer de control humano",
+    subtitle = "en la corrección de decisiones del SAE"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 11)
+  )
 ```
