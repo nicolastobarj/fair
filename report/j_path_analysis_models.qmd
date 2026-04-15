@@ -113,7 +113,7 @@ table(data$decision_error, useNA = "ifany") %>% print()
 cat("\nDecisión corregida (Incluiría más escuelas):\n")
 table(data$decision_corregida, useNA = "ifany") %>% print()
 
-cat("\nControl humano:\n")
+cat("\nControl humano")
 table(data$control_humano, useNA = "ifany") %>% print()
 
 cat("\nCruce: Error inicial × Corrección × Control humano:\n")
@@ -142,13 +142,13 @@ modelo_path <- '
   #    - Comprensión previa
   #    - Control humano (disclaimer)
   #    - Interacción (el disclaimer aumenta más la comprensión en quienes erraron)
-  comp_pos_z ~ b1*comp_pre_z + b2*control_humano_num + b3*decision_error
+  comp_post_z ~ b1*comp_pre_z + b2*control_humano_num + b3*decision_error
   
   # 3. Corrección es función de:
   #    - Comprensión posterior
   #    - Control humano directo
   #    - Haber cometido error inicialmente
-  decision_corregida ~ c1*comp_pos_z + c2*control_humano_num + c3*decision_error
+  decision_corregida ~ c1*comp_post_z + c2*control_humano_num + c3*decision_error
   
   # Efectos indirectos
   # Control humano → Comprensión posterior → Corrección
