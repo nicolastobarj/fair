@@ -271,3 +271,18 @@ data <- data%>%
 
 data$sae_pos_trust
 data$fonasa_pos_trust
+
+data <- data%>%
+  mutate(
+    sae_pos_trust_mdmt = rowMeans(
+      select(., starts_with("sae_pos_trust_func"), starts_with("sae_pos_trust_moral")),
+      na.rm = TRUE
+    ),
+    fonasa_pos_trust_mdmt = rowMeans(
+      select(., starts_with("fonasa_pos_trust_func"), starts_with("fonasa_pos_trust_moral")),
+      na.rm = TRUE
+    )
+  ) 
+
+data$sae_pos_trust_mdmt
+data$fonasa_pos_trust_mdmt
