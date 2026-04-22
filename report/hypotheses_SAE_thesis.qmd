@@ -560,7 +560,6 @@ lm(sae_conf_belief_moral_pre ~ disclosure + inf_situacional*uso_sae + genero + e
 )
 ```
 
-
 ## Hipótesis 3
 
 ```{r}
@@ -1076,6 +1075,7 @@ lm(sae_conf_belief_moral_pos ~ control_humano + disclosure + inf_situacional*uso
 ```
 
 #una sola vez para convertir a imágenes
+
 ```{r}
 library(webshot2)
 

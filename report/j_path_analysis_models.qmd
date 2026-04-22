@@ -304,3 +304,38 @@ ggdag(dag_tidy) +
     plot.subtitle = element_text(hjust = 0.5, size = 11)
   )
 ```
+
+# Celular y Comportamiento SAE
+
+```{r}
+data <- data %>%
+  mutate(decision_pre_sae = ifelse(cantidad_colegios < 5, 1, 0))
+
+tab_model(
+  list(
+    glm(
+      decision_pre_sae ~ sae_comp_objetiva_pre,
+      data = data,
+      family = "binomial"
+    ),
+    glm(
+      decision_pre_sae ~ sae_comp_objetiva_pre +
+        device_type,
+      data = data,
+      family = "binomial"
+    ),
+    glm(
+      decision_pre_sae ~ sae_comp_objetiva_pre +
+        device_type + sae_comp_objetiva_pre * device_type,
+      data = data,
+      family = "binomial"
+    )
+  ),
+  collapse.se = TRUE,
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars"
+)
+```
