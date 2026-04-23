@@ -253,6 +253,54 @@ title("Modelo de sendero: Efecto del disclaimer en la corrección de decisiones"
 ```
 
 ```{r}
+# --- 4. Visualización del modelo de sendero (arreglado por ChatG)---
+
+layout_coords <- matrix(c(
+  -1, -1,   # decision_error
+   0,  0,   # comp_post_z
+   1, -1,   # decision_corregida
+  -1,  1,   # comp_pre_z
+   1,  1    # control_humano_num
+), byrow = TRUE, ncol = 2)
+
+semPaths(
+ fit_path,
+ what = "std",
+ whatLabels = "std",
+ style = "lisrel",
+ #layout = "tree2",
+ layout = layout_coords,
+ rotation = 2,
+ 
+ edge.label.cex = 1.2,
+ node.label.cex = 1.1,
+ sizeMan = 10,
+ sizeLat = 10,
+ 
+ edge.color = "black",
+ edge.width = 1.8,     # 👈 más visible
+ fade = FALSE,         # 👈 clave
+ 
+ residuals = FALSE,
+ intercepts = FALSE,
+ thresholds = FALSE,
+ nCharNodes = 0,
+ 
+ nodeLabels = c(
+   "Initial\nsuboptimal\ndecision",
+   "Follow-up\nunderst.",
+   "Decision\ncorrection",
+   "Ex-ante\nunderst.",
+   "Human\ncontrol"
+ ),
+ 
+  mar = c(2, 2, 2, 2)
+)
+
+#title("Modelo de sendero. Efecto del disclaimer en la corrección de decisiones", line = 2.5)
+```
+
+```{r}
 # --- 5. Gráfico más elaborado con ggplot (para presentación) ---
 library(ggdag)
 library(dagitty)
@@ -261,19 +309,19 @@ library(dagitty)
 dag <- dagitty(
   '
 dag {
-   "Comprensión previa" [pos="0,1"]
-   "Control humano" [pos="1,0"]
-   "Error inicial" [pos="1,2"]
-   "Comprensión posterior" [pos="2,1"]
-   "Corrección" [pos="3,1"]
+   "Ex-ante underst." [pos="0,1"]
+   "Human control" [pos="1,0"]
+   "  Initial  error  " [pos="1,2"]
+   "Follow-up underst." [pos="2,1"]
+   "Decision correction" [pos="3,1"]
 
-  "Comprensión previa" -> "Error inicial"
-  "Comprensión previa" -> "Comprensión posterior"
-  "Control humano" -> "Comprensión posterior"
-  "Error inicial" -> "Comprensión posterior"
-  "Comprensión posterior" -> "Corrección"
-  "Control humano" -> "Corrección"
-  "Error inicial" -> "Corrección"
+  "Ex-ante underst." -> "  Initial  error  "
+  "Ex-ante underst." -> "Follow-up underst."
+  "Human control" -> "Follow-up underst."
+  "  Initial  error  " -> "Follow-up underst."
+  "Follow-up underst." -> "Decision correction"
+  "Human control" -> "Decision correction"
+  "  Initial  error  " -> "Decision correction"
 }
 '
 )
@@ -302,5 +350,71 @@ ggdag(dag_tidy) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
     plot.subtitle = element_text(hjust = 0.5, size = 11)
+  )
+```
+```{r}
+# --- 5. Gráfico más elaborado con ggplot (para presentación) arreglado con ChatG---
+library(ggdag)
+library(dagitty)
+library(grid)
+library(ggforce)
+
+# Definir DAG
+dag <- dagitty(
+'
+dag {
+   "Ex-ante underst." [pos="0,1"]
+   "Human control" [pos="1,0"]
+   "Initial error" [pos="1,2"]
+   "Follow-up underst." [pos="2,1"]
+   "Decision correction" [pos="3,1"]
+
+  "Ex-ante underst." -> "Initial error"
+  "Ex-ante underst." -> "Follow-up underst."
+  "Human control" -> "Follow-up underst."
+  "Initial error" -> "Follow-up underst."
+  "Follow-up underst." -> "Decision correction"
+  "Human control" -> "Decision correction"
+  "Initial error" -> "Decision correction"
+}
+'
+)
+
+# Extraer coeficientes estandarizados
+std_params <- parameterEstimates(fit_path, standardized = TRUE) %>%
+  filter(op == "~") %>%
+  mutate(
+    path = paste(rhs, "->", lhs),
+    coef_label = paste0(round(std.all, 2), ifelse(pvalue < 0.05, "*", ""))
+  )
+
+# Convertir a tidy
+dag_tidy <- tidy_dagitty(dag)
+
+# Plot
+ggdag(dag_tidy, node = FALSE, text = FALSE) +
+  geom_dag_edges(edge_width = 0.6,
+                arrow_directed = arrow(length = unit(2.5, "mm"), type = "closed")
+                ) +
+
+  geom_dag_label(
+    aes(label = case_when(
+      name == "Ex-ante underst." ~ "Ex-ante\nunderst.",
+      name == "Human control" ~ "Human\ncontrol",
+      name == "Initial error" ~ "Initial\nerror",
+      name == "Follow-up underst." ~ "Follow-up\nunderst.",
+      name == "Decision correction" ~ "Decision\ncorrection"
+    )),
+    fill = "steelblue",
+    color = "white",
+    size = 4.1,
+    fontface = "bold"
+  ) +
+
+  theme_dag_blank() +
+  coord_equal() +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank()
   )
 ```
