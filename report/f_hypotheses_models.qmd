@@ -288,3 +288,75 @@ lm(sae_conf_word_moral_pos ~ control_humano + disclosure + inf_situacional + gen
   dv.labels = c("Objective knowledge (Ex-pos)", "Subjective knowledge (Ex-pos)", "Functional trust McKnight (Ex-pos)", "Moral trust McKnight (Ex-pos)","Functional Trust MDMT (Ex-pos)", "Functional Trust MDMT (Ex-pos)")
 )
 ```
+
+# Control Comprensión Subjetiva
+
+```{r}
+tab_model(
+  list(
+    lm(
+      sae_conf_belief_funcional_pos ~ sae_comp_subjetiva_pos + 
+        control_humano +
+        disclosure +
+        inf_situacional +
+        genero +
+        edad_num +
+        +education_recoded,
+      data = data
+    ),
+    lm(
+      sae_conf_belief_moral_pos ~ sae_comp_subjetiva_pos + 
+        control_humano +
+        disclosure +
+        inf_situacional +
+        genero +
+        edad_num +
+        +education_recoded,
+      data = data
+    ),
+    lm(
+      fonasa_conf_belief_funcional_pos ~ sae_comp_subjetiva_pos + 
+        control_humano +
+        disclosure +
+        inf_situacional +
+        genero +
+        edad_num +
+        +education_recoded,
+      data = data
+    ),
+    lm(
+      fonasa_conf_belief_moral_pos ~ sae_comp_subjetiva_pos + 
+        control_humano +
+        disclosure +
+        inf_situacional +
+        genero +
+        edad_num +
+        +education_recoded,
+      data = data
+    )
+  ),
+  collapse.se = TRUE,
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c(
+    "Intercept",
+    "Subjective knowledge (Ex-pos)",
+    "Human control (Ex-pos)",
+    "Algorithmic disclosure (Ex-ante)",
+    "Situational information (Ex-ante)",
+    "Género: Mujer",
+    "Edad",
+    "Educación: Media completa",
+    "Educación: Superior"
+  ),
+  dv.labels = c(
+    "Fonasa Functional Trust (Ex-pos)",
+    "Fonasa Moral Trust (Ex-pos)",
+    "SAE Functional Trust (Ex-pos)",
+    "SAE Moral Trust (Ex-pos)"
+  )
+)
+```

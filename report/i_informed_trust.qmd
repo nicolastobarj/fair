@@ -1,6 +1,9 @@
 ---
 title: "i_informed_trust"
-format: html
+format: 
+  html:
+    toc: true
+    toc-depth: 4
 execute: 
   echo: false
   warning: false
@@ -1294,7 +1297,8 @@ tab_model(
       edad_num +
       education_recoded +
       attitudes_ai +
-      ai_skills,
+      ai_skills + 
+      uso_sae,
     data = data
   ),
   dv.labels = c(
@@ -1324,7 +1328,8 @@ tab_model(
     "Secondary education",
     "Higher education",
     "Attitudes towards AI",
-    "AI skills"
+    "AI skills",
+    "System anchoring"
   ))
 ```
 
@@ -1624,7 +1629,8 @@ tab_model(
       edad_num +
       education_recoded +
       attitudes_ai +
-      ai_skills,
+      ai_skills +
+      uso_sae,
     data = data
   ),
   dv.labels = c(
@@ -1654,7 +1660,8 @@ tab_model(
     "Secondary education",
     "Higher education",
     "Attitudes towards AI",
-    "AI skills"
+    "AI skills",
+    "System anchoring"
   ))
 ```
 
@@ -1701,7 +1708,487 @@ tab_model(
     "Higher education",
     "Subjective knowledge",
     "Attitudes towards AI",
-    "AI skills"
-  )
+    "AI skills")
+)
+```
+
+### Modelos jerarquicos
+
+#### SAE MDMT
+```{r}
+library(nnet)
+library(sjPlot)
+
+# Modelo 1: controles sociodemográficos
+tab_model(
+  multinom(
+    sae_informed_trust_mdmt ~ genero + edad_num + education_recoded,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 2: + actitudes y habilidades AI
+tab_model(
+  multinom(
+    sae_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 3: + tratamientos experimentales
+tab_model(
+  multinom(
+    sae_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      disclosure +
+      inf_situacional +
+      control_humano,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 4: + conocimiento subjetivo
+tab_model(
+  multinom(
+    sae_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      disclosure +
+      inf_situacional +
+      control_humano +
+      sae_comp_subjetiva_pos,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 5: + interacción conocimiento subjetivo × control humano
+tab_model(
+  multinom(
+    sae_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      disclosure +
+      inf_situacional +
+      control_humano +
+      sae_comp_subjetiva_pos * disclosure +
+      sae_comp_subjetiva_pos * inf_situacional +
+      sae_comp_subjetiva_pos * control_humano,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+```
+
+#### SAE McKnight
+
+```{r}
+library(nnet)
+library(sjPlot)
+
+# Modelo 1: controles sociodemográficos
+tab_model(
+  multinom(
+    sae_informed_trust ~ genero + edad_num + education_recoded,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 2: + actitudes y habilidades AI
+tab_model(
+  multinom(
+    sae_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 3: + tratamientos experimentales
+tab_model(
+  multinom(
+    sae_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      disclosure +
+      inf_situacional +
+      control_humano,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 4: + conocimiento subjetivo
+tab_model(
+  multinom(
+    sae_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      disclosure +
+      inf_situacional +
+      control_humano +
+      sae_comp_subjetiva_pos,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 5: + interacción conocimiento subjetivo × control humano
+tab_model(
+  multinom(
+    sae_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      disclosure +
+      inf_situacional +
+      control_humano +
+      sae_comp_subjetiva_pos * disclosure +
+      sae_comp_subjetiva_pos * inf_situacional +
+      sae_comp_subjetiva_pos * control_humano,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+```
+
+#### FONASA MDMT
+
+```{r}
+library(nnet)
+library(sjPlot)
+
+# Modelo 1: controles sociodemográficos
+tab_model(
+  multinom(
+    fonasa_informed_trust_mdmt ~ genero + edad_num + education_recoded,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 2: + actitudes y habilidades AI
+tab_model(
+  multinom(
+    fonasa_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 3: + tratamientos experimentales
+tab_model(
+  multinom(
+    fonasa_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 4: + conocimiento subjetivo
+tab_model(
+  multinom(
+    fonasa_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa +
+      sae_comp_subjetiva_pos,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 5: + interacción conocimiento subjetivo × control humano
+tab_model(
+  multinom(
+    fonasa_informed_trust_mdmt ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa +
+      sae_comp_subjetiva_pos * ai_disclosure_fonasa +
+      sae_comp_subjetiva_pos * performance_fonasa +
+      sae_comp_subjetiva_pos * control_humano_fonasa,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+```
+
+#### Fonasa McKnight
+
+```{r}
+# Modelo 1: controles sociodemográficos
+tab_model(
+  multinom(
+    fonasa_informed_trust ~ genero + edad_num + education_recoded,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 2: + actitudes y habilidades AI
+tab_model(
+  multinom(
+    fonasa_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 3: + tratamientos experimentales
+tab_model(
+  multinom(
+    fonasa_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 4: + conocimiento subjetivo
+tab_model(
+  multinom(
+    fonasa_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa +
+      sae_comp_subjetiva_pos,
+    data = data,
+    trace = FALSE),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
+)
+
+# Modelo 5: + interacción conocimiento subjetivo × control humano
+tab_model(
+  multinom(
+    fonasa_informed_trust ~ genero +
+      edad_num +
+      education_recoded +
+      attitudes_ai +
+      ai_skills +
+      ai_disclosure_fonasa +
+      performance_fonasa +
+      control_humano_fonasa +
+      sae_comp_subjetiva_pos * ai_disclosure_fonasa +
+      sae_comp_subjetiva_pos * performance_fonasa +
+      sae_comp_subjetiva_pos * control_humano_fonasa,
+    data = data,
+    trace = FALSE
+  ),
+  show.ci = FALSE,
+  show.aic = TRUE,
+  show.r2 = TRUE,
+  p.style = "stars",
+  collapse.se = TRUE,
+  string.pred = "Predictors",
+  string.est = "Coef.",
+  string.p = "p"
 )
 ```
