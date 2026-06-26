@@ -41,7 +41,6 @@ library(kableExtra)
 # ------------------------------------------------------------
 
 mapeo_constructos <- list(
-
   # =========================
   # ======== FONASA =========
   # =========================
@@ -216,8 +215,8 @@ mapeo_constructos <- list(
       "sae_pre_trust_belief_help_4"
     )
   ),
-    
-    "Ex pos: Comprensión subjetiva" = list(
+
+  "Ex pos: Comprensión subjetiva" = list(
     sistema = "SAE",
     agregada = "sae_comp_subjetiva_pos",
     items = c(
@@ -280,30 +279,35 @@ mapeo_constructos <- list(
 # Definición de ítems por sistema y tiempo
 items_fonasa_pre <- paste0("fonasa_pre_comp_obj_", 1:8)
 items_fonasa_pos <- paste0("fonasa_pos_comp_obj_", 1:11)
-items_sae_pre    <- paste0("sae_pre_comp_obj_", 1:6)
-items_sae_pos    <- paste0("sae_pos_comp_obj_", 1:6)
+items_sae_pre <- paste0("sae_pre_comp_obj_", 1:6)
+items_sae_pos <- paste0("sae_pos_comp_obj_", 1:6)
 
 # Lista maestra para procesar
 listas_items <- list(
   "FONASA Pre" = items_fonasa_pre,
   "FONASA Pos" = items_fonasa_pos,
-  "SAE Pre"    = items_sae_pre,
-  "SAE Pos"    = items_sae_pos
+  "SAE Pre" = items_sae_pre,
+  "SAE Pos" = items_sae_pos
 )
 
 # ===== 1. Función original (autoreporte – Cronbach) =====
 
 procesar_tabla_descriptiva <- function(info, nombre) {
-
   col_agregada <- data[[info$agregada]]
   df_items <- data %>% select(all_of(info$items))
 
   alpha_val <- if (ncol(df_items) > 1) {
     tryCatch(
-      psych::alpha(df_items, check.keys = TRUE, warnings = FALSE)$total$raw_alpha,
+      psych::alpha(
+        df_items,
+        check.keys = TRUE,
+        warnings = FALSE
+      )$total$raw_alpha,
       error = function(e) NA
     )
-  } else NA
+  } else {
+    NA
+  }
 
   tibble(
     Sistema = info$sistema,
@@ -312,9 +316,9 @@ procesar_tabla_descriptiva <- function(info, nombre) {
     Cronbach_Alpha = alpha_val,
     Mean = mean(col_agregada, na.rm = TRUE),
     Median = median(col_agregada, na.rm = TRUE),
-    SD   = sd(col_agregada, na.rm = TRUE),
-    Min  = min(col_agregada, na.rm = TRUE),
-    Max  = max(col_agregada, na.rm = TRUE)
+    SD = sd(col_agregada, na.rm = TRUE),
+    Min = min(col_agregada, na.rm = TRUE),
+    Max = max(col_agregada, na.rm = TRUE)
   )
 }
 
@@ -325,29 +329,30 @@ tabla_base <- imap_dfr(mapeo_constructos, procesar_tabla_descriptiva)
 # ===== 3. Función para pruebas objetivas (Split-Half) =====
 
 procesar_split_half_fila <- function(df, cols, nombre, sistema, var_agregada) {
-  
   dat <- df[, cols]
   n_completos <- sum(complete.cases(dat))
-  
+
   sb <- if (n_completos >= 5) {
     tryCatch(
       psych::splitHalf(dat, raw = FALSE, check.keys = TRUE)$maxrb,
       error = function(e) NA
     )
-  } else NA
-  
+  } else {
+    NA
+  }
+
   col_agregada <- df[[var_agregada]]
-  
+
   tibble(
     Sistema = sistema,
     Constructo = nombre,
     Items = length(cols),
-    Cronbach_Alpha = sb,   # aquí va Spearman–Brown
+    Cronbach_Alpha = sb, # aquí va Spearman–Brown
     Mean = mean(col_agregada, na.rm = TRUE),
     Median = median(col_agregada, na.rm = TRUE),
-    SD   = sd(col_agregada, na.rm = TRUE),
-    Min  = min(col_agregada, na.rm = TRUE),
-    Max  = max(col_agregada, na.rm = TRUE)
+    SD = sd(col_agregada, na.rm = TRUE),
+    Min = min(col_agregada, na.rm = TRUE),
+    Max = max(col_agregada, na.rm = TRUE)
   )
 }
 
@@ -355,24 +360,32 @@ procesar_split_half_fila <- function(df, cols, nombre, sistema, var_agregada) {
 
 filas_objetivas <- bind_rows(
   procesar_split_half_fila(
-    data, items_fonasa_pre,
+    data,
+    items_fonasa_pre,
     "Ex ante: Comprensión objetiva",
-    "FONASA", "fonasa_comp_objetiva_pre"
+    "FONASA",
+    "fonasa_comp_objetiva_pre"
   ),
   procesar_split_half_fila(
-    data, items_fonasa_pos,
+    data,
+    items_fonasa_pos,
     "Ex pos: Comprensión objetiva",
-    "FONASA", "fonasa_comp_objetiva_pos"
+    "FONASA",
+    "fonasa_comp_objetiva_pos"
   ),
   procesar_split_half_fila(
-    data, items_sae_pre,
+    data,
+    items_sae_pre,
     "Ex ante: Comprensión objetiva",
-    "SAE", "sae_comp_objetiva_pre"
+    "SAE",
+    "sae_comp_objetiva_pre"
   ),
   procesar_split_half_fila(
-    data, items_sae_pos,
+    data,
+    items_sae_pos,
     "Ex pos: Comprensión objetiva",
-    "SAE", "sae_comp_objetiva_pos"
+    "SAE",
+    "sae_comp_objetiva_pos"
   )
 )
 
@@ -390,10 +403,10 @@ tabla_final <- bind_rows(
 # ===== 6. Formateo con filas agrupadas =====
 
 n_fonasa <- sum(tabla_final$Sistema == "FONASA")
-n_sae    <- sum(tabla_final$Sistema == "SAE")
+n_sae <- sum(tabla_final$Sistema == "SAE")
 
 tabla_final %>%
-  rename("Cronbach α/Split-Half)"=Cronbach_Alpha) %>%
+  rename("Cronbach α/Split-Half)" = Cronbach_Alpha) %>%
   select(-Sistema) %>%
   kable(
     digits = 3,
@@ -406,7 +419,132 @@ tabla_final %>%
   ) %>%
   pack_rows("FONASA", 1, n_fonasa) %>%
   pack_rows("SAE", n_fonasa + 1, n_fonasa + n_sae)
+```
 
+```{r}
+# ------------------------------------------------------------
+# Tabla descriptiva y consistencia interna (constructos comunes)
+# ------------------------------------------------------------
+
+library(tidyverse)
+library(psych)
+library(knitr)
+library(kableExtra)
+
+# 1) Mapeo explícito: Constructo -> Ítems
+mapeo_constructos_comunes <- list(
+  "AI Skills" = list(
+    agregada = "ai_skills",
+    items = paste0("ai_skills", 1:19)
+  ),
+  "AI Attitudes" = list(
+    agregada = "attitudes_ai",
+    items = paste0("general_attitudes_ai", 1:8)
+  )
+)
+
+# 2) Validación de columnas
+items_requeridos <- unlist(map(mapeo_constructos_comunes, "items"))
+agregadas_requeridas <- unlist(map(mapeo_constructos_comunes, "agregada"))
+
+faltantes <- setdiff(c(items_requeridos, agregadas_requeridas), names(data))
+if (length(faltantes) > 0) {
+  stop(
+    "Faltan columnas en `data`: ",
+    paste(faltantes, collapse = ", ")
+  )
+}
+
+# 3) Función de procesamiento
+procesar_constructo_comun <- function(info, nombre) {
+  col_agregada <- data[[info$agregada]]
+  df_items <- data %>% select(all_of(info$items))
+
+  alpha_val <- if (ncol(df_items) > 1) {
+    tryCatch(
+      psych::alpha(
+        df_items,
+        check.keys = TRUE,
+        warnings = FALSE
+      )$total$raw_alpha,
+      error = function(e) NA_real_
+    )
+  } else {
+    NA_real_
+  }
+
+  tibble(
+    Constructo = nombre,
+    Items = ncol(df_items),
+    Cronbach_Alpha = alpha_val,
+    Mean = mean(col_agregada, na.rm = TRUE),
+    Median = median(col_agregada, na.rm = TRUE),
+    SD = sd(col_agregada, na.rm = TRUE),
+    Min = min(col_agregada, na.rm = TRUE),
+    Max = max(col_agregada, na.rm = TRUE)
+  )
+}
+
+# 4) Tabla final
+tabla_constructos_comunes <- imap_dfr(
+  mapeo_constructos_comunes,
+  procesar_constructo_comun
+)
+
+tabla_constructos_comunes %>%
+  rename("Cronbach α" = Cronbach_Alpha) %>%
+  kable(
+    digits = 3,
+    booktabs = TRUE,
+    caption = "Estadísticos descriptivos y confiabilidad de constructos comunes"
+  ) %>%
+  kable_styling(
+    latex_options = c("striped", "hold_position"),
+    full_width = FALSE
+  )
+```
+
+## Sample distribution
+
+```{r}
+library(dplyr)
+library(gtsummary)
+
+tabla_demografica <- data |>
+  transmute(
+    genero = factor(genero),
+    edad_num = as.numeric(edad_num),
+    education_recoded = factor(education_recoded)
+  ) |>
+  tbl_summary(
+    type = list(
+      edad_num ~ "continuous",
+      all_categorical() ~ "categorical"
+    ),
+    statistic = list(
+      edad_num ~ "{mean} ({sd})",
+      all_categorical() ~ "{n} ({p}%)"
+    ),
+    digits = list(
+      edad_num ~ 2,
+      all_categorical() ~ c(0, 1)
+    ),
+    label = list(
+      genero ~ "Género",
+      edad_num ~ "Edad (años)",
+      education_recoded ~ "Nivel educacional"
+    ),
+    missing = "ifany"
+  ) |>
+  add_n() |>
+  modify_header(
+    label ~ "**Variable**",
+    stat_0 ~ "**Total muestra**"
+  ) |>
+  modify_caption("**Tabla X. Distribución demográfica de la muestra**") |>
+  bold_labels()
+
+tabla_demografica
 ```
 
 ### (IRT)

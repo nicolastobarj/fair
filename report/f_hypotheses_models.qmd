@@ -295,43 +295,66 @@ lm(sae_conf_word_moral_pos ~ control_humano + disclosure + inf_situacional + gen
 tab_model(
   list(
     lm(
-      sae_conf_belief_funcional_pos ~ sae_comp_subjetiva_pos + 
-        control_humano +
+      sae_conf_belief_funcional_pos ~
         disclosure +
         inf_situacional +
+        control_humano +
         genero +
         edad_num +
         +education_recoded,
       data = data
     ),
     lm(
-      sae_conf_belief_moral_pos ~ sae_comp_subjetiva_pos + 
-        control_humano +
+      sae_conf_belief_funcional_pos ~
         disclosure +
         inf_situacional +
+        control_humano +
+        genero +
+        edad_num +
+        +education_recoded +
+        sae_comp_subjetiva_pos,
+      data = data
+    ),
+    lm(
+      sae_conf_belief_moral_pos ~
+        disclosure +
+        inf_situacional +
+        control_humano +
         genero +
         edad_num +
         +education_recoded,
       data = data
     ),
     lm(
-      fonasa_conf_belief_funcional_pos ~ sae_comp_subjetiva_pos + 
-        control_humano +
+      sae_conf_belief_moral_pos ~
         disclosure +
         inf_situacional +
+        control_humano +
+        genero +
+        edad_num +
+        +education_recoded +
+        sae_comp_subjetiva_pos,
+      data = data
+    ),
+    lm(
+      sae_comp_objetiva_pos ~
+        disclosure +
+        inf_situacional +
+        control_humano +
         genero +
         edad_num +
         +education_recoded,
       data = data
     ),
     lm(
-      fonasa_conf_belief_moral_pos ~ sae_comp_subjetiva_pos + 
-        control_humano +
+      sae_comp_objetiva_pos ~
         disclosure +
         inf_situacional +
+        control_humano +
         genero +
         edad_num +
-        +education_recoded,
+        +education_recoded +
+        sae_comp_subjetiva_pos,
       data = data
     )
   ),
@@ -343,20 +366,118 @@ tab_model(
   p.style = "stars",
   pred.labels = c(
     "Intercept",
-    "Subjective knowledge (Ex-pos)",
-    "Human control (Ex-pos)",
-    "Algorithmic disclosure (Ex-ante)",
-    "Situational information (Ex-ante)",
+    "Algorithmic disclosure",
+    "Situational information ",
+    "Human control",
     "Género: Mujer",
     "Edad",
     "Educación: Media completa",
-    "Educación: Superior"
+    "Educación: Superior",
+    "Subjective knowledge (Ex-pos)"
+  ),
+  dv.labels = c(
+    "SAE Functional Trust (Ex-pos)",
+    "SAE Functional Trust (Ex-pos)",
+    "SAE Moral Trust (Ex-pos)",
+    "SAE Moral Trust (Ex-pos)",
+    "SAE Objective Knowledge (Ex-pos)",
+    "SAE Objective Knowledge (Ex-pos)"
+  )
+)
+```
+
+
+```{r}
+tab_model(
+  list(
+    lm(
+      fonasa_conf_belief_funcional_pos ~
+        ai_disclosure_fonasa +
+        performance_fonasa +
+        control_humano_fonasa +
+        genero +
+        edad_num +
+        +education_recoded,
+      data = data
+    ),
+    lm(
+      fonasa_conf_belief_funcional_pos ~
+        ai_disclosure_fonasa +
+        performance_fonasa +
+        control_humano_fonasa +
+        genero +
+        edad_num +
+        +education_recoded +
+        sae_comp_subjetiva_pos,
+      data = data
+    ),
+    lm(
+      fonasa_conf_belief_moral_pos ~
+        ai_disclosure_fonasa +
+        performance_fonasa +
+        control_humano_fonasa +
+        genero +
+        edad_num +
+        education_recoded,
+      data = data
+    ),
+    lm(
+      fonasa_conf_belief_moral_pos ~
+        ai_disclosure_fonasa +
+        performance_fonasa +
+        control_humano_fonasa +
+        genero +
+        edad_num +
+        education_recoded +
+        sae_comp_subjetiva_pos,
+      data = data
+    ),
+    lm(
+      fonasa_comp_objetiva_pos ~
+        ai_disclosure_fonasa +
+        performance_fonasa +
+        control_humano_fonasa +
+        genero +
+        edad_num +
+        education_recoded,
+      data = data
+    ),
+    lm(
+      fonasa_comp_objetiva_pos ~
+        ai_disclosure_fonasa +
+        performance_fonasa +
+        control_humano_fonasa +
+        genero +
+        edad_num +
+        education_recoded +
+        sae_comp_subjetiva_pos,
+      data = data
+    )
+  ),
+  collapse.se = TRUE,
+  show.ci = FALSE,
+  show.aic = FALSE,
+  show.r2 = TRUE,
+  show.fstat = TRUE,
+  p.style = "stars",
+  pred.labels = c(
+    "Intercept",
+    "AI disclosure",
+    "Performance",
+    "Human control",
+    "Género: Mujer",
+    "Edad",
+    "Educación: Media completa",
+    "Educación: Superior",
+    "Subjective knowledge (Ex-pos)"
   ),
   dv.labels = c(
     "Fonasa Functional Trust (Ex-pos)",
+    "Fonasa Functional Trust (Ex-pos)",
     "Fonasa Moral Trust (Ex-pos)",
-    "SAE Functional Trust (Ex-pos)",
-    "SAE Moral Trust (Ex-pos)"
+    "Fonasa Moral Trust (Ex-pos)",
+    "Fonasa Objective Knowledge (Ex-pos)",
+    "Fonasa Objective Knowledge (Ex-pos)"
   )
 )
 ```
